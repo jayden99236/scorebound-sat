@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Free digital SAT practice: 147 original questions, an adaptive full-length test, estimated scores, and explanations in English or Russian.">
+<meta name="description" content="Free digital SAT practice: 209 original questions, an adaptive full-length test, estimated scores, and explanations in English, Russian, or Uzbek.">
 <style>
 :root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
 body { margin: 0; font: 14px/1.5 system-ui, sans-serif; }
@@ -128,6 +128,17 @@ h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-
 .timer { font: 700 20px/1 var(--f-mono); font-variant-numeric: tabular-nums; padding: 6px 12px; border-radius: 8px; }
 .timer.low { background: var(--bad-soft); color: var(--bad); }
 .timer-wrap { display: flex; align-items: center; gap: 8px; }
+.timer[hidden] { display: none; }
+.tbtn { font-size: 13px; }
+.tbtn:disabled { opacity: .45; cursor: default; }
+.toast { position: fixed; top: 76px; left: 50%; transform: translateX(-50%); z-index: 9; background: var(--ink); color: var(--paper); font-weight: 600; font-size: 14px; padding: 10px 16px; border-radius: 10px; box-shadow: 0 10px 30px rgba(10,20,40,.25); max-width: calc(100vw - 32px); }
+.toast:empty { display: none; }
+.timeup { background: var(--bad-soft); color: var(--bad); border-radius: 10px; padding: 10px 14px; font-weight: 600; font-size: 14px; }
+.pbar { position: relative; height: 8px; background: var(--paper); border-radius: 99px; margin-top: 6px; }
+.pbar i { display: block; height: 100%; background: var(--navy); border-radius: 99px; }
+.pbar i.weak { background: var(--bad); }
+.pbar::after { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 2px; background: var(--ink); border-radius: 1px; }
+.ritem .pair .slowt { color: var(--bad); }
 .testbar .right { justify-self: end; display: flex; gap: 8px; align-items: center; }
 
 .qwrap { max-width: 1080px; margin: 0 auto; padding-block: 24px 120px; display: grid; gap: 28px; }
@@ -281,9 +292,63 @@ h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-
 .ex .exhead .lbl { font: 600 11px/1 var(--f-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .exlang { border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 3px 11px; font: 600 12px var(--f-body); white-space: nowrap; }
 .exlang:hover { border-color: var(--pencil); background: var(--pencil-soft); }
+.exlangs { display: inline-flex; gap: 4px; }
+.exlangs .exlang { padding: 2px 8px; font: 700 11px var(--f-mono); letter-spacing: .04em; }
+.exlangs .exlang[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* tabs + question bank */
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); }
+.tabs button { border: 0; background: none; padding: 12px 14px 10px; font-weight: 600; color: var(--muted); border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.tabs button:hover { color: var(--ink); }
+.tabs button[aria-current="page"] { color: var(--ink); border-bottom-color: var(--pencil); }
+.qb-head { padding: 28px 0 22px; max-width: 70ch; }
+.qb-head h1 { font: 700 clamp(28px, 4vw, 38px)/1.1 var(--f-display); margin: 0; letter-spacing: -.01em; }
+.qb-head p { color: var(--muted); margin: 10px 0 0; }
+.qb-grid { display: grid; grid-template-columns: minmax(260px, 340px) 1fr; gap: 24px; padding-bottom: 48px; align-items: start; }
+.qb-side { position: sticky; top: 12px; }
+.qb-side .secpick { grid-template-columns: 1fr 1fr; }
+.qb-side .seccard { padding: 10px 12px; }
+.treehead { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.treehead .lnk { display: flex; gap: 12px; }
+.tree { list-style: none; margin: 0; padding: 0; }
+.tdom { border-top: 1px solid var(--line); padding: 8px 0; }
+.tdom:first-child { border-top: 0; }
+.tcheck { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; padding: 5px 0; font-size: 14px; line-height: 1.35; }
+.tcheck input { width: 16px; height: 16px; margin: 1px 0 0; accent-color: var(--ink); flex: none; }
+.tcheck .num { margin-left: auto; padding-left: 8px; color: var(--muted); font-size: 12px; }
+.tdom > .tcheck { font-weight: 700; }
+.tskills { list-style: none; margin: 0; padding: 0 0 0 26px; }
+.tskills .tcheck { color: var(--ink); }
+.tcheck.zero { color: var(--muted); }
+.qb-tools { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.qb-tools h2 { font-size: 20px; margin: 0; }
+.qb-opts { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+.qlist { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); overflow: hidden; }
+.qlist li + li { border-top: 1px solid var(--line); }
+.qrow { width: 100%; text-align: left; display: grid; grid-template-columns: auto 1fr auto; gap: 4px 14px; align-items: start; padding: 14px 16px; background: none; border: 0; color: inherit; font: inherit; cursor: pointer; }
+.qrow:hover { background: var(--paper); }
+.qrow .n { font: 600 13px/22px var(--f-mono); color: var(--muted); min-width: 2.2em; }
+.qrow .tl { font-size: 12px; color: var(--muted); font-weight: 600; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.qrow .pv { grid-column: 2; font-size: 14px; color: var(--ink); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.qrow .side { grid-row: span 2; display: flex; align-items: center; gap: 10px; }
+.dbars { display: inline-flex; gap: 2px; align-items: flex-end; }
+.dbars i { width: 5px; height: 12px; border-radius: 1px; background: var(--line); }
+.dbars i.on { background: var(--ink); }
+.qst { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font: 700 11px var(--f-mono); color: var(--surface); border: 1.5px dashed var(--line); }
+.qst.c { background: var(--good); border-color: var(--good); }
+.qst.w { background: var(--bad); border-color: var(--bad); }
+.weakbox { margin-bottom: 18px; }
+.weakbox h2, .weakhead { font-size: 18px; margin: 0 0 4px; }
+.weakbox > p, .weaksub { color: var(--muted); font-size: 13px; margin: 0; }
+.weaklist { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 14px; }
+.weaklist li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: center; }
+.weaklist .dom { margin: 0; }
+.btn-sm { padding: 7px 12px; font-size: 13px; border-radius: 8px; white-space: nowrap; }
+.weaksess { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
 
 @media (max-width: 860px) {
-  .hero, .home-grid, .res-head, .res-grid { grid-template-columns: 1fr; }
+  .hero, .home-grid, .res-head, .res-grid, .qb-grid { grid-template-columns: 1fr; }
+  .qb-side { position: static; }
   .qwrap.split { grid-template-columns: 1fr; }
   .passage { border-right: 0; padding-right: 0; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
 }
@@ -1094,7 +1159,309 @@ const BANK = [
   { id: 'm66', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Circles', d: 'H',
     q: 'A circle has a radius of 6. What is the length of an arc of the circle with a central angle of 120°?',
     ch: ['2π', '4π', '6π', '12π'], a: 1,
-    ex: '120° is 1/3 of 360°. The circumference is 2π(6) = 12π, and 1/3 of that is 4π.' }
+    ex: '120° is 1/3 of 360°. The circumference is 2π(6) = 12π, and 1/3 of that is 4π.' },
+  // ---------- Expansion: thin subtopics ----------
+  { id: 'rw82', sec: 'rw', dom: 'Craft and Structure', skill: 'Cross-Text Connections', d: 'M',
+    passage: `<p><b>Text 1</b><br>Some historians describe the printing press as a machine that transformed European literacy almost overnight. Once books became cheap to produce, they argue, ordinary people quickly learned to read.</p>
+      <p><b>Text 2</b><br>Parish and census records show that literacy rates in most European regions rose slowly for nearly two centuries after the printing press appeared. The spread of local schools and the falling price of paper appear to have mattered at least as much as the press itself.</p>`,
+    q: 'Based on the texts, how would the author of Text 2 most likely respond to the historians in Text 1?',
+    ch: ['By arguing that the rise in literacy was more gradual and had more causes than the historians suggest',
+         'By agreeing that the printing press transformed literacy almost overnight',
+         'By claiming that the printing press had no effect on literacy at all',
+         'By asserting that schools mattered less than the price of paper'],
+    a: 0,
+    ex: 'Text 1 claims a fast change driven by the press. Text 2 shows a slow rise "for nearly two centuries" and adds other causes (schools, paper). Text 2 never says the press had no effect, only that other factors mattered "at least as much."' },
+  { id: 'rw83', sec: 'rw', dom: 'Craft and Structure', skill: 'Cross-Text Connections', d: 'H',
+    passage: `<p><b>Text 1</b><br>City planners often propose widening highways to relieve traffic congestion. Adding lanes, they reason, gives the same number of cars more room and so shortens commutes.</p>
+      <p><b>Text 2</b><br>Transportation researchers have documented a pattern called induced demand. When a highway is widened, travel becomes easier for a while, so more people choose to drive and take more trips. Within a few years, traffic on many widened roads returns to its earlier levels.</p>`,
+    q: 'Based on the texts, how would the researchers in Text 2 most likely respond to the reasoning of the planners in Text 1?',
+    ch: ['By pointing out that the reasoning assumes the number of cars stays the same, even though widening a road tends to attract more drivers',
+         'By agreeing that adding lanes is the most reliable way to shorten commutes permanently',
+         'By arguing that widening a highway reduces the number of people who choose to drive',
+         'By claiming that highway width has no effect on how people decide to travel'],
+    a: 0,
+    ex: 'The planners assume "the same number of cars" will have more room. Text 2 shows that assumption fails: easier travel draws more drivers, and traffic returns. Text 2 says width does change behavior, so the last two choices contradict it.' },
+
+  // Advanced Math: Systems of nonlinear equations
+  { id: 'm67', sec: 'math', dom: 'Advanced Math', skill: 'Systems of nonlinear equations', d: 'E',
+    q: '<i>y</i> = <i>x</i><sup>2</sup><br><i>y</i> = 9<br><br>If (<i>x</i>, <i>y</i>) is a solution to the system above and <i>x</i> &gt; 0, what is the value of <i>x</i>?',
+    spr: 3, ex: 'Substitute <i>y</i> = 9: <i>x</i><sup>2</sup> = 9, so <i>x</i> = 3 or <i>x</i> = −3. The question asks for the positive value, 3.' },
+  { id: 'm68', sec: 'math', dom: 'Advanced Math', skill: 'Systems of nonlinear equations', d: 'M',
+    q: '<i>y</i> = <i>x</i><sup>2</sup> + 1<br><i>y</i> = <i>x</i> + 3<br><br>The system above has two solutions. What is the sum of the <i>x</i>-coordinates of the two solutions?',
+    spr: 1, ex: 'Set the right sides equal: <i>x</i><sup>2</sup> + 1 = <i>x</i> + 3 → <i>x</i><sup>2</sup> − <i>x</i> − 2 = 0 → (<i>x</i> − 2)(<i>x</i> + 1) = 0. The <i>x</i>-values are 2 and −1, and their sum is 1.' },
+  { id: 'm69', sec: 'math', dom: 'Advanced Math', skill: 'Systems of nonlinear equations', d: 'M',
+    q: '<i>y</i> = (<i>x</i> − 1)<sup>2</sup><br><i>y</i> = 4<br><br>How many solutions does the system above have?',
+    ch: ['Zero', 'Exactly one', 'Exactly two', 'Infinitely many'], a: 2, fixed: true,
+    ex: '(<i>x</i> − 1)<sup>2</sup> = 4 means <i>x</i> − 1 = 2 or <i>x</i> − 1 = −2, so <i>x</i> = 3 or <i>x</i> = −1. That gives two points, (3, 4) and (−1, 4): the horizontal line crosses the parabola twice.' },
+  { id: 'm70', sec: 'math', dom: 'Advanced Math', skill: 'Systems of nonlinear equations', d: 'H',
+    q: '<i>x</i><sup>2</sup> + <i>y</i><sup>2</sup> = 25<br><i>y</i> = <i>x</i> + 1<br><br>If (<i>a</i>, <i>b</i>) is a solution to the system above and <i>a</i> &gt; 0, what is the value of <i>b</i>?',
+    spr: 4, ex: 'Substitute: <i>x</i><sup>2</sup> + (<i>x</i> + 1)<sup>2</sup> = 25 → 2<i>x</i><sup>2</sup> + 2<i>x</i> − 24 = 0 → <i>x</i><sup>2</sup> + <i>x</i> − 12 = 0 → (<i>x</i> + 4)(<i>x</i> − 3) = 0. The positive solution is <i>a</i> = 3, so <i>b</i> = 3 + 1 = 4.' },
+
+  // Problem-Solving and Data Analysis: Ratios and proportions
+  { id: 'm71', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Ratios and proportions', d: 'E',
+    q: 'A recipe uses 3 cups of flour for every 2 cups of sugar. How many cups of flour are needed if 8 cups of sugar are used?',
+    spr: 12, ex: '8 cups of sugar is 4 times 2 cups, so multiply the flour by 4 as well: 3 × 4 = 12 cups.' },
+  { id: 'm72', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Ratios and proportions', d: 'M',
+    q: 'On a map, 1 inch represents 25 miles. Two towns are 3.5 inches apart on the map. What is the actual distance, in miles, between the towns?',
+    spr: 87.5, key: '87.5', ex: 'Multiply the map distance by the scale: 3.5 × 25 = 87.5 miles.' },
+  { id: 'm73', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Ratios and proportions', d: 'M',
+    q: 'The ratio of boys to girls in a class of 36 students is 4 to 5. How many girls are in the class?',
+    spr: 20, ex: 'The ratio has 4 + 5 = 9 parts, so each part is 36 ÷ 9 = 4 students. Girls make up 5 parts: 5 × 4 = 20.' },
+  { id: 'm74', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Ratios and proportions', d: 'H',
+    q: 'If <i>x</i>/<i>y</i> = 3/4 and <i>y</i>/<i>z</i> = 2/5, what is the value of <i>x</i>/<i>z</i>?',
+    spr: 0.3, key: '3/10', ex: 'Multiply the ratios so <i>y</i> cancels: (<i>x</i>/<i>y</i>)(<i>y</i>/<i>z</i>) = <i>x</i>/<i>z</i> = (3/4)(2/5) = 6/20 = 3/10 (or 0.3).' },
+
+  // Problem-Solving and Data Analysis: Rates and units
+  { id: 'm75', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Rates and units', d: 'E',
+    q: 'A car travels 150 miles in 2.5 hours. What is its average speed, in miles per hour?',
+    spr: 60, ex: 'Average speed is distance ÷ time: 150 ÷ 2.5 = 60 miles per hour.' },
+  { id: 'm76', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Rates and units', d: 'M',
+    q: 'A printer prints 45 pages in 3 minutes. At this rate, how many minutes will it take to print 240 pages?',
+    spr: 16, ex: 'The rate is 45 ÷ 3 = 15 pages per minute. 240 ÷ 15 = 16 minutes.' },
+  { id: 'm77', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Rates and units', d: 'M',
+    q: 'An object moves at a constant speed of 3 feet per second. What is this speed in inches per minute? (1 foot = 12 inches)',
+    spr: 2160, ex: 'Convert both units: 3 feet per second × 12 inches per foot = 36 inches per second, and 36 × 60 seconds per minute = 2,160 inches per minute.' },
+  { id: 'm78', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Rates and units', d: 'H',
+    q: 'Water flows into an empty tank at a constant rate of 2.5 liters per second. The tank holds 27,000 liters. How many hours will it take to fill the tank?',
+    spr: 3, ex: '27,000 ÷ 2.5 = 10,800 seconds. There are 3,600 seconds in an hour, so 10,800 ÷ 3,600 = 3 hours.' },
+
+  // Problem-Solving and Data Analysis: Percentages
+  { id: 'm79', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Percentages', d: 'E',
+    q: 'What is 30% of 250?',
+    spr: 75, ex: '30% is 0.30, and 0.30 × 250 = 75.' },
+  { id: 'm80', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Percentages', d: 'M',
+    q: 'After a 20% discount, a jacket costs $80. What was the original price of the jacket, in dollars?',
+    spr: 100, ex: 'After a 20% discount you pay 80% of the original price: 0.8<i>p</i> = 80, so <i>p</i> = 100. Adding 20% to $80 would give $96, which is a common mistake.' },
+  { id: 'm81', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Percentages', d: 'M',
+    q: 'The population of a town grew from 1,600 to 2,000. By what percent did the population increase?',
+    spr: 25, ex: 'The increase is 2,000 − 1,600 = 400. Divide by the original amount: 400 ÷ 1,600 = 0.25, or 25%.' },
+
+  // Problem-Solving and Data Analysis: Probability
+  { id: 'm82', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Probability', d: 'E',
+    q: 'A bag contains 4 red marbles, 6 blue marbles, and 10 green marbles. If one marble is chosen at random, what is the probability that it is blue?',
+    ch: ['1/5', '3/10', '1/2', '3/5'], a: 1,
+    ex: 'There are 4 + 6 + 10 = 20 marbles, and 6 are blue. 6/20 = 3/10.' },
+  { id: 'm83', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Probability', d: 'M',
+    q: `<div class="tablescroll"><table><caption>Survey of 200 students</caption>
+      <thead><tr><th></th><th>Plays an instrument</th><th>Does not play an instrument</th><th>Total</th></tr></thead>
+      <tbody><tr><th>Plays a sport</th><td>45</td><td>75</td><td>120</td></tr>
+      <tr><th>Does not play a sport</th><td>35</td><td>45</td><td>80</td></tr>
+      <tr><th>Total</th><td>80</td><td>120</td><td>200</td></tr></tbody></table></div>
+      If a student who plays an instrument is chosen at random, what is the probability that the student also plays a sport?`,
+    spr: 0.5625, key: '9/16', ex: 'Only the 80 students who play an instrument count. Of those, 45 play a sport: 45/80 = 9/16 (or 0.5625). Using 45/200 would answer a different question.' },
+  { id: 'm84', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Probability', d: 'H',
+    q: 'An integer is chosen at random from the integers 1 through 20. What is the probability that the integer is a multiple of 3 or a multiple of 5?',
+    spr: 0.45, key: '9/20', ex: 'Multiples of 3: 3, 6, 9, 12, 15, 18 (6 numbers). Multiples of 5: 5, 10, 15, 20 (4 numbers). 15 is counted twice, so there are 6 + 4 − 1 = 9 numbers. 9/20 = 0.45.' },
+
+  // Problem-Solving and Data Analysis: One-variable data
+  { id: 'm85', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'One-variable data', d: 'E',
+    q: 'What is the median of the data set 7, 3, 9, 4, 12?',
+    spr: 7, ex: 'Put the values in order: 3, 4, 7, 9, 12. The middle value is 7.' },
+  { id: 'm86', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'One-variable data', d: 'M',
+    q: 'A data set of 5 values has a mean of 8. When a sixth value is added, the mean becomes 9. What is the sixth value?',
+    spr: 14, ex: 'The first sum is 5 × 8 = 40. The new sum is 6 × 9 = 54. The added value is 54 − 40 = 14.' },
+
+  // Problem-Solving and Data Analysis: Two-variable data
+  { id: 'm87', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Two-variable data: models and scatterplots', d: 'E',
+    q: 'A scatterplot shows the height of a plant, in centimeters, <i>x</i> weeks after it was planted. The line of best fit is <i>y</i> = 2.5<i>x</i> + 10. According to the line of best fit, what is the predicted height, in centimeters, of the plant 6 weeks after it was planted?',
+    spr: 25, ex: 'Substitute <i>x</i> = 6: 2.5(6) + 10 = 15 + 10 = 25 centimeters.' },
+  { id: 'm88', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Two-variable data: models and scatterplots', d: 'M',
+    q: 'For a group of students, the line of best fit for test score <i>y</i> versus hours of TV watched per week <i>x</i> is <i>y</i> = −0.8<i>x</i> + 92. Which statement is the best interpretation of the slope of this line?',
+    ch: ['For each additional hour of TV watched per week, the predicted test score decreases by 0.8 points.',
+         'For each additional point on the test, the predicted TV time decreases by 0.8 hours.',
+         'A student who watches no TV is predicted to score 0.8 points.',
+         'For each additional hour of TV watched per week, the predicted test score decreases by 92 points.'],
+    a: 0,
+    ex: 'The slope is the change in <i>y</i> (score) for each one-unit increase in <i>x</i> (hours of TV). It is −0.8, so the predicted score drops 0.8 points per hour. 92 is the <i>y</i>-intercept, the predicted score with no TV.' },
+  { id: 'm89', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Two-variable data: models and scatterplots', d: 'H',
+    q: `<div class="tablescroll"><table>
+      <thead><tr><th><i>t</i></th><th>0</th><th>1</th><th>2</th><th>3</th></tr></thead>
+      <tbody><tr><th><i>f</i>(<i>t</i>)</th><td>5</td><td>15</td><td>45</td><td>135</td></tr></tbody></table></div>
+      The table shows four values of the function <i>f</i>. Which equation could define <i>f</i>?`,
+    ch: ['<i>f</i>(<i>t</i>) = 5(3)<sup><i>t</i></sup>', '<i>f</i>(<i>t</i>) = 3(5)<sup><i>t</i></sup>', '<i>f</i>(<i>t</i>) = 10<i>t</i> + 5', '<i>f</i>(<i>t</i>) = 5<i>t</i><sup>3</sup>'],
+    a: 0,
+    ex: 'Each value is 3 times the one before, which is exponential growth with factor 3. The starting value at <i>t</i> = 0 is 5, so <i>f</i>(<i>t</i>) = 5(3)<sup><i>t</i></sup>. The linear choice fits only the first two points, and 5<i>t</i><sup>3</sup> gives 0 at <i>t</i> = 0.' },
+
+  // Problem-Solving and Data Analysis: Inference from sample statistics
+  { id: 'm90', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Inference from sample statistics and margin of error', d: 'E',
+    q: 'A town has 20,000 residents. In a random sample of 400 residents, 120 said they support building a new park. Based on the sample, about how many residents of the town support building the park?',
+    spr: 6000, ex: 'In the sample, 120 ÷ 400 = 30% support the park. A random sample lets you apply that share to the whole town: 0.30 × 20,000 = 6,000.' },
+  { id: 'm91', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Inference from sample statistics and margin of error', d: 'M',
+    q: 'Based on a random sample, a poll estimates that 54% of voters in a city favor a proposal, with a margin of error of 3 percentage points. Which of the following is a plausible value for the actual percent of all voters in the city who favor the proposal?',
+    ch: ['49%', '52%', '58%', '60%'], a: 1, fixed: true,
+    ex: 'The margin of error gives a plausible range of 54 − 3 = 51% to 54 + 3 = 57%. Only 52% falls in that range.' },
+  { id: 'm92', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Inference from sample statistics and margin of error', d: 'H',
+    q: 'Researchers took two random samples from the same population to estimate the mean height of adults. Sample A had 100 people, and sample B had 900 people. Both estimates used the same confidence level. Which statement about the margins of error is most likely true?',
+    ch: ['The margin of error for sample B is smaller than the margin of error for sample A.',
+         'The margin of error for sample B is larger than the margin of error for sample A.',
+         'The two margins of error are equal, because the samples come from the same population.',
+         'The margin of error for sample B is 9 times the margin of error for sample A.'],
+    a: 0,
+    ex: 'Larger random samples give more precise estimates, so the margin of error shrinks as the sample size grows. Sample B is larger, so its margin of error is most likely smaller.' },
+
+  // Problem-Solving and Data Analysis: Evaluating statistical claims
+  { id: 'm93', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Evaluating statistical claims', d: 'E',
+    q: 'A researcher recruited 200 volunteers and randomly assigned half of them to drink a cup of green tea each day and the other half to drink a cup of water each day. After two months, the green tea group reported lower stress levels on average. Which conclusion is best supported by the study?',
+    ch: ['Drinking green tea daily likely causes lower stress for people similar to the volunteers.',
+         'Drinking green tea daily causes lower stress for all adults.',
+         'There is no relationship between drinking green tea and stress.',
+         'Having lower stress causes people to drink more green tea.'],
+    a: 0,
+    ex: 'Random assignment to groups allows a cause-and-effect conclusion. But the volunteers were not a random sample of all adults, so the result applies only to people similar to them, not to everyone.' },
+  { id: 'm94', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Evaluating statistical claims', d: 'H',
+    q: 'A survey of 1,000 randomly selected adults in a city found that dog owners reported exercising more hours per week, on average, than people who do not own dogs. Which conclusion is best supported by the survey?',
+    ch: ['Among adults in the city, owning a dog is associated with exercising more, but the survey does not show that owning a dog causes more exercise.',
+         'Owning a dog causes adults in the city to exercise more.',
+         'Exercising more causes adults in the city to buy dogs.',
+         'There is no relationship between owning a dog and exercise among adults in the city.'],
+    a: 0,
+    ex: 'A random sample lets you generalize to adults in the city. But the survey only observed people; no one was assigned to own a dog. So it shows an association, not a cause in either direction.' },
+  { id: 'm95', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Evaluating statistical claims', d: 'M',
+    q: 'A principal wants to estimate the average number of hours per week that students at her school spend on homework. Which method of choosing students to survey is most likely to give an unbiased estimate?',
+    ch: ['Survey 100 students chosen at random from a list of all students at the school',
+         'Survey 100 students who are in the library after school',
+         'Survey the first 100 students who arrive at school in the morning',
+         'Survey every student on the school\'s math team'],
+    a: 0,
+    ex: 'Only a random sample from all students gives every student the same chance of being chosen. Students in the library or on the math team probably do more homework than average, and early arrivals may differ too.' },
+
+  // Geometry and Trigonometry: Lines and angles
+  { id: 'm96', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Lines and angles', d: 'E',
+    q: 'Two lines intersect, forming four angles. One of the angles measures 65°. What is the measure, in degrees, of an angle adjacent to it?',
+    spr: 115, ex: 'Adjacent angles formed by two intersecting lines lie along a straight line, so they add to 180°: 180 − 65 = 115.' },
+  { id: 'm97', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Lines and angles', d: 'M',
+    q: 'Two parallel lines are cut by a transversal. Two same-side interior angles measure (3<i>x</i> + 10)° and (2<i>x</i> + 20)°. What is the value of <i>x</i>?',
+    spr: 30, ex: 'Same-side interior angles of parallel lines add to 180°: (3<i>x</i> + 10) + (2<i>x</i> + 20) = 180 → 5<i>x</i> + 30 = 180 → <i>x</i> = 30.' },
+  { id: 'm98', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Lines and angles', d: 'M',
+    q: 'The measures of the three angles of a triangle are in the ratio 2 : 3 : 4. What is the measure, in degrees, of the largest angle?',
+    spr: 80, ex: 'The angles add to 180°, split into 2 + 3 + 4 = 9 parts of 20° each. The largest angle is 4 × 20 = 80°.' },
+  { id: 'm99', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Lines and angles', d: 'H',
+    q: 'Each interior angle of a regular polygon measures 150°. How many sides does the polygon have?',
+    spr: 12, ex: 'Each exterior angle is 180 − 150 = 30°. The exterior angles of any polygon add to 360°, so there are 360 ÷ 30 = 12 sides.' },
+
+  // Geometry and Trigonometry: Right triangles
+  { id: 'm100', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Right triangles', d: 'E',
+    q: 'A right triangle has legs of length 6 and 8. What is the length of the hypotenuse?',
+    spr: 10, ex: 'By the Pythagorean theorem, 6<sup>2</sup> + 8<sup>2</sup> = 36 + 64 = 100, and √100 = 10.' },
+  { id: 'm101', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Right triangles', d: 'M',
+    q: 'A 13-foot ladder leans against a vertical wall. The bottom of the ladder is 5 feet from the base of the wall. How many feet above the ground does the top of the ladder touch the wall?',
+    spr: 12, ex: 'The ladder is the hypotenuse: 5<sup>2</sup> + <i>h</i><sup>2</sup> = 13<sup>2</sup> → 25 + <i>h</i><sup>2</sup> = 169 → <i>h</i><sup>2</sup> = 144 → <i>h</i> = 12.' },
+  { id: 'm102', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Right triangles', d: 'M',
+    q: 'An isosceles right triangle has a hypotenuse of length 8√2. What is the area of the triangle?',
+    spr: 32, ex: 'In a 45°-45°-90° triangle, the hypotenuse is a leg times √2, so each leg is 8. The area is (1/2)(8)(8) = 32.' },
+  { id: 'm103', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Right triangles', d: 'H',
+    q: 'In a 30°-60°-90° triangle, the side opposite the 30° angle has length 5. What is the perimeter of the triangle?',
+    ch: ['15', '15 + 5√3', '20', '15 + 10√3'], a: 1, fixed: true,
+    ex: 'The sides of a 30°-60°-90° triangle are in the ratio 1 : √3 : 2, so they are 5, 5√3, and 10. The perimeter is 5 + 10 + 5√3 = 15 + 5√3.' },
+
+  // Geometry and Trigonometry: Right triangle trigonometry
+  { id: 'm104', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Right triangle trigonometry', d: 'E',
+    q: 'In right triangle <i>ABC</i>, angle <i>C</i> is a right angle, <i>AC</i> = 3, <i>BC</i> = 4, and <i>AB</i> = 5. What is the value of sin <i>A</i>?',
+    ch: ['3/5', '3/4', '4/5', '4/3'], a: 2,
+    ex: 'Sine is opposite over hypotenuse. The side opposite angle <i>A</i> is <i>BC</i> = 4, and the hypotenuse is <i>AB</i> = 5, so sin <i>A</i> = 4/5.' },
+  { id: 'm105', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Right triangle trigonometry', d: 'M',
+    q: 'If sin(<i>x</i>°) = cos(40°) and 0 &lt; <i>x</i> &lt; 90, what is the value of <i>x</i>?',
+    spr: 50, ex: 'The sine of an angle equals the cosine of its complement: sin(<i>x</i>°) = cos(90° − <i>x</i>°). So 90 − <i>x</i> = 40 and <i>x</i> = 50.' },
+  { id: 'm106', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Right triangle trigonometry', d: 'M',
+    q: 'In a right triangle, angle <i>A</i> is acute and tan <i>A</i> = 5/12. What is the value of cos <i>A</i>?',
+    spr: 12 / 13, key: '12/13', ex: 'Tangent is opposite over adjacent, so use opposite 5 and adjacent 12. The hypotenuse is √(25 + 144) = 13. Cosine is adjacent over hypotenuse: 12/13 (about 0.923).' },
+  { id: 'm107', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Right triangle trigonometry', d: 'H',
+    q: 'In right triangle <i>ABC</i>, angle <i>C</i> is a right angle, <i>AB</i> = 20, and sin <i>A</i> = 0.6. What is the length of <i>AC</i>?',
+    spr: 16, ex: 'sin <i>A</i> = <i>BC</i>/<i>AB</i>, so <i>BC</i> = 0.6 × 20 = 12. Then <i>AC</i><sup>2</sup> + 12<sup>2</sup> = 20<sup>2</sup> → <i>AC</i><sup>2</sup> = 256 → <i>AC</i> = 16.' },
+
+  // Geometry and Trigonometry: Similar triangles
+  { id: 'm108', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Similar triangles', d: 'E',
+    q: 'A triangle has sides of length 3, 4, and 5. A similar triangle has a shortest side of length 9. What is the length of its longest side?',
+    spr: 15, ex: 'The scale factor is 9 ÷ 3 = 3. The longest side is 5 × 3 = 15.' },
+  { id: 'm109', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Similar triangles', d: 'M',
+    q: 'At the same time of day, a 6-foot-tall person casts a 4-foot shadow and a tree casts a 30-foot shadow. How tall, in feet, is the tree?',
+    spr: 45, ex: 'The sun makes similar triangles, so height and shadow are proportional: 6/4 = <i>h</i>/30 → <i>h</i> = 30 × 1.5 = 45 feet.' },
+  { id: 'm110', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Similar triangles', d: 'M',
+    q: 'In triangle <i>ABC</i>, point <i>D</i> is on side <i>AB</i> and point <i>E</i> is on side <i>AC</i>, and segment <i>DE</i> is parallel to side <i>BC</i>. If <i>AD</i> = 4, <i>DB</i> = 6, and <i>DE</i> = 5, what is the length of <i>BC</i>?',
+    spr: 12.5, key: '25/2', ex: '<i>DE</i> ∥ <i>BC</i> makes triangle <i>ADE</i> similar to triangle <i>ABC</i>. <i>AB</i> = 4 + 6 = 10, so the ratio is <i>AD</i>/<i>AB</i> = 4/10. Then 5/<i>BC</i> = 4/10 → <i>BC</i> = 12.5. A common mistake is to use 4/6 instead of 4/10.' },
+  { id: 'm111', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Similar triangles', d: 'H',
+    q: 'Two similar triangles have corresponding sides in the ratio 2 : 5. The area of the smaller triangle is 12. What is the area of the larger triangle?',
+    spr: 75, ex: 'Areas scale by the square of the side ratio: (5/2)<sup>2</sup> = 25/4. So the larger area is 12 × 25/4 = 75.' },
+
+  // Geometry and Trigonometry: Area and volume
+  { id: 'm112', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Area and volume', d: 'E',
+    q: 'A rectangular box has a length of 5 inches, a width of 4 inches, and a height of 3 inches. What is the volume of the box, in cubic inches?',
+    spr: 60, ex: 'Volume = length × width × height = 5 × 4 × 3 = 60 cubic inches.' },
+  { id: 'm113', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Area and volume', d: 'M',
+    q: 'A right circular cylinder has a radius of 3 and a height of 10. What is the volume of the cylinder?',
+    ch: ['30π', '60π', '90π', '180π'], a: 2,
+    ex: 'The volume of a cylinder is π<i>r</i><sup>2</sup><i>h</i> = π(3)<sup>2</sup>(10) = 90π.' },
+  { id: 'm114', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Area and volume', d: 'H',
+    q: 'The total surface area of a cube is 150 square centimeters. What is the volume of the cube, in cubic centimeters?',
+    spr: 125, ex: 'A cube has 6 equal square faces, so each face has area 150 ÷ 6 = 25 and each edge is 5. The volume is 5<sup>3</sup> = 125.' },
+
+  // Geometry and Trigonometry: Circles
+  { id: 'm115', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Circles', d: 'M',
+    q: 'The area of a circle is 49π. What is the circumference of the circle?',
+    ch: ['7π', '14π', '49π', '98π'], a: 1,
+    ex: 'π<i>r</i><sup>2</sup> = 49π, so <i>r</i> = 7. The circumference is 2π<i>r</i> = 14π.' },
+  { id: 'm116', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Circles', d: 'H',
+    q: 'In the <i>xy</i>-plane, a circle has its center at (2, −3) and passes through the point (5, 1). Which equation represents the circle?',
+    ch: ['(<i>x</i> − 2)<sup>2</sup> + (<i>y</i> + 3)<sup>2</sup> = 25', '(<i>x</i> + 2)<sup>2</sup> + (<i>y</i> − 3)<sup>2</sup> = 25',
+         '(<i>x</i> − 2)<sup>2</sup> + (<i>y</i> + 3)<sup>2</sup> = 5', '(<i>x</i> − 5)<sup>2</sup> + (<i>y</i> − 1)<sup>2</sup> = 25'],
+    a: 0,
+    ex: 'The radius is the distance from (2, −3) to (5, 1): √(3<sup>2</sup> + 4<sup>2</sup>) = 5, so <i>r</i><sup>2</sup> = 25. With center (<i>h</i>, <i>k</i>) = (2, −3), the equation is (<i>x</i> − 2)<sup>2</sup> + (<i>y</i> + 3)<sup>2</sup> = 25. The right side is <i>r</i><sup>2</sup>, not <i>r</i>.' },
+  { id: 'rw84', sec: 'rw', dom: 'Information and Ideas', skill: 'Command of Evidence (Quantitative)', d: 'E',
+    passage: `<div class="tablescroll"><table><caption>Visits to the Elm Street Library</caption>
+      <thead><tr><th>Month</th><th>Visits</th></tr></thead>
+      <tbody><tr><td>January</td><td class="n">1,200</td></tr><tr><td>February</td><td class="n">1,050</td></tr><tr><td>March</td><td class="n">1,480</td></tr><tr><td>April</td><td class="n">1,610</td></tr></tbody></table></div>
+      <p>A librarian claims that visits to the Elm Street Library increased every month from February to April.</p>`,
+    q: "Which choice most effectively uses data from the table to support the librarian's claim?",
+    ch: ['Visits rose from 1,050 in February to 1,480 in March and then to 1,610 in April.',
+         'Visits fell from 1,200 in January to 1,050 in February.',
+         'The library had 1,200 visits in January.',
+         'The library had more visits in January than in February.'],
+    a: 0,
+    ex: 'The claim covers February through April, so the support must show a rise in each of those months. Only the first choice gives all three values in increasing order. The other choices are about January, which is outside the claim.' },
+
+  { id: 'm117', sec: 'math', dom: 'Algebra', skill: 'Linear inequalities', d: 'E',
+    q: 'Which value of <i>x</i> is a solution to the inequality 3<i>x</i> − 5 &gt; 10?',
+    ch: ['3', '4', '5', '6'], a: 3,
+    ex: 'Add 5 to both sides: 3<i>x</i> &gt; 15, so <i>x</i> &gt; 5. Only 6 is greater than 5. The value 5 itself makes both sides equal, so it does not satisfy a strict inequality.' },
+  { id: 'm118', sec: 'math', dom: 'Algebra', skill: 'Linear functions', d: 'M',
+    q: 'For the linear function <i>f</i>, <i>f</i>(2) = 11 and <i>f</i>(5) = 20. What is the value of <i>f</i>(0)?',
+    spr: 5, ex: 'The slope is (20 − 11) ÷ (5 − 2) = 3. Going back from <i>x</i> = 2 to <i>x</i> = 0 lowers the value by 2 × 3 = 6, so <i>f</i>(0) = 11 − 6 = 5.' },
+  { id: 'm119', sec: 'math', dom: 'Algebra', skill: 'Linear equations in one variable', d: 'M',
+    q: 'If 3(<i>x</i> + 4) = 5<i>x</i> − 6, what is the value of <i>x</i>?',
+    spr: 9, ex: 'Distribute: 3<i>x</i> + 12 = 5<i>x</i> − 6. Subtract 3<i>x</i> and add 6: 18 = 2<i>x</i>, so <i>x</i> = 9.' },
+  { id: 'm120', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Two-variable data: models and scatterplots', d: 'M',
+    q: 'A scatterplot shows the cost <i>y</i>, in dollars, of taxi rides of <i>x</i> miles. The line of best fit is <i>y</i> = 2.1<i>x</i> + 3.5. According to the line of best fit, how many more dollars is the predicted cost of a 10-mile ride than the predicted cost of a 4-mile ride?',
+    spr: 12.6, key: '12.6', ex: 'The rides differ by 10 − 4 = 6 miles, and each mile adds $2.10 to the predicted cost: 6 × 2.1 = 12.6. The 3.5 is the same for both rides, so it cancels.' },
+  { id: 'm121', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Two-variable data: models and scatterplots', d: 'H',
+    q: 'The model <i>h</i>(<i>t</i>) = −5<i>t</i><sup>2</sup> + 20<i>t</i> + 1 estimates the height, in meters, of a ball <i>t</i> seconds after it is thrown. According to the model, what is the maximum height, in meters, of the ball?',
+    spr: 21, ex: 'The vertex of a parabola is at <i>t</i> = −<i>b</i> ÷ 2<i>a</i> = −20 ÷ (−10) = 2. Then <i>h</i>(2) = −5(4) + 20(2) + 1 = −20 + 40 + 1 = 21 meters.' },
+  { id: 'm122', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Inference from sample statistics and margin of error', d: 'M',
+    q: 'A factory packs 4,000 boxes each day. In a random sample of 50 boxes from one day, 3 were damaged. Based on the sample, about how many of that day\'s 4,000 boxes are damaged?',
+    spr: 240, ex: 'In the sample, 3 ÷ 50 = 6% of the boxes were damaged. Applying that share to the whole day: 0.06 × 4,000 = 240 boxes.' },
+  { id: 'm123', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Inference from sample statistics and margin of error', d: 'H',
+    q: 'In a random sample of 500 students at University X, the mean amount of sleep per night was 6.8 hours, with a margin of error of 0.3 hours. Which conclusion is most appropriate?',
+    ch: ['It is plausible that the mean amount of sleep for all students at University X is between 6.5 and 7.1 hours.',
+         'Every student at University X sleeps between 6.5 and 7.1 hours per night.',
+         'The mean amount of sleep for students at all universities is between 6.5 and 7.1 hours.',
+         'The mean amount of sleep for all students at University X is exactly 6.8 hours.'],
+    a: 0,
+    ex: 'The margin of error gives a plausible range for the mean of the whole population sampled: 6.8 ± 0.3, or 6.5 to 7.1 hours. It says nothing about individual students, and the sample came only from University X, not from all universities.' },
+  { id: 'm124', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Evaluating statistical claims', d: 'M',
+    q: 'A company posted a poll on its website asking visitors whether they like its new logo. Of the 2,000 people who chose to vote, 85% said they like it. Which statement best explains why this result may not represent the views of all the company\'s customers?',
+    ch: ['The voters chose themselves, so they may not be typical of all customers.',
+         'A sample of 2,000 people is too small to draw any conclusion.',
+         'A percentage cannot be calculated from the results of a poll.',
+         'Only an experiment can be used to draw a conclusion about a population.'],
+    a: 0,
+    ex: 'People who decide on their own to answer a website poll are a self-selected sample, and they may feel more strongly than other customers. 2,000 is a large sample, so size is not the problem; the way it was chosen is.' },
+  { id: 'm125', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Evaluating statistical claims', d: 'H',
+    q: 'Researchers chose 300 farms at random from a region. They randomly assigned 150 of the farms to use fertilizer X and the other 150 to use no fertilizer. The farms that used fertilizer X had higher crop yields on average. Which conclusion is best supported by the study?',
+    ch: ['Fertilizer X likely causes higher crop yields on farms in the region.',
+         'Fertilizer X causes higher crop yields on farms everywhere.',
+         'Higher crop yields cause farmers to choose fertilizer X.',
+         'The study shows only an association between fertilizer X and crop yields, not a cause.'],
+    a: 0,
+    ex: 'Random assignment of the fertilizer supports a cause-and-effect conclusion, so this is more than an association. Because the farms were chosen at random from the region, the conclusion applies to that region, but not to farms everywhere.' }
 ];
 // Difficulty for the original questions (new ones carry their own d).
 (function tagDifficulty() {
@@ -1277,20 +1644,297 @@ const EX_RU = {
   m63: `1,20 × 0,80 = 0,96, значит, итоговая цена — 96% от исходной. Изменения не компенсируют друг друга, потому что скидка 20% берётся от большей суммы.`,
   m64: `Исходная сумма 10 × 12 = 120. Без 30 остаётся 90 на 9 значений: 90 ÷ 9 = 10.`,
   m65: `Выделите полные квадраты: (<i>x</i><sup>2</sup> − 6<i>x</i> + 9) + (<i>y</i><sup>2</sup> + 8<i>y</i> + 16) = 25, то есть (<i>x</i> − 3)<sup>2</sup> + (<i>y</i> + 4)<sup>2</sup> = 25, и радиус равен 5.`,
-  m66: `120° — это 1/3 от 360°. Длина окружности 2π(6) = 12π, а 1/3 от неё — 4π.`
+  m66: `120° — это 1/3 от 360°. Длина окружности 2π(6) = 12π, а 1/3 от неё — 4π.`,
+  rw82: `Текст 1 утверждает, что печатный станок изменил грамотность быстро. Текст 2 показывает медленный рост «for nearly two centuries» и называет другие причины — школы и дешёвую бумагу. При этом текст 2 не говорит, что станок вообще не повлиял: другие факторы были важны «at least as much».`,
+  rw83: `Проектировщики исходят из того, что «the same number of cars» получит больше места. Текст 2 показывает, что это допущение не работает: когда ездить становится проще, машин становится больше, и пробки возвращаются. Текст 2 прямо говорит, что ширина дороги влияет на поведение водителей, поэтому два последних варианта ему противоречат.`,
+  m67: `Подставьте <i>y</i> = 9: <i>x</i><sup>2</sup> = 9, то есть <i>x</i> = 3 или <i>x</i> = −3. Нужно положительное значение — 3.`,
+  m68: `Приравняйте правые части: <i>x</i><sup>2</sup> + 1 = <i>x</i> + 3 → <i>x</i><sup>2</sup> − <i>x</i> − 2 = 0 → (<i>x</i> − 2)(<i>x</i> + 1) = 0. Значения <i>x</i> равны 2 и −1, их сумма равна 1.`,
+  m69: `(<i>x</i> − 1)<sup>2</sup> = 4 означает <i>x</i> − 1 = 2 или <i>x</i> − 1 = −2, то есть <i>x</i> = 3 или <i>x</i> = −1. Получаются две точки, (3, 4) и (−1, 4): горизонтальная прямая пересекает параболу дважды.`,
+  m70: `Подставьте: <i>x</i><sup>2</sup> + (<i>x</i> + 1)<sup>2</sup> = 25 → 2<i>x</i><sup>2</sup> + 2<i>x</i> − 24 = 0 → <i>x</i><sup>2</sup> + <i>x</i> − 12 = 0 → (<i>x</i> + 4)(<i>x</i> − 3) = 0. Положительное решение <i>a</i> = 3, значит <i>b</i> = 3 + 1 = 4.`,
+  m71: `8 стаканов сахара — это 2 стакана, умноженные на 4, поэтому муку тоже умножаем на 4: 3 × 4 = 12 стаканов.`,
+  m72: `Умножьте расстояние на карте на масштаб: 3,5 × 25 = 87,5 мили.`,
+  m73: `В отношении 4 + 5 = 9 частей, значит, одна часть — это 36 : 9 = 4 ученика. На девочек приходится 5 частей: 5 × 4 = 20.`,
+  m74: `Перемножьте отношения, чтобы <i>y</i> сократилось: (<i>x</i>/<i>y</i>)(<i>y</i>/<i>z</i>) = <i>x</i>/<i>z</i> = (3/4)(2/5) = 6/20 = 3/10 (или 0,3).`,
+  m75: `Средняя скорость — это расстояние, делённое на время: 150 : 2,5 = 60 миль в час.`,
+  m76: `Скорость печати — 45 : 3 = 15 страниц в минуту. 240 : 15 = 16 минут.`,
+  m77: `Переведите обе единицы: 3 фута в секунду × 12 дюймов в футе = 36 дюймов в секунду, а 36 × 60 секунд в минуте = 2 160 дюймов в минуту.`,
+  m78: `27 000 : 2,5 = 10 800 секунд. В часе 3 600 секунд, поэтому 10 800 : 3 600 = 3 часа.`,
+  m79: `30% — это 0,30, и 0,30 × 250 = 75.`,
+  m80: `После скидки 20% вы платите 80% исходной цены: 0,8<i>p</i> = 80, значит, <i>p</i> = 100. Если просто прибавить 20% к $80, получится $96 — это частая ошибка.`,
+  m81: `Прирост составил 2 000 − 1 600 = 400. Разделите на исходное значение: 400 : 1 600 = 0,25, то есть 25%.`,
+  m82: `Всего 4 + 6 + 10 = 20 шариков, из них 6 синих. 6/20 = 3/10.`,
+  m83: `Учитываются только 80 учеников, которые играют на инструменте. Из них 45 занимаются спортом: 45/80 = 9/16 (или 0,5625). Дробь 45/200 отвечала бы на другой вопрос.`,
+  m84: `Кратные 3: 3, 6, 9, 12, 15, 18 (6 чисел). Кратные 5: 5, 10, 15, 20 (4 числа). Число 15 посчитано дважды, поэтому подходящих чисел 6 + 4 − 1 = 9. 9/20 = 0,45.`,
+  m85: `Упорядочьте значения: 3, 4, 7, 9, 12. Среднее по порядку значение — 7.`,
+  m86: `Сумма первых значений: 5 × 8 = 40. Новая сумма: 6 × 9 = 54. Добавленное значение: 54 − 40 = 14.`,
+  m87: `Подставьте <i>x</i> = 6: 2,5(6) + 10 = 15 + 10 = 25 сантиметров.`,
+  m88: `Угловой коэффициент — это изменение <i>y</i> (балла) при увеличении <i>x</i> (часов телевизора) на единицу. Он равен −0,8, значит, прогнозируемый балл снижается на 0,8 за каждый час. Число 92 — это свободный член: прогнозируемый балл без телевизора.`,
+  m89: `Каждое значение в 3 раза больше предыдущего — это экспоненциальный рост с множителем 3. Начальное значение при <i>t</i> = 0 равно 5, поэтому <i>f</i>(<i>t</i>) = 5(3)<sup><i>t</i></sup>. Линейная функция подходит только для первых двух точек, а 5<i>t</i><sup>3</sup> даёт 0 при <i>t</i> = 0.`,
+  m90: `В выборке парк поддерживают 120 : 400 = 30%. Случайная выборка позволяет перенести эту долю на весь город: 0,30 × 20 000 = 6 000.`,
+  m91: `Погрешность задаёт правдоподобный диапазон от 54 − 3 = 51% до 54 + 3 = 57%. В этот диапазон попадает только 52%.`,
+  m92: `Чем больше случайная выборка, тем точнее оценка, поэтому погрешность уменьшается с ростом объёма выборки. Выборка B больше, значит, её погрешность, скорее всего, меньше.`,
+  m93: `Случайное распределение по группам позволяет делать вывод о причине и следствии. Но добровольцы не были случайной выборкой из всех взрослых, поэтому вывод относится только к людям, похожим на них, а не ко всем.`,
+  m94: `Случайная выборка позволяет распространить результат на взрослых жителей города. Но в опросе людей только наблюдали: никого не назначали заводить собаку. Поэтому опрос показывает связь, но не причину — ни в одну, ни в другую сторону.`,
+  m95: `Только случайная выборка из всех учеников даёт каждому ученику одинаковый шанс попасть в опрос. Ученики в библиотеке или в математической команде, вероятно, тратят на домашние задания больше времени, чем в среднем, а те, кто приходит рано, тоже могут отличаться от остальных.`,
+  m96: `Смежные углы, образованные двумя пересекающимися прямыми, лежат на одной прямой, поэтому в сумме дают 180°: 180 − 65 = 115.`,
+  m97: `Односторонние углы при параллельных прямых в сумме дают 180°: (3<i>x</i> + 10) + (2<i>x</i> + 20) = 180 → 5<i>x</i> + 30 = 180 → <i>x</i> = 30.`,
+  m98: `Сумма углов равна 180°, она делится на 2 + 3 + 4 = 9 частей по 20°. Наибольший угол: 4 × 20 = 80°.`,
+  m99: `Каждый внешний угол равен 180 − 150 = 30°. Сумма внешних углов любого многоугольника — 360°, поэтому сторон 360 : 30 = 12.`,
+  m100: `По теореме Пифагора 6<sup>2</sup> + 8<sup>2</sup> = 36 + 64 = 100, и √100 = 10.`,
+  m101: `Лестница — это гипотенуза: 5<sup>2</sup> + <i>h</i><sup>2</sup> = 13<sup>2</sup> → 25 + <i>h</i><sup>2</sup> = 169 → <i>h</i><sup>2</sup> = 144 → <i>h</i> = 12.`,
+  m102: `В треугольнике с углами 45°-45°-90° гипотенуза равна катету, умноженному на √2, поэтому каждый катет равен 8. Площадь: (1/2)(8)(8) = 32.`,
+  m103: `Стороны треугольника с углами 30°-60°-90° относятся как 1 : √3 : 2, то есть равны 5, 5√3 и 10. Периметр: 5 + 10 + 5√3 = 15 + 5√3.`,
+  m104: `Синус — это отношение противолежащего катета к гипотенузе. Против угла <i>A</i> лежит <i>BC</i> = 4, гипотенуза <i>AB</i> = 5, поэтому sin <i>A</i> = 4/5.`,
+  m105: `Синус угла равен косинусу дополнительного угла: sin(<i>x</i>°) = cos(90° − <i>x</i>°). Значит, 90 − <i>x</i> = 40 и <i>x</i> = 50.`,
+  m106: `Тангенс — это отношение противолежащего катета к прилежащему, так что возьмите катеты 5 и 12. Гипотенуза равна √(25 + 144) = 13. Косинус — прилежащий катет, делённый на гипотенузу: 12/13 (примерно 0,923).`,
+  m107: `sin <i>A</i> = <i>BC</i>/<i>AB</i>, поэтому <i>BC</i> = 0,6 × 20 = 12. Тогда <i>AC</i><sup>2</sup> + 12<sup>2</sup> = 20<sup>2</sup> → <i>AC</i><sup>2</sup> = 256 → <i>AC</i> = 16.`,
+  m108: `Коэффициент подобия: 9 : 3 = 3. Наибольшая сторона: 5 × 3 = 15.`,
+  m109: `Солнечные лучи образуют подобные треугольники, поэтому высота пропорциональна длине тени: 6/4 = <i>h</i>/30 → <i>h</i> = 30 × 1,5 = 45 футов.`,
+  m110: `Так как <i>DE</i> ∥ <i>BC</i>, треугольник <i>ADE</i> подобен треугольнику <i>ABC</i>. <i>AB</i> = 4 + 6 = 10, так что отношение равно <i>AD</i>/<i>AB</i> = 4/10. Тогда 5/<i>BC</i> = 4/10 → <i>BC</i> = 12,5. Частая ошибка — взять отношение 4/6 вместо 4/10.`,
+  m111: `Площади относятся как квадрат отношения сторон: (5/2)<sup>2</sup> = 25/4. Площадь большего треугольника: 12 × 25/4 = 75.`,
+  m112: `Объём = длина × ширина × высота = 5 × 4 × 3 = 60 кубических дюймов.`,
+  m113: `Объём цилиндра равен π<i>r</i><sup>2</sup><i>h</i> = π(3)<sup>2</sup>(10) = 90π.`,
+  m114: `У куба 6 одинаковых квадратных граней, поэтому площадь одной грани 150 : 6 = 25, а ребро равно 5. Объём: 5<sup>3</sup> = 125.`,
+  m115: `π<i>r</i><sup>2</sup> = 49π, значит, <i>r</i> = 7. Длина окружности: 2π<i>r</i> = 14π.`,
+  m116: `Радиус — это расстояние от (2, −3) до (5, 1): √(3<sup>2</sup> + 4<sup>2</sup>) = 5, поэтому <i>r</i><sup>2</sup> = 25. Центр (<i>h</i>, <i>k</i>) = (2, −3), и уравнение имеет вид (<i>x</i> − 2)<sup>2</sup> + (<i>y</i> + 3)<sup>2</sup> = 25. Справа стоит <i>r</i><sup>2</sup>, а не <i>r</i>.`,
+  rw84: `Утверждение касается периода с февраля по апрель, поэтому нужно показать рост в каждом из этих месяцев. Только первый вариант приводит все три значения по возрастанию. Остальные варианты говорят о январе, который в утверждение не входит.`,
+  m117: `Прибавьте 5 к обеим частям: 3<i>x</i> &gt; 15, то есть <i>x</i> &gt; 5. Больше 5 только 6. При <i>x</i> = 5 обе части равны, а строгое неравенство это не допускает.`,
+  m118: `Угловой коэффициент: (20 − 11) : (5 − 2) = 3. При переходе от <i>x</i> = 2 к <i>x</i> = 0 значение уменьшается на 2 × 3 = 6, поэтому <i>f</i>(0) = 11 − 6 = 5.`,
+  m119: `Раскройте скобки: 3<i>x</i> + 12 = 5<i>x</i> − 6. Вычтите 3<i>x</i> и прибавьте 6: 18 = 2<i>x</i>, значит, <i>x</i> = 9.`,
+  m120: `Поездки различаются на 10 − 4 = 6 миль, и каждая миля добавляет к прогнозу $2,10: 6 × 2,1 = 12,6. Слагаемое 3,5 одинаково для обеих поездок и сокращается.`,
+  m121: `Вершина параболы находится при <i>t</i> = −<i>b</i> : 2<i>a</i> = −20 : (−10) = 2. Тогда <i>h</i>(2) = −5(4) + 20(2) + 1 = −20 + 40 + 1 = 21 метр.`,
+  m122: `В выборке повреждено 3 : 50 = 6% коробок. Переносим эту долю на весь день: 0,06 × 4 000 = 240 коробок.`,
+  m123: `Погрешность задаёт правдоподобный диапазон для среднего по всей совокупности, из которой взята выборка: 6,8 ± 0,3, то есть от 6,5 до 7,1 часа. Это ничего не говорит об отдельных студентах, а выборка взята только из университета X, а не из всех университетов.`,
+  m124: `Люди, которые сами решили ответить на опрос на сайте, — это самоотобранная выборка, и их мнение может быть сильнее, чем у других покупателей. 2 000 человек — большая выборка, так что проблема не в размере, а в способе отбора.`,
+  m125: `Случайное назначение удобрения позволяет сделать вывод о причине и следствии, так что это больше, чем просто связь. Фермы выбраны случайно из этого региона, поэтому вывод относится к региону, но не ко всем фермам в мире.`
 };
 
 // ---------- language ----------
-// LANG: 'en' = English page, 'ru' = Russian page + explanations, 'mix' = English page + Russian explanations.
+// ---------- Uzbek (Latin) explanations (English words from the passages stay in English) ----------
+const EX_UZ = {
+  rw1: `Ikki nuqta undan keyingi qism boʻsh joyni tushuntirishini bildiradi. “Committing to a single design”dan qochadigan va oʻzgarishlarga joy qoldiradigan eskizlar provisional, yaʼni vaqtinchalik, qayta koʻrib chiqilishi mumkin boʻlgan eskizlardir.`,
+  rw2: `“Although” u oʻz kasbi haqida “at length” (batafsil) yozgan maktublar bilan qarama-qarshilik hosil qiladi. “Brief and guarded answers” (qisqa va ehtiyotkor javoblar) berish uning reticent, yaʼni kamgap va sir saqlovchi boʻlganini bildiradi.`,
+  rw3: `Barcha muammolarni atigi toʻrt sahifada qamrab olish concision, yaʼni koʻp narsani oz soʻz bilan aytish qobiliyatini koʻrsatadi. Redundancy (ortiqchalik) buning aksi.`,
+  rw4: `Birinchi gap tardigradalar suvsizlikka bardosh berishini aytadi. Ikkinchi gap buning mexanizmini tasvirlaydi (ular “tun” holatiga oʻralib, moddalar almashinuvini sekinlashtiradi). U hech narsani rad etmaydi, qayta tirilish esa uchinchi gapda tasvirlangan.`,
+  rw5: `Matn shahar asalari uyalarining koʻpayishidan ogohlantirishga oʻtadi: gullar kam joyda gullar uchun raqobat yovvoyi asalarilarga zarar berishi mumkin. Matn taqiqlashga chaqirmaydi va qaysi asalari qaysi gullarni afzal koʻrishini solishtirmaydi.`,
+  rw6: `Hosil umuman oʻsgan (42 dan 55 gacha), faqat 2018 (51) dan 2019 (47) gacha bir marta kamaygan. Qolgan variantlar jadvalni notoʻgʻri oʻqiydi: eng yuqori natija 2020-yilda 55 boʻlgan va 2020-yil eng past emas, eng yuqori yil.`,
+  rw7: `Odatiy saqlash quritish va muzlatishni anglatadi. Agar avokado va kakao urugʻlari bunday sharoitda nobud boʻlsa, odatiy usullar ularni saqlay olmaydi. Matnda boshqa variantlarni tasdiqlovchi hech narsa yoʻq.`,
+  rw8: `Eng qadimgi qatlamlarda dehqonchilik qurollari bor, baliq ovlash anjomlari esa yoʻq — bu dastlabki turmush tarzi dehqonchilik boʻlganini koʻrsatadi. Baliqchilar u yerda “never” (hech qachon) yashamagan deyish haddan oshiqcha, chunki qazishma faqat eng qadimgi qatlamlarni qamragan.`,
+  rw9: `Ikkala qism ham mustaqil gap. Ularni nuqtali vergul bilan bogʻlash mumkin. Faqat vergul qoʻyilsa comma splice xatosi, tinish belgisi boʻlmasa run-on xatosi chiqadi, “which the oldest” esa grammatik jihatdan notoʻgʻri.`,
+  rw10: `Ega — “collection”, u birlikda. “Of letters written by the expedition's crew members” predlogli birikma boʻlib, egani oʻzgartirmaydi, shuning uchun feʼl “is” boʻladi.`,
+  rw11: `“Both” ikki nafar meʼmor borligini bildiradi va takliflar ularga tegishli, shuning uchun koʻplikdagi qaratqich shakli kerak: architects'.`,
+  rw12: `“A nineteenth-century mathematician” — ajratilgan izohlovchi (nonessential appositive). U ikki tomondan vergul bilan ajratilishi kerak. Boshqa variantlarda vergul tushib qolgan yoki nuqtali vergul ishlatilgan, nuqtali vergul esa egani kesimdan ajrata olmaydi.`,
+  rw13: `Xavfli sizib chiqishlar zaharli sovutgichlardan foydalanish natijasidir, shuning uchun sabab-natija bogʻlovchisi mos keladi: “Consequently”.`,
+  rw14: `Ikkinchi natija (12 foizga oʻsish) birinchisiga (taʼsir yoʻq) qarama-qarshi. “However” shu qarama-qarshilikni bildiradi.`,
+  rw15: `Faqat “Stretching about 2,300 kilometers” varianti hajm haqida gapiradi va uzunlikni (2 300 km) ham, “world's largest” faktini ham ishlatadi. Boshqalari joylashuv yoki biologik xilma-xillikka qaratilgan.`,
+  m1: `Ikkala tomonga 7 ni qoʻshing: 3<i>x</i> = 18. 3 ga boʻling: <i>x</i> = 6.`,
+  m2: `Oylik toʻlov <i>m</i> ga koʻpaytiriladi (25<i>m</i>), roʻyxatdan oʻtish toʻlovi esa bir marta qoʻshiladi (+40).`,
+  m3: `Tenglamalarni qoʻshing: 2<i>x</i> = 14, demak <i>x</i> = 7. (Unda <i>y</i> = 3.)`,
+  m4: `Burchak koeffitsiyenti = (13 − 5) ÷ (6 − 2) = 8 ÷ 4 = 2.`,
+  m5: `Koʻpaytuvchilarga ajrating: (<i>x</i> − 2)(<i>x</i> − 3) = 0, demak <i>x</i> = 2 yoki 3. Yigʻindi 5 ga teng. (Qisqa yoʻl: <i>x</i><sup>2</sup> + <i>bx</i> + <i>c</i> uchun ildizlar yigʻindisi −<i>b</i> ga teng.)`,
+  m6: `(−2)<sup>2</sup> = 4, demak <i>f</i>(−2) = 2(4) − 3 = 5. Koʻp uchraydigan xato — avval koʻpaytirib, keyin kvadratga oshirish, bu −11 ni beradi.`,
+  m7: `<i>t</i> soat ichida son <i>t</i>/3 marta ikki baravar ortadi, shuning uchun bakteriyalar soni 500 × 2<sup><i>t</i>/3</sup>. Tekshiring: <i>t</i> = 3 da 1 000 chiqadi.`,
+  m8: `(<i>x</i> + 3)(<i>x</i> + 3) = <i>x</i><sup>2</sup> + 3<i>x</i> + 3<i>x</i> + 9 = <i>x</i><sup>2</sup> + 6<i>x</i> + 9. Oʻrta hadni unutmang.`,
+  m9: `32 = 2<sup>5</sup>, demak <i>x</i> + 1 = 5 va <i>x</i> = 4.`,
+  m10: `Oʻrta arifmetigi 9 boʻlgan beshta sonning yigʻindisi 45 ga teng. 4 + 8 + 10 + 14 = 36, demak <i>x</i> = 45 − 36 = 9.`,
+  m11: `Chegirmali narx: 80 × 0,75 = 60. Soliq bilan: 60 × 1,08 = 64,80.`,
+  m12: `Jami 6 + 4 + 10 = 20 ta shar bor, ulardan 4 tasi koʻk: 4/20 = 1/5.`,
+  m13: `6<sup>2</sup> + 8<sup>2</sup> = 36 + 64 = 100, va √100 = 10. (Bu 2 marta kattalashtirilgan 3-4-5 uchburchak.)`,
+  m14: `Tenglama (<i>x</i> − <i>h</i>)<sup>2</sup> + (<i>y</i> − <i>k</i>)<sup>2</sup> = <i>r</i><sup>2</sup> koʻrinishida, markazi (<i>h</i>, <i>k</i>). Bu yerda <i>h</i> = 3, <i>y</i> + 2 = <i>y</i> − (−2), demak <i>k</i> = −2. Radius 7 ga teng.`,
+  m15: `sin <i>A</i> = qarshi katet / gipotenuza = 3/5, demak yopishgan katet 4 ga teng (3-4-5 uchburchak). cos <i>A</i> = yopishgan katet / gipotenuza = 4/5.`,
+  m16: `Aylana uzunligi = 2π<i>r</i> = 10π, demak <i>r</i> = 5. Yuza = π<i>r</i><sup>2</sup> = 25π.`,
+  rw16: `Qonun chiqaruvchilar oldida guvohlik berish va tabiatni muhofaza qilish guruhlarini tashkil etish — biror gʻoyani ochiq qoʻllab-quvvatlash usullari, advocating aynan shuni anglatadi.`,
+  rw17: `Muhandislar jiddiy kamchilik topdi va shahar oldingi rejaga qaytdi. Demak, loyiha rad etilgan (rejected).`,
+  rw18: `“Ranging from friendship to astronomy” mavzulardagi esselar koʻplab turli manba va mavzularga tayanadi, eclectic aynan shuni anglatadi. “Systematic” esa kitob qochadigan yagona nazariyaga mos keladi.`,
+  rw19: `Janrlar orasida bemalol oʻtish u oʻz uslubini yangi sharoitga moslashtira olganini koʻrsatadi, adapt aynan shuni anglatadi.`,
+  rw20: `Ishtirokchilar savollarni oʻtkazib yuborgani maʼlumotlarda boʻshliqlar qoldirgan, demak maʼlumotlar toʻliq emas edi (incomplete). Maʼlumotlar toʻqib chiqarilgani (fabricated) haqida hech narsa aytilmagan.`,
+  rw21: `“But” va “grew more enthusiastic” birinchi taqrizlar unchalik iliq boʻlmaganini bildiradi. Lukewarm — eng yaxshi holatda biroz ijobiy degani.`,
+  rw22: `Matn bir taxminni (choʻllar jonsiz) aytadi, soʻng uni Sonora choʻli haqidagi raqamlar bilan rad etadi. Unda yogʻingarchilik, boshqa choʻllar yoki xavflar haqida gap yoʻq.`,
+  rw23: `1-gap — yutuq (1933-yilgi simfoniya), 2-gap — unutilish (“went unplayed”), 3-gap — burilish (qiziqishni qayta uygʻotgan 2009-yilgi topilma).`,
+  rw24: `Dastlabki ikki gap har bir tomon nima yutishini koʻrsatadi (odamlar asal, qushlar mum oladi). Uchinchi gap buni “benefits both species” hamkorlik sifatida umumlashtiradi.`,
+  rw25: `1-matn ish haqi oshirilgandan keyin ish oʻrinlari kamayishini bashorat qiladi. 2-matn bandlik “did not fall” ekanini aniqlagan, bu bashoratga bevosita zid. 2-matn ish haqini kadrlar qoʻnimsizligi bilan ham bogʻlaydi, shuning uchun ular bogʻliq emas demaydi.`,
+  rw26: `2-matn “slow, cold-blooded, tail-dragging” tasavvuriga zid boʻlgan ikki xil qazilma dalilni keltiradi (dum izlari yoʻq, tez oʻsish), shuning uchun muallif bu tasavvurni eskirgan deb hisoblaydi.`,
+  rw27: `Matn toʻsiqlar tizimini tasvirlaydi va u bir nechta katta suv toshqinining oldini olganini aytadi. U “all flooding”ni toʻxtatgan deyish mubolagʻa, MOSEdan voz kechish haqida hech qayerda gap yoʻq, 2020-yil esa “for centuries”ga zid.`,
+  rw28: `Oxirgi gapda muskullar “stretch it open to display its color” deyilgan. Boshqa variantlar matnda tilga olinmagan.`,
+  rw29: `Qishloq chetida qayta-qayta orqaga qaytish ketishni istamaslikni koʻrsatadi. Boshqa iqtiboslar qishloq yoki boshqa odamlarni tasvirlaydi, Maraning ikkilanishini emas.`,
+  rw30: `Daʼvo velosipedni avtomobil bilan solishtiradi, shuning uchun dalil ikkalasini ham oʻz ichiga olishi kerak: velosipedda 19 daqiqa, avtomobilda 27 daqiqa. Boshqa variantlar toʻgʻri, lekin bu ikki usulni solishtirmaydi.`,
+  rw31: `14% − 2% = 12 foiz punkt. Ulush yetti baravar oshgan, demak shunchaki ikki baravar emas, 14 punkt esa 2% lik boshlangʻich qiymatni hisobga olmaydi.`,
+  rw32: `Pufakchalarda eski havo saqlanadi, chuqurlik esa yoshga mos keladi. Demak, chuqurliklarni solishtirish turli davrlardagi atmosferani solishtirishdir.`,
+  rw33: `Jumboq bir xil edi, faqat uning tavsifi oʻzgardi. Xatti-harakat farq qilgani uchun tavsif qiziqishga taʼsir qilgan.`,
+  rw34: `Agar tukli arilar olib tashlanganda urugʻ hosil boʻlishi toʻxtasa, oʻsimlik ularga bogʻliq. Boshqa hasharotlar kelishi bu gʻoyani zaiflashtiradi, gullash vaqti yoki rang afzalligi esa bu oʻsimlikning bogʻliqligi haqida hech narsa demaydi.`,
+  rw35: `Matn sekin qoʻlda koʻchirishni tez bosib chiqarish bilan solishtiradi va oqibatlarini aytadi: arzonroq narx va gʻoyalarning kengroq tarqalishi.`,
+  rw36: `Qunduzlar kamaysa, dengiz tipratikanlari koʻpayadi, tipratikanlar koʻpaysa, ular koʻproq laminariya yeydi. Demak, qunduzlar tipratikanlarni jilovlab, laminariyani himoya qiladi.`,
+  rw37: `“By the time” va oʻtgan zamondagi voqea (“arrived”) past perfect zamonni talab qiladi: sayyohlar guruh kelguniga qadar boshpana topib boʻlgan edi.`,
+  rw38: `“Orchestra” — birlikdagi jamlovchi ot, shuning uchun olmosh “it” boʻladi. “Them” ega uchun kelishik jihatidan ham notoʻgʻri.`,
+  rw39: `Ikki nuqta toʻliq gapdan keyin roʻyxatni kiritadi. Nuqtali vergul ikki mustaqil gapni bogʻlashi kerak, “flour, water, and salt” esa mustaqil gap emas.`,
+  rw40: `Ikki mustaqil gapni vergul va bogʻlovchi (“, and”) bilan bogʻlash mumkin. Faqat vergul qoʻyilsa, comma splice xatosi boʻladi.`,
+  rw41: `Ega — “Each”, u birlikda. “Of the paintings” buni oʻzgartirmaydi, shuning uchun feʼl “shows” boʻladi.`,
+  rw42: `Kirish iborasi qoʻlyozmalarni oʻrgangan kishini tasvirlaydi, shuning uchun aynan shu kishi verguldan keyin kelishi kerak. Faqat bitta variant u yerga “the linguist”ni qoʻyadi. Qolganlari dangling modifier xatosini keltirib chiqaradi.`,
+  rw43: `Qushlar bitta mintaqaga tegishli (region's), uya qurish odatlari esa koʻplab qushlarga tegishli (birds'). Demak, ikkala soʻz ham qaratqich shaklida boʻlishi kerak: region's birds'.`,
+  rw44: `“Which” bilan boshlangan qism qoʻshimcha maʼlumot beradi, shuning uchun undan oldin ham, keyin ham vergul kerak. Faqat bitta variantda ikkalasi bor.`,
+  rw45: `Vergullar orasidagi ibora “walls”ni aniqlaydi va oʻtgan zamon sifatdoshini talab qiladi: “built from local limestone”. “Were built” va “they were built” ikkinchi asosiy feʼl yoki gap qoʻshib, gapni buzadi.`,
+  rw46: `“Its” — “company” kabi birlikdagi otning qaratqich shakli. “It's” “it is” degani, “its'” esa hech qachon toʻgʻri emas.`,
+  rw47: `Uzoq ekspozitsiya odamlarni qimirlamay turishga majbur qilgan — bu sabab-natija munosabati: “As a result”.`,
+  rw48: `Qahva tor sharoitni talab qiladi, choy esa keng sharoitga chidaydi. Bu qarama-qarshilik.`,
+  rw49: `Kichik tanlanma natijalarni tasdiqlash zarurligining sababi. Bu xulosa, shuning uchun “Therefore” mos keladi.`,
+  rw50: `Ikkinchi gap mangrlar tuz bilan kurashishining yana bir usulini qoʻshadi, shuning uchun bogʻlovchi qoʻshimchani bildirishi kerak.`,
+  rw51: `Biznesni rivojlantirish xavfsizlikka qoʻshimcha foyda. Bu qarama-qarshilik ham, xavfsizlikning aniq misoli ham emas.`,
+  rw52: `Kirish qismi uning kimligini va nega muhimligini aytishi kerak. Faqat uni Amerikaning birinchi yirik prima-balerinasi deb ataydigan variant ikkalasini ham bajaradi. Boshqalari uning kimligini aytmaydi yoki u haqda emas.`,
+  rw53: `Faqat “whereas” varianti ikkala vulqonning otilishini tasvirlaydi va ularni “whereas” bilan bir-biriga qarama-qarshi qoʻyadi.`,
+  rw54: `Topilma — velosipedchilar va haydovchilar stressini solishtirish. Faqat bitta variant buni aytadi. Qolganlari tadqiqot qanday tashkil etilganini yoki shaharni tasvirlaydi.`,
+  m17: `Qavslarni oching: 5<i>x</i> − 10 = 3<i>x</i> + 4. 3<i>x</i> ni ayiring va 10 ni qoʻshing: 2<i>x</i> = 14, demak <i>x</i> = 7.`,
+  m18: `Grafik <i>y</i> oʻqini <i>x</i> = 0 da kesadi: <i>y</i> = −3(0) + 6 = 6, yaʼni (0, 6). (2, 0) esa <i>x</i> oʻqi bilan kesishish nuqtasi.`,
+  m19: `Parallel toʻgʻri chiziqlarning burchak koeffitsiyentlari teng. Faqat <i>y</i> = 4<i>x</i> + 7 ning koeffitsiyenti 4. <i>y</i> = −¼<i>x</i> + 2 ning koeffitsiyenti teskari va qarama-qarshi ishorali, demak u perpendikulyar.`,
+  m20: `Umumiy ogʻirlik 600 + 35<i>b</i>, “koʻpi bilan” esa ≤ 2 000 degani.`,
+  m21: `600 + 35<i>b</i> ≤ 2 000 → 35<i>b</i> ≤ 1 400 → <i>b</i> ≤ 40.`,
+  m22: `Oʻrniga qoʻying: 2<i>x</i> + 3(<i>x</i> − 1) = 12 → 5<i>x</i> − 3 = 12 → <i>x</i> = 3. Unda <i>y</i> = 3 − 1 = 2.`,
+  m23: `Yechim yoʻqligi toʻgʻri chiziqlar parallel va ustma-ust tushmasligini bildiradi. Koeffitsiyentlar proporsional boʻlishi kerak: 3/6 = <i>k</i>/4, demak <i>k</i> = 2. Ozod hadlar shu nisbatda emasligini tekshiring: 8/5 ≠ 1/2, demak toʻgʻri chiziqlar ustma-ust tushmaydi.`,
+  m24: `<i>a</i> + <i>c</i> = 50 va 12<i>a</i> + 8<i>c</i> = 520. <i>c</i> = 50 − <i>a</i> ni qoʻying: 12<i>a</i> + 400 − 8<i>a</i> = 520 → 4<i>a</i> = 120 → <i>a</i> = 30.`,
+  m25: `Burchak koeffitsiyenti = (16 − 7) ÷ (4 − 1) = 3. <i>x</i> = 1 dan <i>x</i> = 0 ga qaytsak, qiymat 3 ga kamayadi: <i>f</i>(0) = 7 − 3 = 4.`,
+  m26: `15 soni <i>h</i> ga koʻpaytiriladi, demak har bir qoʻshimcha soat narxni $15 ga oshiradi. 50 — belgilangan toʻlov, bir soatlik chaqiruv esa $65 turadi.`,
+  m27: `<i>x</i> − 4 = 9 yoki <i>x</i> − 4 = −9, demak <i>x</i> = 13 yoki <i>x</i> = −5. Variantlarda faqat −5 bor.`,
+  m28: `Kvadratlar ayirmasi: <i>a</i><sup>2</sup> − <i>b</i><sup>2</sup> = (<i>a</i> − <i>b</i>)(<i>a</i> + <i>b</i>). <i>b</i> = 3 boʻlganda (<i>x</i> − 3)(<i>x</i> + 3) chiqadi.`,
+  m29: `<i>y</i> = (<i>x</i> − <i>h</i>)<sup>2</sup> + <i>k</i> koʻrinishidagi parabolaning uchi (<i>h</i>, <i>k</i>) = (2, 5).`,
+  m30: `Bir tomonga oʻtkazing: <i>x</i><sup>2</sup> − 4<i>x</i> − 12 = 0 → (<i>x</i> − 6)(<i>x</i> + 2) = 0. Yechimlar 6 va −2, musbati 6.`,
+  m31: `3<sup>4</sup> = 3 × 3 × 3 × 3 = 81.`,
+  m32: `Ichkaridan tashqariga hisoblang: <i>h</i>(2) = 2(2) − 3 = 1. Keyin <i>g</i>(1) = 1<sup>2</sup> + 1 = 2.`,
+  m33: `Har yili 15% yoʻqotilsa, qiymatning 85% i qoladi, shuning uchun har yili 0,85 ga koʻpaytiriladi: 24 000(0,85)<sup><i>t</i></sup>. 0,15 ishlatilsa, faqat 15% qolgan boʻlardi.`,
+  m34: `Minus ishorasini har bir hadga tarqating: 2<i>x</i><sup>2</sup> + 3<i>x</i> − <i>x</i><sup>2</sup> + 5<i>x</i> − 4 = <i>x</i><sup>2</sup> + 8<i>x</i> − 4.`,
+  m35: `Har bir hadni <i>x</i> ga boʻling: <i>x</i><sup>2</sup>/<i>x</i> + 6<i>x</i>/<i>x</i> = <i>x</i> + 6.`,
+  m36: `Bitta haqiqiy yechim diskriminant nolga teng ekanini bildiradi: 6<sup>2</sup> − 4(1)(<i>c</i>) = 0 → 36 = 4<i>c</i> → <i>c</i> = 9. Unda tenglama (<i>x</i> + 3)<sup>2</sup> = 0 koʻrinishini oladi.`,
+  m37: `Ikkala tomonni kvadratga oshiring: <i>x</i> + 3 = 25, demak <i>x</i> = 22. Tekshiring: √25 = 5.`,
+  m38: `18 ÷ 45 = soniyasiga 0,4 sahifa. 5 daqiqa = 300 soniya, va 0,4 × 300 = 120.`,
+  m39: `Qiymatlar oltita boʻlganda mediana ikki oʻrta qiymatning oʻrta arifmetigi: (7 + 9) ÷ 2 = 8.`,
+  m40: `Savol faqat 12-sinf oʻquvchilari (80 nafar) bilan cheklanadi. Ulardan 50 nafari sanʼatni afzal koʻradi: 50/80 = 5/8. 5/14 barcha 140 oʻquvchini hisobga oladi — bu keng tarqalgan tuzoq.`,
+  m41: `12 stakan un — bu 3 ning 4 barobari, shuning uchun 4 × 2 = 8 stakan shakar ishlating.`,
+  m42: `Yigʻindisi 180° boʻlgan burchaklar: <i>x</i> + 4<i>x</i> = 180 → 5<i>x</i> = 180 → <i>x</i> = 36.`,
+  m43: `V = π<i>r</i><sup>2</sup><i>h</i> = π(9)(10) = 90π.`,
+  m44: `Oʻxshashlik koeffitsiyenti 10/4 = 2,5. <i>EF</i> = 6 × 2,5 = 15.`,
+  rw55: `Butun xizmatni bitta oilaga berish oʻnlab savdogarlar ishtirok etgan voqeani haddan tashqari soddalashtiradi. Reductive — murakkab narsani haddan tashqari soddalashtirish degani.`,
+  rw56: `Tanqidchilarning eʼtirozi asarda oldingi motivlar qayta ishlatilgani bilan bogʻliq. Derivative — oldingi asarlardan olingan yoki ularga asoslangan degani; muallifning fikricha, bu baho asarlar motivlarni qanday oʻzgartirishini eʼtibordan chetda qoldiradi.`,
+  rw57: `Koʻp shartlar bilan berilgan rozilik cheklangan yoki qisman boʻladi, qualified aynan shuni anglatadi. Unequivocal (soʻzsiz) — buning aksi.`,
+  rw58: `Tadqiqotchilar “don't dispute the warning function”, shuning uchun eski tushuntirish rad etilmaydi. Ular ikkinchi omil sifatida juft tanlashni qoʻshadi. Bu “disproves it entirely” variantini istisno qiladi.`,
+  rw59: `2-matn Marlouning oʻzini puxta rejalashtiruvchi qilib koʻrsatishga sababi (olgan avanslari) borligini taxmin qiladi, shuning uchun maktublar xolis manba boʻlmasligi mumkin. Biroq matn u umuman rejalashtirmagan degan darajaga bormaydi.`,
+  rw60: `Ikkinchi gap taʼsirni tasvirlaydi (qoʻshimcha yoʻl qatorlari koʻproq haydovchilarni jalb qiladi). Uchinchi gap esa unga shunchaki nom beradi: induced demand.`,
+  rw61: `Bir xil usullar bir xil mahalliy kulollarni koʻrsatadi. Uzoqdan keltirilgan loy xomashyo uzoqdan kelganini bildiradi. Birgalikda: mahalliy kulollar olib kelingan loy bilan ishlagan. Yangi koʻchmanchilar yoki tashqi ustaxonalar boshqacha usullarni olib kelgan boʻlardi.`,
+  rw62: `Hasharotlarni emas, yoʻllarni sabab deb bilish uchun hasharotlarni istisno qiladigan (ular barqaror) va kamayishni yoʻllar bilan bogʻlaydigan (yoʻllar yaqinida eng keskin) dalil kerak. Birinchi variant ikkalasini ham bajaradi. Ikkinchisi esa aksincha hasharotlarga ishora qiladi.`,
+  rw63: `Agar yangi kutubxona boʻlmagan shaharlarda ham roʻyxatdan oʻtish xuddi shunchaki oshgan boʻlsa, oʻsish ortida boshqa narsa turgan boʻlishi ehtimoli bor. Qolgan topilmalar daʼvoga mos keladi.`,
+  rw64: `Natijani umumiy omilga emas, dasturga bogʻlash uchun dasturdan oʻtgan guruhdagi oʻzgarishni oʻtmagan guruhdagi oʻzgarish bilan solishtirish kerak. Faqat birinchi variant shu solishtirishni qiladi (2,1 va 0,2 soat). Oxirgi variant esa aslida umumiy omilga ishora qiladi.`,
+  rw65: `Katta yoʻl yaqinida ikki narsa farq qilgan (iliqlik va azot), shuning uchun erta gullashni ikkalasidan biri ham tushuntirishi mumkin. Shuning uchun tadqiqotchilar buni faqat haroratga bogʻlay olmaydi. Harorat “no effect” deyish esa haddan oshiqcha.`,
+  rw66: `Matn muvaffaqiyatsizlikni, tanqidchilar fikrini, soʻng iqtisodchining himoyasini keltiradi va soʻnggi soʻz iqtisodchida qoladi. Ikkinchi variant faqat tanqidchilar fikri, matn esa tanqidchilar barqaror oʻsish haqida rozi ekanini hech qayerda aytmaydi.`,
+  rw67: `U taomni ovoz chiqarib maqtaydi, lekin uni yashirincha tuzatadi. Bu uning taʼmga ahamiyat berishini, ammo xushmuomalalik uchun fikrini ichida saqlashini koʻrsatadi — yaʼni u tactful.`,
+  rw68: `Roʻyxat elementlari ichida allaqachon vergul boʻlsa (shahar, shtat), elementlar nuqtali vergul bilan ajratiladi. Boshqa elementlar nuqtali vergul bilan ajratilgan, shuning uchun “Texas;” roʻyxatni bir xil saqlaydi.`,
+  rw69: `Qoʻshimcha maʼlumot tire bilan boshlangan, demak tire bilan yopilishi kerak. Vergul yoki nuqtali vergul tire juftini yopa olmaydi, ochiq qoldirish esa gapni grammatik jihatdan notoʻgʻri qiladi.`,
+  rw70: `Gap inversiyada: ega kesimdan keyin keladi. Ega — “an instrument and several jars”, u koʻplikda, shuning uchun feʼl “were”. “Artifacts” predlogli birikma ichida, u ega emas.`,
+  rw71: `Bu qism qaysi roman nazarda tutilganini aniqlaydi, demak u zarur va vergul olmaydi. “That” zarur ergash gapni boshlaydi. “, which” 1998 dan keyin yopuvchi vergulni talab qilardi.`,
+  rw72: `“Chien-Shiung Wu” egasiga asosiy feʼl kerak. Vergullar orasidagi uzun “whose” qismi chalgʻitadi xolos. “Being”, “having been” va “to be” asosiy feʼl emas.`,
+  rw73: `“Neither...nor” bilan feʼl yaqinroq turgan ega — “the actors” bilan moslashadi, u koʻplikda. Gap oʻtgan zamonda (“would be cut”), shuning uchun “were”.`,
+  rw74: `Bu yerda “However” ikki mustaqil gapni bogʻlaydi, shuning uchun undan oldin nuqtali vergul, keyin vergul kerak. Undan oldin vergul qoʻyilsa, comma splice xatosi chiqadi.`,
+  rw75: `Baʼzi shaharlardagi tanazzul boshqa shaharlardagi gullab-yashnayotgan bizneslarga qarama-qarshi qoʻyilgan. Bu qarama-qarshilik.`,
+  rw76: `Qamrov uchun maqtovdan keyin aniqlik tanqid qilinadi (“another matter”), shuning uchun bogʻlovchi qarama-qarshilikni bildirishi kerak.`,
+  rw77: `Birinchi gap kamchilikni aytadi, ikkinchisi shu kamchilikka qaramay kuchli tomonga oʻtadi. “Still” aynan shu yon berishni bildiradi.`,
+  rw78: `Haqiqiy natija kutilgan natija oʻrnini egalladi, buni “Instead” bildiradi. “Accordingly” natija kutilgan narsadan kelib chiqqanini anglatgan boʻlardi.`,
+  rw79: `Faqat birinchi variant ikkala tolaga xos umumiy xususiyatni aytadi. Ikki variant farqlarni tasvirlaydi, oxirgisi esa faqat oʻrgimchak ipi haqida.`,
+  rw80: `Maqsad ikki qismdan iborat: tadqiqot maqsadini aytish va yangi tinglovchilarga oqarishni tushuntirish. Faqat birinchi variant ikkalasini ham bajaradi. Ikkinchisi maqsadni emas, natijani beradi.`,
+  rw81: `Qarama-qarshilik uchun ikkala shakl — ilk va keyingi — bir-biriga qarshi qoʻyilishi kerak. Buni faqat “Whereas” varianti bajaradi.`,
+  m45: `Qavslarni oching: 4<i>x</i> − 4<i>a</i> + 2 = 4<i>x</i> − 10. <i>x</i> li hadlar bir xil, shuning uchun cheksiz koʻp yechim boʻlishi uchun −4<i>a</i> + 2 = −10 boʻlishi kerak, bundan <i>a</i> = 3.`,
+  m46: `10 = −2<i>k</i> + 4 → <i>k</i> = −3. <i>y</i> = 0 deb oling: 0 = −3<i>x</i> + 4 → <i>x</i> = 4/3. (1,333 ham qabul qilinadi.)`,
+  m47: `<i>n</i> + <i>b</i> = 10 va 3<i>n</i> + 7<i>b</i> = 50. <i>n</i> = 10 − <i>b</i> ni qoʻying: 30 + 4<i>b</i> = 50 → <i>b</i> = 5.`,
+  m48: `Cheksiz koʻp yechim bir tenglama ikkinchisining karralisi ekanini bildiradi. −5<i>y</i> dan 15<i>y</i> ga oʻtish −3 ga koʻpaytirishdir, 7 × (−3) = −21 ham mos keladi. Demak, <i>a</i> = 2 × (−3) = −6.`,
+  m49: `(1, 4) ni tekshiring: 4 &gt; 2(1) − 3 = −1 ✓ va 4 &lt; −1 + 6 = 5 ✓. (4, 4) birinchi tengsizlikni qanoatlantirmaydi (4 &gt; 5 notoʻgʻri), (3, 2) ham (2 &gt; 3), (−1, 8) esa ikkinchisini (8 &lt; 7).`,
+  m50: `Bak 8 daqiqada 160 litr, yaʼni daqiqasiga 20 litr yoʻqotadi. 500 ÷ 20 = 25 daqiqa.`,
+  m51: `Tenglamalarni qoʻshing: <i>y</i> li hadlar yoʻqoladi va 4<i>x</i> = 12. Avval <i>x</i> ni topish shart emas.`,
+  m52: `Berilgan toʻgʻri chiziqning burchak koeffitsiyenti −2/3, demak ℓ niki 3/2. <i>y</i> − 1 = (3/2)(<i>x</i> − 4) → <i>y</i> = 1,5<i>x</i> − 5. <i>y</i> oʻqi bilan kesishish nuqtasi −5.`,
+  m53: `$300 000 — bu 300 ming. 12<i>t</i> + 150 &gt; 300 → <i>t</i> &gt; 12,5. Undan keyingi birinchi butun yil <i>t</i> = 13, yaʼni 2015 + 13 = 2028.`,
+  m54: `<i>x</i><sup>2</sup> + <i>bx</i> + <i>c</i> uchun yechimlar koʻpaytmasi <i>c</i> = 16 ga teng. Demak, 2 × <i>r</i> = 16 va <i>r</i> = 8. (Unda <i>b</i> = −10.)`,
+  m55: `Parabolaning uchi uning nollari oʻrtasida yotadi. Nollar 3 va −5, (3 + (−5)) ÷ 2 = −1.`,
+  m56: `−5 = <i>a</i>(4 − 2)<sup>2</sup> + 7 → −5 = 4<i>a</i> + 7 → 4<i>a</i> = −12 → <i>a</i> = −3.`,
+  m57: `Ikkala tomonni 3 ning darajasi sifatida yozing: 3<sup>2<i>x</i></sup> = 3<sup>3</sup>, demak 2<i>x</i> = 3 va <i>x</i> = 3/2 (yoki 1,5).`,
+  m58: `Koʻpaytuvchilarga ajrating: (<i>x</i> − 2)(<i>x</i> + 2) ÷ (<i>x</i> + 2)<sup>2</sup>. Bitta (<i>x</i> + 2) koʻpaytuvchini qisqartirsangiz (<i>x</i> − 2) ÷ (<i>x</i> + 2) chiqadi. <i>x</i><sup>2</sup> li hadlarni toʻgʻridan-toʻgʻri qisqartirib boʻlmaydi.`,
+  m59: `Diskriminant <i>b</i><sup>2</sup> − 4<i>ac</i> = 16 − 40 = −24. Diskriminant manfiy boʻlsa, haqiqiy yechimlar yoʻq.`,
+  m60: `1,05 oʻsish koeffitsiyenti har yilgi aholi oldingi yilnikining 105% i ekanini, yaʼni 5% ga oʻsishni bildiradi. “Har yili 60 kishi” chiziqli oʻsishni tasvirlaydi, <i>t</i> = 0 da esa aholi 1 200 kishi.`,
+  m61: `Tenglashtiring: <i>x</i><sup>2</sup> − 4<i>x</i> + 7 = 2<i>x</i> − 2 → <i>x</i><sup>2</sup> − 6<i>x</i> + 9 = 0 → (<i>x</i> − 3)<sup>2</sup> = 0, demak <i>x</i> = 3. Toʻgʻri chiziq parabolaga urinma.`,
+  m62: `(<i>x</i> − <i>r</i>) aynan <i>p</i>(<i>r</i>) = 0 boʻlganda koʻpaytuvchi boʻladi. <i>p</i>(2) = 8 − 8 − 18 + 18 = 0. Guruhlash buni tasdiqlaydi: <i>x</i><sup>2</sup>(<i>x</i> − 2) − 9(<i>x</i> − 2) = (<i>x</i> − 2)(<i>x</i> − 3)(<i>x</i> + 3).`,
+  m63: `1,20 × 0,80 = 0,96, demak oxirgi narx dastlabkining 96% i. Oʻzgarishlar bir-birini yoʻqqa chiqarmaydi, chunki 20% lik kamayish kattaroq summaga qoʻllanadi.`,
+  m64: `Dastlabki yigʻindi 10 × 12 = 120. 30 ni olib tashlasak, 9 ta qiymatga 90 qoladi: 90 ÷ 9 = 10.`,
+  m65: `Toʻla kvadratlarni ajrating: (<i>x</i><sup>2</sup> − 6<i>x</i> + 9) + (<i>y</i><sup>2</sup> + 8<i>y</i> + 16) = 25, yaʼni (<i>x</i> − 3)<sup>2</sup> + (<i>y</i> + 4)<sup>2</sup> = 25 va radius 5 ga teng.`,
+  m66: `120° — bu 360° ning 1/3 qismi. Aylana uzunligi 2π(6) = 12π, uning 1/3 qismi esa 4π.`,
+  rw82: `1-matn bosmaxona tufayli tez oʻzgarish boʻlgan deydi. 2-matn “for nearly two centuries” davomida sekin oʻsishni koʻrsatadi va boshqa sabablarni (maktablar, qogʻoz) qoʻshadi. 2-matn bosmaxona hech taʼsir qilmagan demaydi, faqat boshqa omillar ham “at least as much” muhim boʻlganini aytadi.`,
+  rw83: `Rejalashtiruvchilar “the same number of cars” koʻproq joyga ega boʻladi deb hisoblaydi. 2-matn bu taxmin notoʻgʻriligini koʻrsatadi: yurish osonlashsa, koʻproq haydovchi jalb qilinadi va tirbandlik qaytadi. 2-matn yoʻl kengligi xatti-harakatni oʻzgartiradi deydi, shuning uchun oxirgi ikki variant unga zid.`,
+  m67: `<i>y</i> = 9 ni qoʻying: <i>x</i><sup>2</sup> = 9, demak <i>x</i> = 3 yoki <i>x</i> = −3. Savol musbat qiymatni soʻraydi — 3.`,
+  m68: `Oʻng tomonlarni tenglashtiring: <i>x</i><sup>2</sup> + 1 = <i>x</i> + 3 → <i>x</i><sup>2</sup> − <i>x</i> − 2 = 0 → (<i>x</i> − 2)(<i>x</i> + 1) = 0. <i>x</i> qiymatlari 2 va −1, yigʻindisi 1.`,
+  m69: `(<i>x</i> − 1)<sup>2</sup> = 4 boʻlsa, <i>x</i> − 1 = 2 yoki <i>x</i> − 1 = −2, demak <i>x</i> = 3 yoki <i>x</i> = −1. Bu ikkita nuqta beradi, (3, 4) va (−1, 4): gorizontal toʻgʻri chiziq parabolani ikki marta kesadi.`,
+  m70: `Oʻrniga qoʻying: <i>x</i><sup>2</sup> + (<i>x</i> + 1)<sup>2</sup> = 25 → 2<i>x</i><sup>2</sup> + 2<i>x</i> − 24 = 0 → <i>x</i><sup>2</sup> + <i>x</i> − 12 = 0 → (<i>x</i> + 4)(<i>x</i> − 3) = 0. Musbat yechim <i>a</i> = 3, demak <i>b</i> = 3 + 1 = 4.`,
+  m71: `8 stakan shakar — bu 2 stakanning 4 barobari, shuning uchun unni ham 4 ga koʻpaytiring: 3 × 4 = 12 stakan.`,
+  m72: `Xaritadagi masofani masshtabga koʻpaytiring: 3,5 × 25 = 87,5 milya.`,
+  m73: `Nisbatda 4 + 5 = 9 qism bor, demak bir qism 36 ÷ 9 = 4 oʻquvchi. Qizlar 5 qismni tashkil qiladi: 5 × 4 = 20.`,
+  m74: `<i>y</i> qisqarishi uchun nisbatlarni koʻpaytiring: (<i>x</i>/<i>y</i>)(<i>y</i>/<i>z</i>) = <i>x</i>/<i>z</i> = (3/4)(2/5) = 6/20 = 3/10 (yoki 0,3).`,
+  m75: `Oʻrtacha tezlik — masofa ÷ vaqt: 150 ÷ 2,5 = soatiga 60 milya.`,
+  m76: `Chop etish tezligi 45 ÷ 3 = daqiqasiga 15 sahifa. 240 ÷ 15 = 16 daqiqa.`,
+  m77: `Ikkala birlikni ham oʻgiring: soniyasiga 3 fut × futiga 12 dyuym = soniyasiga 36 dyuym, va 36 × daqiqadagi 60 soniya = daqiqasiga 2 160 dyuym.`,
+  m78: `27 000 ÷ 2,5 = 10 800 soniya. Bir soatda 3 600 soniya bor, demak 10 800 ÷ 3 600 = 3 soat.`,
+  m79: `30% — bu 0,30, va 0,30 × 250 = 75.`,
+  m80: `20% chegirmadan keyin dastlabki narxning 80% ini toʻlaysiz: 0,8<i>p</i> = 80, demak <i>p</i> = 100. $80 ga 20% qoʻshsangiz $96 chiqadi — bu koʻp uchraydigan xato.`,
+  m81: `Oʻsish 2 000 − 1 600 = 400. Dastlabki qiymatga boʻling: 400 ÷ 1 600 = 0,25, yaʼni 25%.`,
+  m82: `Jami 4 + 6 + 10 = 20 ta shar bor, ulardan 6 tasi koʻk. 6/20 = 3/10.`,
+  m83: `Faqat cholgʻu chaladigan 80 nafar oʻquvchi hisobga olinadi. Ulardan 45 nafari sport bilan shugʻullanadi: 45/80 = 9/16 (yoki 0,5625). 45/200 boshqa savolga javob boʻlardi.`,
+  m84: `3 ga karralilar: 3, 6, 9, 12, 15, 18 (6 ta son). 5 ga karralilar: 5, 10, 15, 20 (4 ta son). 15 ikki marta sanalgan, demak 6 + 4 − 1 = 9 ta son. 9/20 = 0,45.`,
+  m85: `Qiymatlarni tartiblang: 3, 4, 7, 9, 12. Oʻrtadagi qiymat 7.`,
+  m86: `Dastlabki yigʻindi 5 × 8 = 40. Yangi yigʻindi 6 × 9 = 54. Qoʻshilgan qiymat 54 − 40 = 14.`,
+  m87: `<i>x</i> = 6 ni qoʻying: 2,5(6) + 10 = 15 + 10 = 25 santimetr.`,
+  m88: `Burchak koeffitsiyenti — <i>x</i> (televizor soatlari) bir birlikka oshganda <i>y</i> (ball) ning oʻzgarishi. U −0,8 ga teng, demak taxminiy ball har bir soatga 0,8 ga kamayadi. 92 — <i>y</i> oʻqi bilan kesishish nuqtasi, yaʼni televizor koʻrmaganda taxminiy ball.`,
+  m89: `Har bir qiymat oldingisidan 3 marta katta — bu koeffitsiyenti 3 boʻlgan eksponensial oʻsish. <i>t</i> = 0 dagi boshlangʻich qiymat 5, demak <i>f</i>(<i>t</i>) = 5(3)<sup><i>t</i></sup>. Chiziqli variant faqat dastlabki ikki nuqtaga mos keladi, 5<i>t</i><sup>3</sup> esa <i>t</i> = 0 da 0 beradi.`,
+  m90: `Tanlanmada 120 ÷ 400 = 30% bogʻni qoʻllab-quvvatlaydi. Tasodifiy tanlanma bu ulushni butun shaharga qoʻllash imkonini beradi: 0,30 × 20 000 = 6 000.`,
+  m91: `Xatolik chegarasi 54 − 3 = 51% dan 54 + 3 = 57% gacha boʻlgan ehtimolga yaqin oraliqni beradi. Bu oraliqqa faqat 52% tushadi.`,
+  m92: `Kattaroq tasodifiy tanlanmalar aniqroq baho beradi, shuning uchun tanlanma hajmi oshgani sari xatolik chegarasi kichrayadi. B tanlanma kattaroq, demak uning xatolik chegarasi kichikroq boʻlishi ehtimoli yuqori.`,
+  m93: `Guruhlarga tasodifiy taqsimlash sabab-natija haqida xulosa chiqarish imkonini beradi. Biroq koʻngillilar barcha kattalardan olingan tasodifiy tanlanma emas edi, shuning uchun natija hammaga emas, faqat ularga oʻxshash odamlarga tegishli.`,
+  m94: `Tasodifiy tanlanma natijani shahardagi kattalarga umumlashtirish imkonini beradi. Biroq soʻrovda odamlar faqat kuzatilgan: hech kimga it boqish belgilanmagan. Shuning uchun u sababni emas, faqat bogʻliqlikni koʻrsatadi — hech bir yoʻnalishda sabab emas.`,
+  m95: `Faqat barcha oʻquvchilardan olingan tasodifiy tanlanma har bir oʻquvchiga tanlanish uchun bir xil imkon beradi. Kutubxonadagi yoki matematika jamoasidagi oʻquvchilar, ehtimol, oʻrtachadan koʻproq uy vazifasi qiladi, erta keladiganlar ham boshqalardan farq qilishi mumkin.`,
+  m96: `Ikki kesishuvchi toʻgʻri chiziq hosil qilgan qoʻshni burchaklar bir toʻgʻri chiziqda yotadi, shuning uchun ularning yigʻindisi 180°: 180 − 65 = 115.`,
+  m97: `Parallel toʻgʻri chiziqlardagi bir tomonli ichki burchaklar yigʻindisi 180°: (3<i>x</i> + 10) + (2<i>x</i> + 20) = 180 → 5<i>x</i> + 30 = 180 → <i>x</i> = 30.`,
+  m98: `Burchaklar yigʻindisi 180°, u har biri 20° dan boʻlgan 2 + 3 + 4 = 9 qismga boʻlinadi. Eng katta burchak 4 × 20 = 80°.`,
+  m99: `Har bir tashqi burchak 180 − 150 = 30°. Har qanday koʻpburchakning tashqi burchaklari yigʻindisi 360°, demak tomonlar soni 360 ÷ 30 = 12.`,
+  m100: `Pifagor teoremasiga koʻra 6<sup>2</sup> + 8<sup>2</sup> = 36 + 64 = 100, va √100 = 10.`,
+  m101: `Narvon — gipotenuza: 5<sup>2</sup> + <i>h</i><sup>2</sup> = 13<sup>2</sup> → 25 + <i>h</i><sup>2</sup> = 169 → <i>h</i><sup>2</sup> = 144 → <i>h</i> = 12.`,
+  m102: `Burchaklari 45°-45°-90° boʻlgan uchburchakda gipotenuza katetning √2 barobariga teng, demak har bir katet 8. Yuza (1/2)(8)(8) = 32.`,
+  m103: `Burchaklari 30°-60°-90° boʻlgan uchburchak tomonlari 1 : √3 : 2 nisbatda, yaʼni 5, 5√3 va 10. Perimetr 5 + 10 + 5√3 = 15 + 5√3.`,
+  m104: `Sinus — qarshi katetning gipotenuzaga nisbati. <i>A</i> burchak qarshisidagi tomon <i>BC</i> = 4, gipotenuza <i>AB</i> = 5, demak sin <i>A</i> = 4/5.`,
+  m105: `Burchakning sinusi uni 90° gacha toʻldiruvchi burchakning kosinusiga teng: sin(<i>x</i>°) = cos(90° − <i>x</i>°). Demak, 90 − <i>x</i> = 40 va <i>x</i> = 50.`,
+  m106: `Tangens — qarshi katetning yopishgan katetga nisbati, demak katetlar 5 va 12. Gipotenuza √(25 + 144) = 13. Kosinus — yopishgan katetning gipotenuzaga nisbati: 12/13 (taxminan 0,923).`,
+  m107: `sin <i>A</i> = <i>BC</i>/<i>AB</i>, demak <i>BC</i> = 0,6 × 20 = 12. Unda <i>AC</i><sup>2</sup> + 12<sup>2</sup> = 20<sup>2</sup> → <i>AC</i><sup>2</sup> = 256 → <i>AC</i> = 16.`,
+  m108: `Oʻxshashlik koeffitsiyenti 9 ÷ 3 = 3. Eng katta tomon 5 × 3 = 15.`,
+  m109: `Quyosh nurlari oʻxshash uchburchaklar hosil qiladi, shuning uchun balandlik soya uzunligiga proporsional: 6/4 = <i>h</i>/30 → <i>h</i> = 30 × 1,5 = 45 fut.`,
+  m110: `<i>DE</i> ∥ <i>BC</i> boʻlgani uchun <i>ADE</i> uchburchak <i>ABC</i> uchburchakka oʻxshash. <i>AB</i> = 4 + 6 = 10, demak nisbat <i>AD</i>/<i>AB</i> = 4/10. Unda 5/<i>BC</i> = 4/10 → <i>BC</i> = 12,5. Koʻp uchraydigan xato — 4/10 oʻrniga 4/6 ni olish.`,
+  m111: `Yuzalar tomonlar nisbatining kvadrati boʻyicha oʻzgaradi: (5/2)<sup>2</sup> = 25/4. Demak, katta uchburchakning yuzi 12 × 25/4 = 75.`,
+  m112: `Hajm = uzunlik × eni × balandlik = 5 × 4 × 3 = 60 kub dyuym.`,
+  m113: `Silindr hajmi π<i>r</i><sup>2</sup><i>h</i> = π(3)<sup>2</sup>(10) = 90π.`,
+  m114: `Kubning 6 ta bir xil kvadrat yoqi bor, demak har bir yoqning yuzi 150 ÷ 6 = 25, qirrasi esa 5. Hajm 5<sup>3</sup> = 125.`,
+  m115: `π<i>r</i><sup>2</sup> = 49π, demak <i>r</i> = 7. Aylana uzunligi 2π<i>r</i> = 14π.`,
+  m116: `Radius — (2, −3) dan (5, 1) gacha boʻlgan masofa: √(3<sup>2</sup> + 4<sup>2</sup>) = 5, demak <i>r</i><sup>2</sup> = 25. Markaz (<i>h</i>, <i>k</i>) = (2, −3) boʻlganda tenglama (<i>x</i> − 2)<sup>2</sup> + (<i>y</i> + 3)<sup>2</sup> = 25. Oʻng tomonda <i>r</i> emas, <i>r</i><sup>2</sup> turadi.`,
+  rw84: `Daʼvo fevraldan aprelgacha boʻlgan davrni qamraydi, shuning uchun dalil har bir oyda oʻsishni koʻrsatishi kerak. Faqat birinchi variant uchala qiymatni oʻsish tartibida beradi. Boshqa variantlar daʼvoga kirmaydigan yanvar haqida.`,
+  m117: `Ikkala tomonga 5 ni qoʻshing: 3<i>x</i> &gt; 15, demak <i>x</i> &gt; 5. 5 dan katta faqat 6. 5 ning oʻzi ikkala tomonni tenglashtiradi, shuning uchun qatʼiy tengsizlikni qanoatlantirmaydi.`,
+  m118: `Burchak koeffitsiyenti (20 − 11) ÷ (5 − 2) = 3. <i>x</i> = 2 dan <i>x</i> = 0 ga qaytilganda qiymat 2 × 3 = 6 ga kamayadi, demak <i>f</i>(0) = 11 − 6 = 5.`,
+  m119: `Qavslarni oching: 3<i>x</i> + 12 = 5<i>x</i> − 6. 3<i>x</i> ni ayiring va 6 ni qoʻshing: 18 = 2<i>x</i>, demak <i>x</i> = 9.`,
+  m120: `Safarlar 10 − 4 = 6 milyaga farq qiladi, har bir milya taxminiy narxga $2,10 qoʻshadi: 6 × 2,1 = 12,6. 3,5 ikkala safar uchun bir xil, shuning uchun u qisqaradi.`,
+  m121: `Parabolaning uchi <i>t</i> = −<i>b</i> ÷ 2<i>a</i> = −20 ÷ (−10) = 2 da. Unda <i>h</i>(2) = −5(4) + 20(2) + 1 = −20 + 40 + 1 = 21 metr.`,
+  m122: `Tanlanmada qutilarning 3 ÷ 50 = 6% i shikastlangan. Bu ulushni butun kunga qoʻllaymiz: 0,06 × 4 000 = 240 ta quti.`,
+  m123: `Xatolik chegarasi tanlanma olingan butun bosh toʻplamning oʻrtacha qiymati uchun ehtimolga yaqin oraliqni beradi: 6,8 ± 0,3, yaʼni 6,5 dan 7,1 soatgacha. U alohida talabalar haqida hech narsa demaydi, tanlanma esa barcha universitetlardan emas, faqat X universitetidan olingan.`,
+  m124: `Sayt soʻrovnomasiga oʻz xohishi bilan javob berganlar — oʻzini oʻzi tanlagan tanlanma, ularning fikri boshqa mijozlarnikidan kuchliroq boʻlishi mumkin. 2 000 — katta tanlanma, demak muammo hajmda emas, balki qanday tanlanganida.`,
+  m125: `Oʻgʻitning tasodifiy belgilanishi sabab-natija xulosasini qoʻllab-quvvatlaydi, demak bu shunchaki bogʻliqlikdan koʻproq. Fermer xoʻjaliklari hududdan tasodifiy tanlangani uchun xulosa shu hududga tegishli, lekin dunyodagi barcha xoʻjaliklarga emas.`
+};
+
+// LANG: 'en' | 'ru' | 'uz' = page language (Uzbek in Latin script);
+// 'mix' / 'mixuz' = English page with Russian / Uzbek explanations.
 // Questions and passages stay in English in every mode: the SAT itself is in English.
 const LKEY = 'scorebound-lang';
 let LANG = 'en';
-try { const v = localStorage.getItem(LKEY); if (['en', 'ru', 'mix'].includes(v)) LANG = v; } catch (e) {}
-const uiL = () => LANG === 'ru' ? 'ru' : 'en';
+try { const v = localStorage.getItem(LKEY); if (['en', 'ru', 'uz', 'mix', 'mixuz'].includes(v)) LANG = v; } catch (e) {}
+const uiL = () => LANG === 'ru' || LANG === 'uz' ? LANG : 'en';
 const EXKEY = 'scorebound-exlang';
-let exPref = null;   // 'en' | 'ru' chosen inside an explanation; null = follow the language menu
-try { const v = localStorage.getItem(EXKEY); if (v === 'en' || v === 'ru') exPref = v; } catch (e) {}
-const exL = () => exPref || (LANG === 'en' ? 'en' : 'ru');
+let exPref = null;   // 'en' | 'ru' | 'uz' chosen inside an explanation; null = follow the language menu
+try { const v = localStorage.getItem(EXKEY); if (['en', 'ru', 'uz'].includes(v)) exPref = v; } catch (e) {}
+const EX_DEFAULT = { en: 'en', ru: 'ru', uz: 'uz', mix: 'ru', mixuz: 'uz' };
+const exL = () => exPref || EX_DEFAULT[LANG];
 const ruPl = (n, f) => { const a = n % 10, b = n % 100; return f[(a === 1 && b !== 11) ? 0 : (a >= 2 && a <= 4 && (b < 12 || b > 14)) ? 1 : 2]; };
 
 const STR = {
@@ -1312,8 +1956,9 @@ const STR = {
     emptyLog: 'No sessions yet. Finish a practice set and your estimated scores will be listed here, newest first.',
     tips: ['Press <kbd>A</kbd>–<kbd>D</kbd> to pick an answer, <kbd>←</kbd> <kbd>→</kbd> to move between questions.',
            'Use the <span style="text-decoration:line-through">ABC</span> button to cross out choices you\'ve ruled out.',
-           'In practice sessions, hover over or tap <b>Explanation</b> to see how to solve the question. The <b>На русском</b> button inside any explanation switches it to Russian.',
-           'Math grid-in answers accept whole numbers, decimals, or fractions like 7/2.'],
+           'In practice sessions, hover over or tap <b>Explanation</b> to see how to solve the question. The <b>EN</b> · <b>RU</b> · <b>UZ</b> buttons inside any explanation switch its language.',
+           'Math grid-in answers accept whole numbers, decimals, or fractions like 7/2.',
+           'The timer works like the real test: you can hide it, it comes back with 5 minutes left, and the module submits itself when time runs out.'],
     fullLabel: 'Full-length practice test', missedLabel: 'Missed questions', domainsN: n => ` · ${n} domain${n > 1 ? 's' : ''}`,
     langLabel: 'Language',
     yourAnswer: 'Your answer', placeholder: 'e.g. 12 or 3/4', gridHint: 'Grid-in: enter a number, decimal, or fraction.',
@@ -1339,7 +1984,29 @@ const STR = {
     estTotal: 'Estimated total score', estSec: n => `Estimated ${n} score`, harder: ' (harder)', easier: ' (easier)',
     byDomain: 'By skill domain', correctS: 'Correct', incorrect: 'Incorrect', skipped: 'Skipped',
     ofUsed: t => `of ${t} used`, timeSpent: 'Time spent', retry: n => `Retry ${n} missed`, newSession: 'New session',
-    answerReview: 'Answer review', youKey: (a, k) => `You ${a} · Key ${k}`, totalShort: 'Total'
+    answerReview: 'Answer review', youKey: (a, k) => `You ${a} · Key ${k}`, totalShort: 'Total',
+    tabPractice: 'Practice', tabBank: 'Question bank', bankH: 'Question bank',
+    bankP: n => `All ${n} questions, sorted by topic and subtopic the way the official SAT question bank is. Pick the subtopics you want, then practice the whole list or open any single question.`,
+    topics: 'Topics and subtopics', selAll: 'Select all', clear: 'Clear', status: 'Status',
+    stAll: 'All', stNew: 'Not tried', stWrong: 'Missed', stRight: 'Correct',
+    practiceN: n => `Practice ${n} →`, noMatch: 'No questions match these filters. Select more subtopics or difficulty levels.',
+    bankLabel: 'Question bank', backBank: 'Back to question bank',
+    statusNote: 'Correct and missed marks come from sessions you finished on this device.',
+    weakH: 'Your weak spots', weakSub: 'Subtopics where you have missed questions on this device, weakest first.',
+    weakEmpty: 'Finish a practice session, and the subtopics you miss will show up here, each with a short test.',
+    weakSessH: 'Practice what you missed',
+    weakSessSub: "Short tests on the subtopics you missed in this session. Questions you got wrong come first, then ones you haven't tried.",
+    quickN: n => `${n}-question test`, quickLabel: 'Quick test', testSize: 'Test size', allQ: 'All',
+    priorityNote: "Missed questions come first, then ones you haven't tried, then ones you got right.",
+    extended: '+50% time', hideT: 'Hide', showT: 'Show timer', elapsedL: 'Time elapsed',
+    fiveLeft: '5 minutes left in this module.',
+    timeUpMod: 'Time ran out, so this module was submitted automatically, as on the real test.',
+    timeUpRes: 'Time ran out, so your answers were submitted automatically.',
+    breakAuto: 'The next module starts automatically when the break ends.',
+    pacing: 'Pacing', perQShort: 'per question',
+    paceLine: (t, ok) => `SAT pace: ${t} per question · ${ok ? 'you kept pace' : 'slower than SAT pace'}`,
+    slowN: n => `${n} question${n > 1 ? 's' : ''} took more than twice the SAT pace. Their times are shown in red in the answer review.`,
+    modCap: 'Module', exLangL: 'Explanation language'
   },
   ru: {
     tagline: 'Оригинальные тренировочные задания в формате цифрового SAT',
@@ -1359,9 +2026,10 @@ const STR = {
     emptyLog: 'Пока нет тренировок. Завершите набор заданий, и здесь появятся примерные баллы, начиная с последних.',
     tips: ['Нажимайте <kbd>A</kbd>–<kbd>D</kbd>, чтобы выбрать ответ, и <kbd>←</kbd> <kbd>→</kbd>, чтобы переходить между заданиями.',
            'Кнопкой <span style="text-decoration:line-through">ABC</span> можно вычеркнуть варианты, которые вы отбросили.',
-           'В тренировках наведите курсор на кнопку <b>Объяснение</b> или нажмите на неё, чтобы увидеть разбор задания. Кнопка <b>In English</b> внутри объяснения переключает его на английский.',
+           'В тренировках наведите курсор на кнопку <b>Объяснение</b> или нажмите на неё, чтобы увидеть разбор задания. Кнопки <b>EN</b> · <b>RU</b> · <b>UZ</b> внутри объяснения переключают его язык.',
            'В математических заданиях с вводом ответа можно писать целые числа, десятичные дроби (1,5 или 1.5) или дроби вида 7/2.',
-           'Задания по математике переведены на русский. Тексты и вопросы раздела «Чтение и письмо» остаются на английском: этот раздел проверяет именно английский язык.'],
+           'Задания по математике переведены на русский. Тексты и вопросы раздела «Чтение и письмо» остаются на английском: этот раздел проверяет именно английский язык.',
+           'Таймер работает как на настоящем экзамене: его можно скрыть, за 5 минут до конца он появляется снова, а когда время выходит, модуль сдаётся автоматически.'],
     fullLabel: 'Полный тренировочный тест', missedLabel: 'Работа над ошибками', domainsN: n => ` · областей: ${n}`,
     langLabel: 'Язык',
     yourAnswer: 'Ваш ответ', placeholder: 'напр. 12 или 3/4', gridHint: 'Введите целое число, десятичную дробь (через точку или запятую) или дробь.',
@@ -1387,7 +2055,100 @@ const STR = {
     estTotal: 'Примерный общий балл', estSec: n => `Примерный балл: ${n}`, harder: ' (сложнее)', easier: ' (проще)',
     byDomain: 'По областям навыков', correctS: 'Верно', incorrect: 'Неверно', skipped: 'Пропущено',
     ofUsed: t => `из ${t}`, timeSpent: 'Затрачено', retry: n => `Повторить ошибки (${n})`, newSession: 'Новая тренировка',
-    answerReview: 'Разбор ответов', youKey: (a, k) => `Ваш: ${a} · Ответ: ${k}`, totalShort: 'Всего'
+    answerReview: 'Разбор ответов', youKey: (a, k) => `Ваш: ${a} · Ответ: ${k}`, totalShort: 'Всего',
+    tabPractice: 'Тренировка', tabBank: 'Банк заданий', bankH: 'Банк заданий',
+    bankP: n => `Все ${n} ${ruPl(n, ['задание', 'задания', 'заданий'])}, разложенные по темам и подтемам, как в официальном банке заданий SAT. Выберите нужные подтемы и решайте весь список или откройте любое задание.`,
+    topics: 'Темы и подтемы', selAll: 'Выбрать все', clear: 'Сбросить', status: 'Статус',
+    stAll: 'Все', stNew: 'Не решались', stWrong: 'С ошибкой', stRight: 'Верно',
+    practiceN: n => `Решать ${n} →`, noMatch: 'Нет заданий по этим фильтрам. Выберите больше подтем или уровней сложности.',
+    bankLabel: 'Банк заданий', backBank: 'К банку заданий',
+    statusNote: 'Отметки «верно» и «с ошибкой» берутся из тренировок, завершённых на этом устройстве.',
+    weakH: 'Ваши слабые места', weakSub: 'Подтемы, в которых у вас были ошибки на этом устройстве, начиная с самых слабых.',
+    weakEmpty: 'Завершите тренировку, и здесь появятся подтемы с ошибками — для каждой можно запустить короткий тест.',
+    weakSessH: 'Отработайте ошибки',
+    weakSessSub: 'Короткие тесты по подтемам, в которых вы ошиблись в этой тренировке. Сначала идут задания с ошибками, затем те, которые вы ещё не решали.',
+    quickN: n => `Тест: ${n} ${ruPl(n, ['задание', 'задания', 'заданий'])}`, quickLabel: 'Быстрый тест', testSize: 'Размер теста', allQ: 'Все',
+    priorityNote: 'Сначала идут задания с ошибками, затем нерешённые, затем решённые верно.',
+    extended: '+50% времени', hideT: 'Скрыть', showT: 'Показать таймер', elapsedL: 'Прошло времени',
+    fiveLeft: 'До конца модуля осталось 5 минут.',
+    timeUpMod: 'Время вышло, и модуль был сдан автоматически — как на настоящем экзамене.',
+    timeUpRes: 'Время вышло, и ответы были сданы автоматически.',
+    breakAuto: 'Когда перерыв закончится, следующий модуль начнётся автоматически.',
+    pacing: 'Темп', perQShort: 'на задание',
+    paceLine: (t, ok) => `Темп SAT: ${t} на задание · ${ok ? 'вы уложились' : 'медленнее темпа SAT'}`,
+    slowN: n => `Заданий, на которые ушло больше двойной нормы SAT: ${n}. В разборе ответов их время выделено красным.`,
+    modCap: 'Модуль', exLangL: 'Язык объяснения'
+  },
+  uz: {
+    tagline: 'Raqamli SAT formatidagi asl mashq savollari',
+    heroH: 'Bitta modulni yeching, <em>ballingizni koʻring</em>, boʻshliqlarni toʻldiring.',
+    heroP: 'Boʻlimni tanlang, imtihon tezligida javob bering va koʻnikma sohalari boʻyicha tahlil bilan taxminiy ball oling. Har bir savolga batafsil izoh berilgan.',
+    fmt: 'Test formati', pace: n => `Imtihon tezligida har bir savolga ${n} soniya`, totalScore: 'Umumiy ball', sumBoth: 'Ikki boʻlim yigʻindisi',
+    setupH: 'Mashgʻulotni sozlang', bankSub: n => `8 ta koʻnikma sohasi boʻyicha ${n} ta savol.`, section: 'Boʻlim',
+    moduleSub: (n, b) => `${n} ta savollik modul · bankda ${b} ta`, mixed: 'Aralash mashq', mixedSub: '10 ta tasodifiy savol',
+    full: 'Toʻliq test', fullSub: '98 ta savol · moslashuvchan 2-modul', structure: 'Test tuzilishi', brk: 'Tanaffus',
+    min: 'daq', qShort: 'savol', adaptive: ' (moslashuvchan)', module: 'modul',
+    fullNote: 'Har bir modulning oʻz taymeri bor va topshirilgan modulga qaytib boʻlmaydi. 2-modul haqiqiy testdagidek moslashadi: 1-modulning kamida 60% savoliga toʻgʻri javob bersangiz, 800 ballgacha olish mumkin boʻlgan qiyinroq 2-modul tushadi. Undan kam boʻlsa, eng yuqori natijasi 650 boʻlgan osonroq modul tushadi. Haqiqiy chegara eʼlon qilinmagan, shuning uchun 60% taxminiy qiymat.',
+    focus: 'Koʻnikma sohalari', optional: '(ixtiyoriy)', timer: 'Taymer', testPace: 'Imtihon tezligi', untimed: 'Vaqtsiz',
+    showAns: 'Javoblarni koʻrsatish', atEnd: 'Oxirida', afterEach: 'Har bir savoldan keyin', difficulty: 'Qiyinlik', anyDiff: 'Aralash',
+    diff: { E: 'Oson', M: 'Oʻrtacha', H: 'Qiyin' },
+    nQuestions: n => `${n} ta savol`, timeLimit: t => ` · vaqt chegarasi ${t}`, fullTime: t => ` · ${t} test va 10 daqiqalik tanaffus`, noLimit: ' · vaqt chegarasiz',
+    start: 'Mashqni boshlash →', logH: 'Natijalar jurnali', logSub: 'Ushbu qurilmadagi soʻnggi mashgʻulotlaringiz.', correctWord: 'toʻgʻri',
+    emptyLog: 'Hali mashgʻulotlar yoʻq. Mashqni yakunlang, shunda taxminiy ballaringiz shu yerda eng yangisidan boshlab koʻrsatiladi.',
+    tips: ['<kbd>A</kbd>–<kbd>D</kbd> tugmalari bilan javob tanlang, <kbd>←</kbd> <kbd>→</kbd> bilan savollar orasida oʻting.',
+           'Chiqarib tashlagan variantlaringizni <span style="text-decoration:line-through">ABC</span> tugmasi bilan chizib qoʻying.',
+           'Mashgʻulotlarda savol qanday yechilishini koʻrish uchun <b>Izoh</b> tugmasi ustiga kursorni olib boring yoki uni bosing. Izoh ichidagi <b>EN</b> · <b>RU</b> · <b>UZ</b> tugmalari uning tilini almashtiradi.',
+           'Matematikadagi javob yoziladigan savollarda butun son, oʻnli kasr (1,5 yoki 1.5) yoki 7/2 kabi oddiy kasr yozish mumkin.',
+           'Matematika savollari oʻzbek tiliga tarjima qilingan. “Oʻqish va yozish” boʻlimining matnlari va savollari ingliz tilida qoladi: bu boʻlim aynan ingliz tilini tekshiradi.',
+           'Taymer haqiqiy imtihondagidek ishlaydi: uni yashirish mumkin, oxirgi 5 daqiqada u yana paydo boʻladi, vaqt tugaganda esa modul avtomatik topshiriladi.'],
+    fullLabel: 'Toʻliq mashq testi', missedLabel: 'Xatolar ustida ishlash', domainsN: n => ` · sohalar: ${n}`,
+    langLabel: 'Til',
+    yourAnswer: 'Javobingiz', placeholder: 'masalan, 12 yoki 3/4', gridHint: 'Butun son, oʻnli kasr (nuqta yoki vergul bilan) yoki oddiy kasr kiriting.',
+    choicesL: 'Javob variantlari', cross: l => `${l} variantini chizib qoʻyish`, restore: l => `${l} variantini qaytarish`, undo: 'Qaytarish',
+    correct: 'Toʻgʻri', notQuite: c => `Notoʻgʻri. Toʻgʻri javob: ${c}.`, moduleOf: (a, b) => `${a}-modul (jami ${b} ta)`,
+    leaveQ: 'Saqlamasdan chiqasizmi?', leave: 'Chiqish', stay: 'Qolish', exit: 'Chiqish', passage: 'Matn', questionN: n => `${n}-savol`,
+    marked: 'Koʻrib chiqish uchun belgilangan', mark: 'Koʻrib chiqish uchun belgilash', explain: 'Izoh', explainHint: 'Qanday yechiladi',
+    answerIs: c => `Javob: ${c}`, navL: 'Savollar navigatori', answered: 'Javob berilgan', unanswered: 'Javobsiz', markedL: 'Belgilangan',
+    nUnanswered: n => `javobsiz: <span class="num">${n}</span>`, allAnswered: 'Barcha savollarga javob berilgan',
+    submitModule: 'Modulni topshirish', submitScore: 'Topshirish va ballni koʻrish', back: 'Orqaga',
+    questionOf: (a, b) => `<span class="num">${a}</span>-savol, jami <span class="num">${b}</span> ta`, check: 'Tekshirish', review: 'Koʻrib chiqish', next: 'Keyingi',
+    modSubmitted: (a, b) => `${a}-modul topshirildi (jami ${b} ta)`, complete: n => `${n}: yakunlandi`,
+    answeredOf: (a, b) => `Siz <b class="num">${b}</b> ta savoldan <b class="num">${a}</b> tasiga javob berdingiz. Bu modul endi yopildi. Ballaringiz oxirgi moduldan keyin chiqadi.`,
+    nextChosen: ' Keyingi modulingiz shu moduldagi natijangizga qarab tanlandi.',
+    breakText: 'Oʻrningizdan turing, kerishing va suv iching. Matematika boʻlimi tayyor boʻlganingizda boshlanadi.', breakOver: 'Tanaffus tugadi',
+    submitted: 'Topshirildi', upNext: 'Keyingisi · ', startMod: n => `Boshlash: ${n}`, endTest: 'Testni yakunlash va natijalarni koʻrish',
+    endNote: 'Testni hozir yakunlasangiz, boshlanmagan modullardagi savollar javobsiz deb hisoblanadi.',
+    backSetup: 'Sozlamalarga qaytish', resultsSuffix: ' · natijalar',
+    headline: p => p >= 85 ? 'Ajoyib natija.' : p >= 60 ? 'Yaxshi asos, biroz boʻshliqlar bor.' : 'Yaxshi boshlanish.',
+    youAnswered: (c, n, p) => `<b class="num">${n}</b> ta savoldan <b class="num">${c}</b> tasiga toʻgʻri javob berdingiz (${p}%).`,
+    fullScoreNote: 'Boʻlim ballari toʻgʻri javoblar ulushi va sizga qaysi 2-modul tushganiga qarab chiqarilgan taxminiy baho. Qiyinroq 2-modulda 800 gacha, osonrogʻida esa koʻpi bilan 650 ball olish mumkin. Bu rasmiy hisob emas.',
+    scoreNote: 'Ballar ushbu toʻplamdagi toʻgʻri javoblar ulushi boʻyicha taxminiy baho, rasmiy hisob emas.',
+    estTotal: 'Taxminiy umumiy ball', estSec: n => `Taxminiy ball: ${n}`, harder: ' (qiyinroq)', easier: ' (osonroq)',
+    byDomain: 'Koʻnikma sohalari boʻyicha', correctS: 'Toʻgʻri', incorrect: 'Notoʻgʻri', skipped: 'Oʻtkazib yuborilgan',
+    ofUsed: t => `${t} dan`, timeSpent: 'Sarflangan vaqt', retry: n => `Xatolarni qayta ishlash (${n})`, newSession: 'Yangi mashgʻulot',
+    answerReview: 'Javoblar tahlili', youKey: (a, k) => `Sizniki: ${a} · Javob: ${k}`, totalShort: 'Jami',
+    tabPractice: 'Mashq', tabBank: 'Savollar banki', bankH: 'Savollar banki',
+    bankP: n => `Barcha ${n} ta savol rasmiy SAT savollar bankidagidek mavzu va kichik mavzular boʻyicha saralangan. Kerakli kichik mavzularni tanlang, soʻng butun roʻyxatni yeching yoki istalgan savolni oching.`,
+    topics: 'Mavzular va kichik mavzular', selAll: 'Hammasini tanlash', clear: 'Tozalash', status: 'Holat',
+    stAll: 'Hammasi', stNew: 'Yechilmagan', stWrong: 'Xato qilingan', stRight: 'Toʻgʻri',
+    practiceN: n => `${n} ta savolni yechish →`, noMatch: 'Bu filtrlarga mos savol yoʻq. Koʻproq kichik mavzu yoki qiyinlik darajasini tanlang.',
+    bankLabel: 'Savollar banki', backBank: 'Savollar bankiga qaytish',
+    statusNote: '“Toʻgʻri” va “xato” belgilari shu qurilmada yakunlangan mashgʻulotlardan olinadi.',
+    weakH: 'Zaif tomonlaringiz', weakSub: 'Shu qurilmada xato qilgan kichik mavzularingiz, eng zaifidan boshlab.',
+    weakEmpty: 'Mashgʻulotni yakunlang, shunda xato qilgan kichik mavzularingiz shu yerda chiqadi va har biri uchun qisqa test boʻladi.',
+    weakSessH: 'Xatolar ustida ishlang',
+    weakSessSub: 'Shu mashgʻulotda xato qilgan kichik mavzularingiz boʻyicha qisqa testlar. Avval xato javob bergan savollaringiz, soʻng hali yechmaganlaringiz keladi.',
+    quickN: n => `${n} ta savollik test`, quickLabel: 'Tezkor test', testSize: 'Test hajmi', allQ: 'Hammasi',
+    priorityNote: 'Avval xato qilingan savollar, soʻng yechilmaganlari, keyin toʻgʻri yechilganlari keladi.',
+    extended: '+50% vaqt', hideT: 'Yashirish', showT: 'Taymerni koʻrsatish', elapsedL: 'Oʻtgan vaqt',
+    fiveLeft: 'Modul tugashiga 5 daqiqa qoldi.',
+    timeUpMod: 'Vaqt tugadi, shuning uchun modul haqiqiy imtihondagidek avtomatik topshirildi.',
+    timeUpRes: 'Vaqt tugadi, shuning uchun javoblaringiz avtomatik topshirildi.',
+    breakAuto: 'Tanaffus tugaganda keyingi modul avtomatik boshlanadi.',
+    pacing: 'Tezlik', perQShort: 'har bir savolga',
+    paceLine: (t, ok) => `SAT tezligi: har bir savolga ${t} · ${ok ? 'tezlikni saqladingiz' : 'SAT tezligidan sekinroq'}`,
+    slowN: n => `SAT meʼyoridan ikki baravardan koʻp vaqt ketgan savollar: ${n} ta. Javoblar tahlilida ularning vaqti qizil rangda koʻrsatilgan.`,
+    modCap: 'Modul', exLangL: 'Izoh tili'
   }
 };
 const T = k => STR[uiL()][k];
@@ -1413,25 +2174,62 @@ const SKILL_RU = {
   'One-variable data': 'Данные с одной переменной', 'Percentages': 'Проценты', 'Probability': 'Вероятность',
   'Rates and units': 'Скорость и единицы измерения', 'Ratios and proportions': 'Отношения и пропорции',
   'Right triangles': 'Прямоугольные треугольники', 'Circles': 'Окружности', 'Right triangle trigonometry': 'Тригонометрия прямоугольного треугольника',
-  'Area and volume': 'Площадь и объём', 'Lines and angles': 'Прямые и углы', 'Similar triangles': 'Подобные треугольники'
+  'Area and volume': 'Площадь и объём', 'Lines and angles': 'Прямые и углы', 'Similar triangles': 'Подобные треугольники',
+  'Two-variable data: models and scatterplots': 'Данные с двумя переменными: модели и диаграммы рассеяния',
+  'Inference from sample statistics and margin of error': 'Выводы по выборке и погрешность',
+  'Evaluating statistical claims': 'Оценка статистических утверждений'
 };
-const secName = k => uiL() === 'ru' ? SEC_RU[k] : SECTIONS[k].name;
-const secShort = k => uiL() === 'ru' ? SEC_SHORT_RU[k] : SECTIONS[k].short;
-const domName = d => uiL() === 'ru' ? (DOM_RU[d] || d) : d;
-const skillName = s => uiL() === 'ru' ? (SKILL_RU[s] || s) : s;
+const SEC_UZ = { rw: 'Oʻqish va yozish', math: 'Matematika' };
+const SEC_SHORT_UZ = { rw: 'OʻY', math: 'Mat.' };
+const DOM_UZ = {
+  'Craft and Structure': 'Matn tuzilishi va uslubi', 'Information and Ideas': 'Axborot va gʻoyalar',
+  'Standard English Conventions': 'Ingliz tili meʼyorlari', 'Expression of Ideas': 'Fikrni ifodalash',
+  'Algebra': 'Algebra', 'Advanced Math': 'Yuqori matematika',
+  'Problem-Solving and Data Analysis': 'Masalalar va maʼlumotlar tahlili', 'Geometry and Trigonometry': 'Geometriya va trigonometriya'
+};
+const SKILL_UZ = {
+  'Words in Context': 'Kontekstdagi soʻzlar', 'Text Structure and Purpose': 'Matn tuzilishi va maqsadi',
+  'Cross-Text Connections': 'Matnlararo bogʻliqlik', 'Central Ideas and Details': 'Asosiy gʻoya va tafsilotlar',
+  'Command of Evidence (Quantitative)': 'Dalillar bilan ishlash (raqamli)', 'Command of Evidence (Textual)': 'Dalillar bilan ishlash (matnli)',
+  'Inferences': 'Xulosalar', 'Boundaries': 'Gap chegaralari', 'Form, Structure, and Sense': 'Shakl, tuzilish va maʼno',
+  'Transitions': 'Bogʻlovchi soʻzlar', 'Rhetorical Synthesis': 'Ritorik sintez',
+  'Linear equations in one variable': 'Bir oʻzgaruvchili chiziqli tenglamalar', 'Linear functions': 'Chiziqli funksiyalar',
+  'Systems of linear equations': 'Chiziqli tenglamalar sistemalari', 'Linear equations in two variables': 'Ikki oʻzgaruvchili chiziqli tenglamalar',
+  'Linear inequalities': 'Chiziqli tengsizliklar', 'Nonlinear equations': 'Nochiziqli tenglamalar', 'Nonlinear functions': 'Nochiziqli funksiyalar',
+  'Equivalent expressions': 'Teng kuchli ifodalar', 'Systems of nonlinear equations': 'Nochiziqli tenglamalar sistemalari',
+  'One-variable data': 'Bir oʻzgaruvchili maʼlumotlar', 'Percentages': 'Foizlar', 'Probability': 'Ehtimollik',
+  'Rates and units': 'Tezlik va oʻlchov birliklari', 'Ratios and proportions': 'Nisbatlar va proporsiyalar',
+  'Right triangles': 'Toʻgʻri burchakli uchburchaklar', 'Circles': 'Aylanalar', 'Right triangle trigonometry': 'Toʻgʻri burchakli uchburchak trigonometriyasi',
+  'Area and volume': 'Yuza va hajm', 'Lines and angles': 'Toʻgʻri chiziqlar va burchaklar', 'Similar triangles': 'Oʻxshash uchburchaklar',
+  'Two-variable data: models and scatterplots': 'Ikki oʻzgaruvchili maʼlumotlar: modellar va tarqalish diagrammalari',
+  'Inference from sample statistics and margin of error': 'Tanlanma boʻyicha xulosa va xatolik chegarasi',
+  'Evaluating statistical claims': 'Statistik daʼvolarni baholash'
+};
+const NAMES = {
+  ru: { sec: SEC_RU, short: SEC_SHORT_RU, dom: DOM_RU, skill: SKILL_RU },
+  uz: { sec: SEC_UZ, short: SEC_SHORT_UZ, dom: DOM_UZ, skill: SKILL_UZ }
+};
+const secName = k => uiL() === 'en' ? SECTIONS[k].name : NAMES[uiL()].sec[k];
+const secShort = k => uiL() === 'en' ? SECTIONS[k].short : NAMES[uiL()].short[k];
+const domName = d => uiL() === 'en' ? d : (NAMES[uiL()].dom[d] || d);
+const skillName = s => uiL() === 'en' ? s : (NAMES[uiL()].skill[s] || s);
 const diffName = d => T('diff')[d];
-const exText = q => exL() === 'ru' && EX_RU[q.id] ? EX_RU[q.id] : q.ex;
-const exToggle = () => `<button type="button" class="exlang" data-exlang lang="${exL() === 'ru' ? 'en' : 'ru'}">${exL() === 'ru' ? 'In English' : 'На русском'}</button>`;
+const exText = q => { const m = { ru: EX_RU, uz: EX_UZ }[exL()]; return m && m[q.id] ? m[q.id] : q.ex; };
+const LCODE = { en: 'EN', ru: 'RU', uz: 'UZ' }, LFULL = { en: 'English', ru: 'Русский', uz: 'Oʻzbekcha' };
+const exToggle = () => `<span class="exlangs" role="group" aria-label="${T('exLangL')}">${['en', 'ru', 'uz'].map(l =>
+  `<button type="button" class="exlang" data-exlang="${l}" lang="${l}" aria-pressed="${exL() === l}" aria-label="${LFULL[l]}" title="${LFULL[l]}">${LCODE[l]}</button>`).join('')}</span>`;
 const exBody = (q, tag = 'p') => `<${tag} class="exl" data-q="${q.id}" lang="${exL()}">${exText(q)}</${tag}>`;
 document.addEventListener('click', e => {
   const b = e.target.closest && e.target.closest('[data-exlang]');
   if (!b) return;
   e.preventDefault();
-  exPref = exL() === 'ru' ? 'en' : 'ru';
+  const v = b.dataset && b.dataset.exlang;
+  if (!['en', 'ru', 'uz'].includes(v)) return;
+  exPref = v;
   try { localStorage.setItem(EXKEY, exPref); } catch (err) {}
   document.querySelectorAll('.exl').forEach(el => { el.innerHTML = exText(byId[el.dataset.q]); el.lang = exL(); });
   document.querySelectorAll('.exhint').forEach(el => { el.textContent = STR[exL()].explainHint; });
-  document.querySelectorAll('[data-exlang]').forEach(el => { el.textContent = exL() === 'ru' ? 'In English' : 'На русском'; el.lang = exL() === 'ru' ? 'en' : 'ru'; });
+  document.querySelectorAll('[data-exlang]').forEach(el => { el.setAttribute('aria-pressed', String(el.dataset.exlang === exL())); });
   const w = b.closest('.exp-wrap');
   if (w) { w.classList.add('open'); const eb = document.getElementById('expBtn'); if (eb) eb.setAttribute('aria-expanded', 'true'); }
   b.focus();
@@ -1503,26 +2301,304 @@ const Q_RU = {
   m63: `Цену велосипеда повысили на 20%, а затем новую цену снизили на 20%. Сколько процентов от исходной цены составляет итоговая цена?`,
   m64: `Среднее арифметическое набора из 10 значений равно 12. Из набора убрали значение 30. Чему равно среднее оставшихся значений?`,
   m65: `На плоскости <i>xy</i> график уравнения <i>x</i><sup>2</sup> + <i>y</i><sup>2</sup> − 6<i>x</i> + 8<i>y</i> = 0 — окружность. Чему равен её радиус?`,
-  m66: `Радиус окружности равен 6. Чему равна длина дуги с центральным углом 120°?`
+  m66: `Радиус окружности равен 6. Чему равна длина дуги с центральным углом 120°?`,
+  m67: `<i>y</i> = <i>x</i><sup>2</sup><br><i>y</i> = 9<br><br>Если (<i>x</i>, <i>y</i>) — решение системы выше и <i>x</i> &gt; 0, чему равно <i>x</i>?`,
+  m68: `<i>y</i> = <i>x</i><sup>2</sup> + 1<br><i>y</i> = <i>x</i> + 3<br><br>Система выше имеет два решения. Чему равна сумма координат <i>x</i> этих решений?`,
+  m69: `<i>y</i> = (<i>x</i> − 1)<sup>2</sup><br><i>y</i> = 4<br><br>Сколько решений имеет система выше?`,
+  m70: `<i>x</i><sup>2</sup> + <i>y</i><sup>2</sup> = 25<br><i>y</i> = <i>x</i> + 1<br><br>Если (<i>a</i>, <i>b</i>) — решение системы выше и <i>a</i> &gt; 0, чему равно <i>b</i>?`,
+  m71: `В рецепте на каждые 2 стакана сахара приходится 3 стакана муки. Сколько стаканов муки нужно, если взять 8 стаканов сахара?`,
+  m72: `На карте 1 дюйм соответствует 25 милям. Расстояние между двумя городами на карте — 3,5 дюйма. Каково настоящее расстояние между городами в милях?`,
+  m73: `В классе 36 учеников, мальчиков и девочек в нём в отношении 4 к 5. Сколько в классе девочек?`,
+  m74: `Если <i>x</i>/<i>y</i> = 3/4 и <i>y</i>/<i>z</i> = 2/5, чему равно <i>x</i>/<i>z</i>?`,
+  m75: `Автомобиль проезжает 150 миль за 2,5 часа. Какова его средняя скорость в милях в час?`,
+  m76: `Принтер печатает 45 страниц за 3 минуты. За сколько минут он напечатает 240 страниц с той же скоростью?`,
+  m77: `Предмет движется с постоянной скоростью 3 фута в секунду. Чему равна эта скорость в дюймах в минуту? (1 фут = 12 дюймов)`,
+  m78: `Вода поступает в пустой бак с постоянной скоростью 2,5 литра в секунду. Вместимость бака — 27 000 литров. За сколько часов бак наполнится?`,
+  m79: `Чему равны 30% от 250?`,
+  m80: `После скидки 20% куртка стоит $80. Какой была исходная цена куртки в долларах?`,
+  m81: `Население города выросло с 1 600 до 2 000 человек. На сколько процентов выросло население?`,
+  m82: `В мешке 4 красных, 6 синих и 10 зелёных шариков. Какова вероятность, что случайно вынутый шарик окажется синим?`,
+  m83: `<div class="tablescroll"><table><caption>Опрос 200 учеников</caption>
+      <thead><tr><th></th><th>Играет на инструменте</th><th>Не играет на инструменте</th><th>Всего</th></tr></thead>
+      <tbody><tr><th>Занимается спортом</th><td>45</td><td>75</td><td>120</td></tr>
+      <tr><th>Не занимается спортом</th><td>35</td><td>45</td><td>80</td></tr>
+      <tr><th>Всего</th><td>80</td><td>120</td><td>200</td></tr></tbody></table></div>
+      Случайным образом выбирают ученика, который играет на музыкальном инструменте. Какова вероятность, что он также занимается спортом?`,
+  m84: `Из целых чисел от 1 до 20 случайным образом выбирают одно. Какова вероятность, что оно кратно 3 или кратно 5?`,
+  m85: `Чему равна медиана набора данных 7, 3, 9, 4, 12?`,
+  m86: `Среднее арифметическое набора из 5 значений равно 8. Когда добавили шестое значение, среднее стало равно 9. Чему равно шестое значение?`,
+  m87: `Диаграмма рассеяния показывает высоту растения в сантиметрах через <i>x</i> недель после посадки. Линия наилучшего приближения: <i>y</i> = 2,5<i>x</i> + 10. Какую высоту растения в сантиметрах предсказывает эта линия через 6 недель после посадки?`,
+  m88: `Для группы учеников линия наилучшего приближения для балла за тест <i>y</i> в зависимости от числа часов просмотра телевизора в неделю <i>x</i> имеет вид <i>y</i> = −0,8<i>x</i> + 92. Какое утверждение лучше всего объясняет угловой коэффициент этой прямой?`,
+  m89: `<div class="tablescroll"><table>
+      <thead><tr><th><i>t</i></th><th>0</th><th>1</th><th>2</th><th>3</th></tr></thead>
+      <tbody><tr><th><i>f</i>(<i>t</i>)</th><td>5</td><td>15</td><td>45</td><td>135</td></tr></tbody></table></div>
+      В таблице приведены четыре значения функции <i>f</i>. Какое уравнение может задавать <i>f</i>?`,
+  m90: `В городе живут 20 000 человек. В случайной выборке из 400 жителей 120 человек сказали, что поддерживают строительство нового парка. Сколько примерно жителей города поддерживают строительство парка, судя по выборке?`,
+  m91: `По данным опроса на случайной выборке, 54% избирателей города поддерживают предложение; погрешность — 3 процентных пункта. Какое из значений правдоподобно для настоящей доли всех избирателей города, поддерживающих предложение?`,
+  m92: `Чтобы оценить средний рост взрослых, исследователи взяли из одной генеральной совокупности две случайные выборки. В выборке A было 100 человек, в выборке B — 900. Обе оценки сделаны с одинаковым уровнем доверия. Какое утверждение о погрешностях, скорее всего, верно?`,
+  m93: `Исследователь набрал 200 добровольцев и случайным образом распределил их на две группы: одна половина каждый день пила чашку зелёного чая, другая — чашку воды. Через два месяца группа, пившая чай, в среднем сообщала о более низком уровне стресса. Какой вывод лучше всего подтверждается исследованием?`,
+  m94: `Опрос 1 000 случайно выбранных взрослых жителей города показал, что владельцы собак в среднем занимаются спортом больше часов в неделю, чем люди без собак. Какой вывод лучше всего подтверждается опросом?`,
+  m95: `Директор школы хочет оценить, сколько часов в неделю ученики её школы в среднем тратят на домашние задания. Какой способ выбора учеников для опроса скорее всего даст несмещённую оценку?`,
+  m96: `Две прямые пересекаются и образуют четыре угла. Один из углов равен 65°. Чему равна в градусах величина смежного с ним угла?`,
+  m97: `Две параллельные прямые пересечены секущей. Два односторонних угла равны (3<i>x</i> + 10)° и (2<i>x</i> + 20)°. Чему равно <i>x</i>?`,
+  m98: `Углы треугольника относятся как 2 : 3 : 4. Чему равен наибольший угол в градусах?`,
+  m99: `Каждый внутренний угол правильного многоугольника равен 150°. Сколько сторон у многоугольника?`,
+  m100: `Катеты прямоугольного треугольника равны 6 и 8. Чему равна гипотенуза?`,
+  m101: `Лестница длиной 13 футов прислонена к вертикальной стене. Нижний конец лестницы находится в 5 футах от основания стены. На какой высоте в футах верхний конец касается стены?`,
+  m102: `Гипотенуза равнобедренного прямоугольного треугольника равна 8√2. Чему равна площадь треугольника?`,
+  m103: `В треугольнике с углами 30°, 60° и 90° сторона, лежащая против угла 30°, равна 5. Чему равен периметр треугольника?`,
+  m104: `В прямоугольном треугольнике <i>ABC</i> угол <i>C</i> прямой, <i>AC</i> = 3, <i>BC</i> = 4 и <i>AB</i> = 5. Чему равен sin <i>A</i>?`,
+  m105: `Если sin(<i>x</i>°) = cos(40°) и 0 &lt; <i>x</i> &lt; 90, чему равно <i>x</i>?`,
+  m106: `В прямоугольном треугольнике угол <i>A</i> острый и tg <i>A</i> = 5/12. Чему равен cos <i>A</i>?`,
+  m107: `В прямоугольном треугольнике <i>ABC</i> угол <i>C</i> прямой, <i>AB</i> = 20 и sin <i>A</i> = 0,6. Чему равна длина <i>AC</i>?`,
+  m108: `Стороны треугольника равны 3, 4 и 5. Наименьшая сторона подобного ему треугольника равна 9. Чему равна его наибольшая сторона?`,
+  m109: `В одно и то же время дня человек ростом 6 футов отбрасывает тень длиной 4 фута, а дерево — тень длиной 30 футов. Какова высота дерева в футах?`,
+  m110: `В треугольнике <i>ABC</i> точка <i>D</i> лежит на стороне <i>AB</i>, точка <i>E</i> — на стороне <i>AC</i>, и отрезок <i>DE</i> параллелен стороне <i>BC</i>. Если <i>AD</i> = 4, <i>DB</i> = 6 и <i>DE</i> = 5, чему равна длина <i>BC</i>?`,
+  m111: `Соответствующие стороны двух подобных треугольников относятся как 2 : 5. Площадь меньшего треугольника равна 12. Чему равна площадь большего?`,
+  m112: `Длина прямоугольной коробки — 5 дюймов, ширина — 4 дюйма, высота — 3 дюйма. Чему равен объём коробки в кубических дюймах?`,
+  m113: `Радиус прямого кругового цилиндра равен 3, высота — 10. Чему равен объём цилиндра?`,
+  m114: `Площадь полной поверхности куба равна 150 квадратным сантиметрам. Чему равен объём куба в кубических сантиметрах?`,
+  m115: `Площадь круга равна 49π. Чему равна длина окружности?`,
+  m116: `На плоскости <i>xy</i> центр окружности находится в точке (2, −3), а сама окружность проходит через точку (5, 1). Какое уравнение задаёт эту окружность?`,
+  m117: `Какое значение <i>x</i> является решением неравенства 3<i>x</i> − 5 &gt; 10?`,
+  m118: `Для линейной функции <i>f</i> известно: <i>f</i>(2) = 11 и <i>f</i>(5) = 20. Чему равно <i>f</i>(0)?`,
+  m119: `Если 3(<i>x</i> + 4) = 5<i>x</i> − 6, чему равно <i>x</i>?`,
+  m120: `Диаграмма рассеяния показывает стоимость <i>y</i> в долларах поездок на такси длиной <i>x</i> миль. Линия наилучшего приближения: <i>y</i> = 2,1<i>x</i> + 3,5. На сколько долларов, согласно этой линии, прогнозируемая стоимость поездки на 10 миль больше, чем поездки на 4 мили?`,
+  m121: `Модель <i>h</i>(<i>t</i>) = −5<i>t</i><sup>2</sup> + 20<i>t</i> + 1 оценивает высоту мяча в метрах через <i>t</i> секунд после броска. Какова, согласно модели, наибольшая высота мяча в метрах?`,
+  m122: `Фабрика каждый день упаковывает 4 000 коробок. В случайной выборке из 50 коробок за один день 3 оказались повреждены. Сколько примерно из 4 000 коробок этого дня повреждены, судя по выборке?`,
+  m123: `В случайной выборке из 500 студентов университета X средняя продолжительность сна за ночь составила 6,8 часа с погрешностью 0,3 часа. Какой вывод наиболее обоснован?`,
+  m124: `Компания разместила на сайте опрос: нравится ли посетителям её новый логотип. Из 2 000 человек, которые решили проголосовать, 85% ответили, что нравится. Какое утверждение лучше всего объясняет, почему этот результат может не отражать мнение всех покупателей компании?`,
+  m125: `Исследователи случайным образом выбрали в регионе 300 ферм. 150 из них случайно назначили использовать удобрение X, а остальным 150 — не использовать удобрений. На фермах с удобрением X урожай в среднем оказался выше. Какой вывод лучше всего подтверждается исследованием?`
 };
 // Choices that contain words, in their ORIGINAL order (mapped through q.order after shuffling).
 const CH_RU = {
   m26: ['Стоимость одного часа работы сантехника', 'Фиксированная плата за каждый вызов', 'Общая стоимость часового вызова', 'Продолжительность вызова в часах'],
   m59: ['Ни одного', 'Ровно одно', 'Ровно два', 'Бесконечно много'],
-  m60: ['Население растёт на 5% в год.', 'Население растёт на 1,05 человека в год.', 'Население растёт на 60 человек в год.', 'В 2020 году население составляло 1 260 человек.']
+  m60: ['Население растёт на 5% в год.', 'Население растёт на 1,05 человека в год.', 'Население растёт на 60 человек в год.', 'В 2020 году население составляло 1 260 человек.'],
+  m69: ['Ни одного', 'Ровно одно', 'Ровно два', 'Бесконечно много'],
+  m88: ['С каждым дополнительным часом телевизора в неделю прогнозируемый балл снижается на 0,8.',
+        'С каждым дополнительным баллом за тест прогнозируемое время у телевизора уменьшается на 0,8 часа.',
+        'Для ученика, который не смотрит телевизор, прогноз — 0,8 балла.',
+        'С каждым дополнительным часом телевизора в неделю прогнозируемый балл снижается на 92.'],
+  m92: ['Погрешность выборки B меньше погрешности выборки A.',
+        'Погрешность выборки B больше погрешности выборки A.',
+        'Погрешности равны, потому что выборки взяты из одной совокупности.',
+        'Погрешность выборки B в 9 раз больше погрешности выборки A.'],
+  m93: ['Ежедневное употребление зелёного чая, вероятно, снижает стресс у людей, похожих на добровольцев.',
+        'Ежедневное употребление зелёного чая снижает стресс у всех взрослых.',
+        'Между употреблением зелёного чая и стрессом нет никакой связи.',
+        'Низкий уровень стресса заставляет людей пить больше зелёного чая.'],
+  m94: ['Среди взрослых жителей города владение собакой связано с бо́льшим количеством занятий спортом, но опрос не доказывает, что собака заставляет больше заниматься.',
+        'Владение собакой заставляет взрослых жителей города больше заниматься спортом.',
+        'Занятия спортом заставляют взрослых жителей города заводить собак.',
+        'Между владением собакой и занятиями спортом у взрослых жителей города нет связи.'],
+  m95: ['Опросить 100 учеников, случайно выбранных из списка всех учеников школы',
+        'Опросить 100 учеников, которые находятся в библиотеке после уроков',
+        'Опросить первых 100 учеников, пришедших в школу утром',
+        'Опросить всех учеников из математической команды школы'],
+  m123: ['Правдоподобно, что средняя продолжительность сна всех студентов университета X составляет от 6,5 до 7,1 часа.',
+         'Каждый студент университета X спит от 6,5 до 7,1 часа за ночь.',
+         'Средняя продолжительность сна студентов всех университетов составляет от 6,5 до 7,1 часа.',
+         'Средняя продолжительность сна всех студентов университета X равна ровно 6,8 часа.'],
+  m124: ['Голосующие сами решили участвовать, поэтому они могут отличаться от типичных покупателей.',
+         'Выборка из 2 000 человек слишком мала, чтобы делать какие-либо выводы.',
+         'По результатам опроса нельзя вычислить процент.',
+         'Делать выводы о совокупности можно только по эксперименту.'],
+  m125: ['Удобрение X, вероятно, повышает урожайность на фермах этого региона.',
+         'Удобрение X повышает урожайность на фермах во всём мире.',
+         'Высокая урожайность заставляет фермеров выбирать удобрение X.',
+         'Исследование показывает только связь между удобрением X и урожайностью, а не причину.']
 };
-const ruQ = q => uiL() === 'ru' && !!Q_RU[q.id];
-const qText = q => ruQ(q) ? Q_RU[q.id] : q.q;
-const qLang = q => ruQ(q) ? 'ru' : 'en';
-const chText = (q, k) => uiL() === 'ru' && CH_RU[q.id] ? CH_RU[q.id][q.order ? q.order[k] : k] : q.ch[k];
+// ---------- Uzbek (Latin) Math questions, shown only when the page is in Uzbek ----------
+const Q_UZ = {
+  m1: `Agar 3<i>x</i> − 7 = 11 boʻlsa, <i>x</i> nechaga teng?`,
+  m2: `Sport zali bir martalik $40 roʻyxatdan oʻtish toʻlovi va oyiga $25 oladi. Qaysi funksiya <i>m</i> oylik aʼzolikning umumiy narxi <i>C</i> ni (dollarda) beradi?`,
+  m3: `<i>x</i> + <i>y</i> = 10<br><i>x</i> − <i>y</i> = 4<br><br>Agar (<i>x</i>, <i>y</i>) yuqoridagi tenglamalar sistemasining yechimi boʻlsa, <i>x</i> nechaga teng?`,
+  m4: `<i>xy</i> tekisligidagi toʻgʻri chiziq (2, 5) va (6, 13) nuqtalardan oʻtadi. Toʻgʻri chiziqning burchak koeffitsiyenti nechaga teng?`,
+  m5: `<i>x</i><sup>2</sup> − 5<i>x</i> + 6 = 0 tenglama yechimlarining yigʻindisi nechaga teng?`,
+  m6: `<i>f</i> funksiya <i>f</i>(<i>x</i>) = 2<i>x</i><sup>2</sup> − 3 formula bilan berilgan. <i>f</i>(−2) nechaga teng?`,
+  m7: `500 ta bakteriyadan iborat koloniya har 3 soatda ikki baravar koʻpayadi. Qaysi ifoda <i>t</i> soatdan keyingi bakteriyalar sonini beradi?`,
+  m8: `Qaysi ifoda (<i>x</i> + 3)<sup>2</sup> ga teng kuchli?`,
+  m9: `Agar 2<sup><i>x</i> + 1</sup> = 32 boʻlsa, <i>x</i> nechaga teng?`,
+  m10: `4, 8, 10, 14 va <i>x</i> sonlarining oʻrta arifmetigi 9 ga teng. <i>x</i> nechaga teng?`,
+  m11: `Odatdagi narxi $80 boʻlgan kurtka 25% chegirma bilan sotilmoqda. Chegirmali narxga 8% savdo soligʻi qoʻshiladi. Kurtkaning umumiy narxi qancha?`,
+  m12: `Xaltada 6 ta qizil, 4 ta koʻk va 10 ta yashil shar bor. Tasodifan bitta shar olinsa, uning koʻk boʻlish ehtimoli qancha?`,
+  m13: `Toʻgʻri burchakli uchburchakning katetlari 6 va 8 ga teng. Gipotenuza nechaga teng?`,
+  m14: `<i>xy</i> tekisligida aylana (<i>x</i> − 3)<sup>2</sup> + (<i>y</i> + 2)<sup>2</sup> = 49 tenglama bilan berilgan. Aylana markazining koordinatalari qanday?`,
+  m15: `<i>ABC</i> toʻgʻri burchakli uchburchakda <i>C</i> burchak toʻgʻri va sin <i>A</i> = 3/5. cos <i>A</i> nechaga teng?`,
+  m16: `Aylana uzunligi 10π ga teng. Doiraning yuzi qancha?`,
+  m17: `Agar 5(<i>x</i> − 2) = 3<i>x</i> + 4 boʻlsa, <i>x</i> nechaga teng?`,
+  m18: `<i>xy</i> tekisligida <i>y</i> = −3<i>x</i> + 6 grafigi <i>y</i> oʻqini qayerda kesib oʻtadi?`,
+  m19: `Qaysi tenglama <i>y</i> = 4<i>x</i> − 1 toʻgʻri chiziqqa parallel toʻgʻri chiziqni ifodalaydi?`,
+  m20: `Yuk mashinasi koʻpi bilan 2 000 funt yuk koʻtara oladi. Unda allaqachon 600 funt jihoz bor, har bir quti esa 35 funt. Qaysi tengsizlik mashina olib keta oladigan qutilar soni <i>b</i> ni ifodalaydi?`,
+  m21: `Yuk mashinasi koʻpi bilan 2 000 funt yuk koʻtara oladi. Unda allaqachon 600 funt jihoz bor, har bir quti esa 35 funt. Mashina eng koʻpi bilan nechta quti olib keta oladi?`,
+  m22: `2<i>x</i> + 3<i>y</i> = 12<br><i>y</i> = <i>x</i> − 1<br><br>Agar (<i>x</i>, <i>y</i>) yuqoridagi sistemaning yechimi boʻlsa, <i>y</i> nechaga teng?`,
+  m23: `3<i>x</i> + <i>ky</i> = 8<br>6<i>x</i> + 4<i>y</i> = 5<br><br>Yuqoridagi sistemada <i>k</i> — oʻzgarmas son. Agar sistema yechimga ega boʻlmasa, <i>k</i> nechaga teng?`,
+  m24: `Teatr kattalar chiptasini $12 dan, bolalar chiptasini $8 dan sotadi. Bir kechada jami $520 ga 50 ta chipta sotildi. Nechta kattalar chiptasi sotilgan?`,
+  m25: `<i>f</i> chiziqli funksiya uchun <i>f</i>(1) = 7 va <i>f</i>(4) = 16. <i>f</i>(0) nechaga teng?`,
+  m26: `<i>C</i> = 15<i>h</i> + 50 tenglama santexnikning <i>h</i> soat davom etgan chaqiruvi narxi <i>C</i> ni (dollarda) beradi. Bu vaziyatda 15 sonini qanday tushunish eng toʻgʻri?`,
+  m27: `Quyidagilardan qaysi biri |<i>x</i> − 4| = 9 tenglamaning yechimi?`,
+  m28: `Qaysi ifoda <i>x</i><sup>2</sup> − 9 ga teng kuchli?`,
+  m29: `<i>xy</i> tekisligida <i>y</i> = (<i>x</i> − 2)<sup>2</sup> + 5 grafigining uchi qayerda?`,
+  m30: `<i>x</i><sup>2</sup> = 4<i>x</i> + 12 tenglamaning musbat yechimi nechaga teng?`,
+  m31: `<i>f</i> funksiya <i>f</i>(<i>x</i>) = 3<sup><i>x</i></sup> formula bilan berilgan. <i>f</i>(4) nechaga teng?`,
+  m32: `<i>g</i> va <i>h</i> funksiyalar <i>g</i>(<i>x</i>) = <i>x</i><sup>2</sup> + 1 va <i>h</i>(<i>x</i>) = 2<i>x</i> − 3 formulalar bilan berilgan. <i>g</i>(<i>h</i>(2)) nechaga teng?`,
+  m33: `$24 000 turadigan avtomobil har yili qiymatining 15% ini yoʻqotadi. Qaysi funksiya avtomobilning <i>t</i> yildan keyingi qiymati <i>V</i> ni (dollarda) beradi?`,
+  m34: `Qaysi ifoda (2<i>x</i><sup>2</sup> + 3<i>x</i>) − (<i>x</i><sup>2</sup> − 5<i>x</i> + 4) ga teng kuchli?`,
+  m35: `<i>x</i> ≠ 0 boʻlganda qaysi ifoda (<i>x</i><sup>2</sup> + 6<i>x</i>) ÷ <i>x</i> ga teng kuchli?`,
+  m36: `<i>c</i> oʻzgarmasning qanday qiymatida <i>x</i><sup>2</sup> + 6<i>x</i> + <i>c</i> = 0 tenglama roppa-rosa bitta haqiqiy yechimga ega?`,
+  m37: `Agar √(<i>x</i> + 3) = 5 boʻlsa, <i>x</i> nechaga teng?`,
+  m38: `Printer 45 soniyada 18 sahifa chop etadi. Shu tezlikda u 5 daqiqada nechta sahifa chop eta oladi?`,
+  m39: `3, 7, 7, 9, 12, 15 maʼlumotlar toʻplamining medianasi nechaga teng?`,
+  m40: `11- va 12-sinflarning 140 nafar oʻquvchisidan sport yoki sanʼat mashgʻulotlarini afzal koʻrishlari soʻraldi. Natijalar quyida keltirilgan.<div class="tablescroll"><table><thead><tr><th></th><th>Sport</th><th>Sanʼat</th><th>Jami</th></tr></thead><tbody><tr><td>11-sinf</td><td>40</td><td>20</td><td>60</td></tr><tr><td>12-sinf</td><td>30</td><td>50</td><td>80</td></tr></tbody></table></div>Soʻrovda qatnashgan 12-sinf oʻquvchilaridan biri tasodifan tanlansa, uning sanʼatni afzal koʻrish ehtimoli qancha?`,
+  m41: `Retseptda har 2 stakan shakarga 3 stakan un ishlatiladi. Qandolatchi 12 stakan un ishlatsa, necha stakan shakar ishlatishi kerak?`,
+  m42: `Ikki burchakning yigʻindisi 180° ga teng. Bir burchak ikkinchisidan 4 marta katta. Kichik burchak necha gradus?`,
+  m43: `Toʻgʻri doiraviy silindrning radiusi 3 ga, balandligi 10 ga teng. Uning hajmi qancha?`,
+  m44: `<i>ABC</i> uchburchak <i>DEF</i> uchburchakka oʻxshash, bunda <i>A</i>, <i>B</i>, <i>C</i> mos ravishda <i>D</i>, <i>E</i>, <i>F</i> ga mos keladi. Agar <i>AB</i> = 4, <i>DE</i> = 10 va <i>BC</i> = 6 boʻlsa, <i>EF</i> nechaga teng?`,
+  m45: `4(<i>x</i> − <i>a</i>) + 2 = 4<i>x</i> − 10 tenglamada <i>a</i> — oʻzgarmas son. Agar tenglama cheksiz koʻp yechimga ega boʻlsa, <i>a</i> nechaga teng?`,
+  m46: `<i>y</i> = <i>kx</i> + 4 toʻgʻri chiziq (bunda <i>k</i> — oʻzgarmas son) (−2, 10) nuqtadan oʻtadi. Toʻgʻri chiziq <i>x</i> oʻqini qaysi <i>x</i> koordinatada kesib oʻtadi?`,
+  m47: `Doʻkon daftarlarni $3 dan, papkalarni $7 dan sotadi. Mia 10 ta narsa sotib olib, roppa-rosa $50 sarfladi. U nechta papka sotib olgan?`,
+  m48: `2<i>x</i> − 5<i>y</i> = 7<br><i>ax</i> + 15<i>y</i> = −21<br><br>Yuqoridagi sistemada <i>a</i> — oʻzgarmas son. Agar sistema cheksiz koʻp yechimga ega boʻlsa, <i>a</i> nechaga teng?`,
+  m49: `Qaysi (<i>x</i>, <i>y</i>) nuqta <i>y</i> &gt; 2<i>x</i> − 3 va <i>y</i> &lt; −<i>x</i> + 6 tengsizliklar sistemasining yechimi?`,
+  m50: `Bakda 500 litr suv bor va u oʻzgarmas tezlikda boʻshaydi. 8 daqiqadan keyin bakda 340 litr qoldi. Suv chiqa boshlaganidan necha daqiqa oʻtib bak boʻshaydi?`,
+  m51: `3<i>x</i> + 2<i>y</i> = 11<br><i>x</i> − 2<i>y</i> = 1<br><br>Agar (<i>x</i>, <i>y</i>) yuqoridagi sistemani qanoatlantirsa, 4<i>x</i> nechaga teng?`,
+  m52: `ℓ toʻgʻri chiziq 2<i>x</i> + 3<i>y</i> = 6 toʻgʻri chiziqqa perpendikulyar va (4, 1) nuqtadan oʻtadi. ℓ toʻgʻri chiziq <i>y</i> oʻqini qaysi <i>y</i> koordinatada kesib oʻtadi?`,
+  m53: `Kompaniyaning yillik daromadi <i>R</i> (ming dollarda) <i>R</i> = 12<i>t</i> + 150 modeli bilan ifodalanadi, bunda <i>t</i> — 2015-yildan beri oʻtgan yillar soni. Modelga koʻra daromad qaysi yilda birinchi marta $300 000 dan oshadi?`,
+  m54: `<i>x</i><sup>2</sup> + <i>bx</i> + 16 = 0 tenglamaning (bunda <i>b</i> — oʻzgarmas son) yechimlaridan biri 2 ga teng. Ikkinchi yechim nechaga teng?`,
+  m55: `<i>f</i> funksiya <i>f</i>(<i>x</i>) = (<i>x</i> − 3)(<i>x</i> + 5) formula bilan berilgan. <i>x</i> ning qanday qiymatida <i>f</i>(<i>x</i>) eng kichik qiymatga erishadi?`,
+  m56: `<i>g</i>(<i>x</i>) = <i>a</i>(<i>x</i> − 2)<sup>2</sup> + 7 grafigi (bunda <i>a</i> — oʻzgarmas son) (4, −5) nuqtadan oʻtadi. <i>a</i> nechaga teng?`,
+  m57: `Agar 9<sup><i>x</i></sup> = 27 boʻlsa, <i>x</i> nechaga teng?`,
+  m58: `<i>x</i> ≠ −2 boʻlganda qaysi ifoda (<i>x</i><sup>2</sup> − 4) ÷ (<i>x</i><sup>2</sup> + 4<i>x</i> + 4) ga teng kuchli?`,
+  m59: `2<i>x</i><sup>2</sup> − 4<i>x</i> + 5 = 0 tenglama nechta haqiqiy yechimga ega?`,
+  m60: `<i>P</i>(<i>t</i>) = 1 200(1,05)<sup><i>t</i></sup> funksiya shaharning 2020-yildan <i>t</i> yil keyingi aholisini ifodalaydi. Modelga koʻra qaysi fikr toʻgʻri?`,
+  m61: `<i>y</i> = <i>x</i><sup>2</sup> − 4<i>x</i> + 7<br><i>y</i> = 2<i>x</i> − 2<br><br>Agar (<i>x</i>, <i>y</i>) yuqoridagi sistemaning yechimi boʻlsa, <i>x</i> nechaga teng?`,
+  m62: `<i>p</i> koʻphad <i>p</i>(<i>x</i>) = <i>x</i><sup>3</sup> − 2<i>x</i><sup>2</sup> − 9<i>x</i> + 18 formula bilan berilgan. Quyidagilardan qaysi biri <i>p</i>(<i>x</i>) ning koʻpaytuvchisi?`,
+  m63: `Velosiped narxi 20% ga oshirildi, soʻng yangi narx 20% ga kamaytirildi. Oxirgi narx dastlabki narxning necha foizini tashkil qiladi?`,
+  m64: `10 ta qiymatdan iborat toʻplamning oʻrta arifmetigi 12 ga teng. Toʻplamdan 30 qiymati olib tashlansa, qolgan qiymatlarning oʻrta arifmetigi nechaga teng boʻladi?`,
+  m65: `<i>xy</i> tekisligida <i>x</i><sup>2</sup> + <i>y</i><sup>2</sup> − 6<i>x</i> + 8<i>y</i> = 0 tenglamaning grafigi aylanadir. Uning radiusi nechaga teng?`,
+  m66: `Aylananing radiusi 6 ga teng. Markaziy burchagi 120° boʻlgan yoyning uzunligi qancha?`,
+  m67: `<i>y</i> = <i>x</i><sup>2</sup><br><i>y</i> = 9<br><br>Agar (<i>x</i>, <i>y</i>) yuqoridagi sistemaning yechimi va <i>x</i> &gt; 0 boʻlsa, <i>x</i> nechaga teng?`,
+  m68: `<i>y</i> = <i>x</i><sup>2</sup> + 1<br><i>y</i> = <i>x</i> + 3<br><br>Yuqoridagi sistema ikkita yechimga ega. Ikkala yechimning <i>x</i> koordinatalari yigʻindisi nechaga teng?`,
+  m69: `<i>y</i> = (<i>x</i> − 1)<sup>2</sup><br><i>y</i> = 4<br><br>Yuqoridagi sistema nechta yechimga ega?`,
+  m70: `<i>x</i><sup>2</sup> + <i>y</i><sup>2</sup> = 25<br><i>y</i> = <i>x</i> + 1<br><br>Agar (<i>a</i>, <i>b</i>) yuqoridagi sistemaning yechimi va <i>a</i> &gt; 0 boʻlsa, <i>b</i> nechaga teng?`,
+  m71: `Retseptda har 2 stakan shakarga 3 stakan un ishlatiladi. 8 stakan shakar ishlatilsa, necha stakan un kerak?`,
+  m72: `Xaritada 1 dyuym 25 milyaga toʻgʻri keladi. Xaritada ikki shahar orasidagi masofa 3,5 dyuym. Shaharlar orasidagi haqiqiy masofa necha milya?`,
+  m73: `36 nafar oʻquvchidan iborat sinfda oʻgʻil va qiz bolalar soni 4 ga 5 nisbatda. Sinfda nechta qiz bola bor?`,
+  m74: `Agar <i>x</i>/<i>y</i> = 3/4 va <i>y</i>/<i>z</i> = 2/5 boʻlsa, <i>x</i>/<i>z</i> nechaga teng?`,
+  m75: `Avtomobil 2,5 soatda 150 milya yoʻl bosadi. Uning oʻrtacha tezligi soatiga necha milya?`,
+  m76: `Printer 3 daqiqada 45 sahifa chop etadi. Shu tezlikda 240 sahifani chop etish necha daqiqa oladi?`,
+  m77: `Jism soniyasiga 3 fut oʻzgarmas tezlik bilan harakatlanadi. Bu tezlik daqiqasiga necha dyuym? (1 fut = 12 dyuym)`,
+  m78: `Boʻsh bakka suv soniyasiga 2,5 litr oʻzgarmas tezlikda quyiladi. Bak 27 000 litr sigʻadi. Bak necha soatda toʻladi?`,
+  m79: `250 ning 30% i nechaga teng?`,
+  m80: `20% chegirmadan keyin kurtka $80 turadi. Kurtkaning dastlabki narxi necha dollar edi?`,
+  m81: `Shahar aholisi 1 600 dan 2 000 gacha oʻsdi. Aholi necha foizga oʻsgan?`,
+  m82: `Xaltada 4 ta qizil, 6 ta koʻk va 10 ta yashil shar bor. Tasodifan bitta shar olinsa, uning koʻk boʻlish ehtimoli qancha?`,
+  m83: `<div class="tablescroll"><table><caption>200 nafar oʻquvchi oʻrtasidagi soʻrov</caption>
+      <thead><tr><th></th><th>Cholgʻu chaladi</th><th>Cholgʻu chalmaydi</th><th>Jami</th></tr></thead>
+      <tbody><tr><th>Sport bilan shugʻullanadi</th><td>45</td><td>75</td><td>120</td></tr>
+      <tr><th>Sport bilan shugʻullanmaydi</th><td>35</td><td>45</td><td>80</td></tr>
+      <tr><th>Jami</th><td>80</td><td>120</td><td>200</td></tr></tbody></table></div>
+      Cholgʻu chaladigan oʻquvchilardan biri tasodifan tanlansa, uning sport bilan ham shugʻullanish ehtimoli qancha?`,
+  m84: `1 dan 20 gacha boʻlgan butun sonlardan biri tasodifan tanlanadi. Uning 3 ga yoki 5 ga karrali boʻlish ehtimoli qancha?`,
+  m85: `7, 3, 9, 4, 12 maʼlumotlar toʻplamining medianasi nechaga teng?`,
+  m86: `5 ta qiymatdan iborat toʻplamning oʻrta arifmetigi 8 ga teng. Oltinchi qiymat qoʻshilgach, oʻrta arifmetik 9 ga teng boʻldi. Oltinchi qiymat nechaga teng?`,
+  m87: `Tarqalish diagrammasi oʻsimlikning ekilganidan <i>x</i> hafta keyingi balandligini (santimetrda) koʻrsatadi. Eng yaxshi yaqinlashuv chizigʻi: <i>y</i> = 2,5<i>x</i> + 10. Bu chiziqqa koʻra ekilganidan 6 hafta keyin oʻsimlikning taxminiy balandligi necha santimetr?`,
+  m88: `Bir guruh oʻquvchilar uchun test bali <i>y</i> ning haftasiga televizor koʻrish soatlari <i>x</i> ga bogʻliqligini ifodalovchi eng yaxshi yaqinlashuv chizigʻi <i>y</i> = −0,8<i>x</i> + 92. Bu toʻgʻri chiziqning burchak koeffitsiyentini qaysi fikr eng yaxshi tushuntiradi?`,
+  m89: `<div class="tablescroll"><table>
+      <thead><tr><th><i>t</i></th><th>0</th><th>1</th><th>2</th><th>3</th></tr></thead>
+      <tbody><tr><th><i>f</i>(<i>t</i>)</th><td>5</td><td>15</td><td>45</td><td>135</td></tr></tbody></table></div>
+      Jadvalda <i>f</i> funksiyaning toʻrtta qiymati keltirilgan. Qaysi tenglama <i>f</i> ni ifodalashi mumkin?`,
+  m90: `Shaharda 20 000 kishi yashaydi. 400 nafar aholidan iborat tasodifiy tanlanmada 120 kishi yangi bogʻ qurilishini qoʻllab-quvvatlashini aytdi. Tanlanmaga koʻra shahar aholisidan taxminan necha kishi bogʻ qurilishini qoʻllab-quvvatlaydi?`,
+  m91: `Tasodifiy tanlanma asosidagi soʻrov shahar saylovchilarining 54% i taklifni qoʻllab-quvvatlashini koʻrsatdi, xatolik chegarasi 3 foiz punkt. Quyidagilardan qaysi biri taklifni qoʻllab-quvvatlovchi barcha saylovchilarning haqiqiy ulushi uchun ehtimolga yaqin qiymat?`,
+  m92: `Kattalarning oʻrtacha boʻyini baholash uchun tadqiqotchilar bir xil bosh toʻplamdan ikkita tasodifiy tanlanma oldi. A tanlanmada 100 kishi, B tanlanmada 900 kishi bor edi. Ikkala baho ham bir xil ishonch darajasida olingan. Xatolik chegaralari haqidagi qaysi fikr toʻgʻri boʻlishi ehtimoli yuqori?`,
+  m93: `Tadqiqotchi 200 nafar koʻngilli yigʻdi va ularni tasodifiy ravishda ikki guruhga ajratdi: bir yarmi har kuni bir piyola koʻk choy, ikkinchi yarmi bir piyola suv ichdi. Ikki oydan keyin koʻk choy ichgan guruh oʻrtacha past stress darajasini qayd etdi. Tadqiqot qaysi xulosani eng yaxshi tasdiqlaydi?`,
+  m94: `Shahardagi tasodifiy tanlangan 1 000 nafar katta yoshli kishi oʻrtasidagi soʻrov shuni koʻrsatdiki, it boqadiganlar it boqmaydiganlarga qaraganda haftasiga oʻrtacha koʻproq soat jismoniy mashq qiladi. Soʻrov qaysi xulosani eng yaxshi tasdiqlaydi?`,
+  m95: `Maktab direktori oʻquvchilar uy vazifasiga haftasiga oʻrtacha necha soat sarflashini baholamoqchi. Soʻrov uchun oʻquvchilarni tanlashning qaysi usuli xolis baho berishi ehtimoli yuqori?`,
+  m96: `Ikki toʻgʻri chiziq kesishib, toʻrtta burchak hosil qiladi. Burchaklardan biri 65° ga teng. Unga qoʻshni burchak necha gradus?`,
+  m97: `Ikki parallel toʻgʻri chiziq kesuvchi bilan kesilgan. Ikkita bir tomonli ichki burchak (3<i>x</i> + 10)° va (2<i>x</i> + 20)° ga teng. <i>x</i> nechaga teng?`,
+  m98: `Uchburchak burchaklari 2 : 3 : 4 nisbatda. Eng katta burchak necha gradus?`,
+  m99: `Muntazam koʻpburchakning har bir ichki burchagi 150° ga teng. Koʻpburchakning nechta tomoni bor?`,
+  m100: `Toʻgʻri burchakli uchburchakning katetlari 6 va 8 ga teng. Gipotenuza nechaga teng?`,
+  m101: `13 futlik narvon vertikal devorga suyab qoʻyilgan. Narvonning pastki uchi devor tagidan 5 fut uzoqlikda. Narvonning yuqori uchi devorga yerdan necha fut balandlikda tegadi?`,
+  m102: `Teng yonli toʻgʻri burchakli uchburchakning gipotenuzasi 8√2 ga teng. Uchburchakning yuzi qancha?`,
+  m103: `Burchaklari 30°, 60° va 90° boʻlgan uchburchakda 30° li burchak qarshisidagi tomon 5 ga teng. Uchburchakning perimetri qancha?`,
+  m104: `<i>ABC</i> toʻgʻri burchakli uchburchakda <i>C</i> burchak toʻgʻri, <i>AC</i> = 3, <i>BC</i> = 4 va <i>AB</i> = 5. sin <i>A</i> nechaga teng?`,
+  m105: `Agar sin(<i>x</i>°) = cos(40°) va 0 &lt; <i>x</i> &lt; 90 boʻlsa, <i>x</i> nechaga teng?`,
+  m106: `Toʻgʻri burchakli uchburchakda <i>A</i> burchak oʻtkir va tg <i>A</i> = 5/12. cos <i>A</i> nechaga teng?`,
+  m107: `<i>ABC</i> toʻgʻri burchakli uchburchakda <i>C</i> burchak toʻgʻri, <i>AB</i> = 20 va sin <i>A</i> = 0,6. <i>AC</i> ning uzunligi qancha?`,
+  m108: `Uchburchakning tomonlari 3, 4 va 5 ga teng. Unga oʻxshash uchburchakning eng kichik tomoni 9 ga teng. Uning eng katta tomoni qancha?`,
+  m109: `Kunning bir vaqtida boʻyi 6 fut boʻlgan odam 4 futlik soya, daraxt esa 30 futlik soya tashlaydi. Daraxtning balandligi necha fut?`,
+  m110: `<i>ABC</i> uchburchakda <i>D</i> nuqta <i>AB</i> tomonda, <i>E</i> nuqta <i>AC</i> tomonda yotadi va <i>DE</i> kesma <i>BC</i> tomonga parallel. Agar <i>AD</i> = 4, <i>DB</i> = 6 va <i>DE</i> = 5 boʻlsa, <i>BC</i> ning uzunligi qancha?`,
+  m111: `Ikki oʻxshash uchburchakning mos tomonlari 2 : 5 nisbatda. Kichik uchburchakning yuzi 12 ga teng. Katta uchburchakning yuzi qancha?`,
+  m112: `Toʻgʻri burchakli quti uzunligi 5 dyuym, eni 4 dyuym, balandligi 3 dyuym. Qutining hajmi necha kub dyuym?`,
+  m113: `Toʻgʻri doiraviy silindrning radiusi 3 ga, balandligi 10 ga teng. Silindrning hajmi qancha?`,
+  m114: `Kubning toʻla sirti 150 kvadrat santimetrga teng. Kubning hajmi necha kub santimetr?`,
+  m115: `Doiraning yuzi 49π ga teng. Aylana uzunligi qancha?`,
+  m116: `<i>xy</i> tekisligida aylananing markazi (2, −3) nuqtada va aylana (5, 1) nuqtadan oʻtadi. Qaysi tenglama bu aylanani ifodalaydi?`,
+  m117: `<i>x</i> ning qaysi qiymati 3<i>x</i> − 5 &gt; 10 tengsizlikning yechimi?`,
+  m118: `<i>f</i> chiziqli funksiya uchun <i>f</i>(2) = 11 va <i>f</i>(5) = 20. <i>f</i>(0) nechaga teng?`,
+  m119: `Agar 3(<i>x</i> + 4) = 5<i>x</i> − 6 boʻlsa, <i>x</i> nechaga teng?`,
+  m120: `Tarqalish diagrammasi <i>x</i> milyalik taksi safarlarining narxi <i>y</i> ni (dollarda) koʻrsatadi. Eng yaxshi yaqinlashuv chizigʻi: <i>y</i> = 2,1<i>x</i> + 3,5. Bu chiziqqa koʻra 10 milyalik safarning taxminiy narxi 4 milyalik safarnikidan necha dollar qimmat?`,
+  m121: `<i>h</i>(<i>t</i>) = −5<i>t</i><sup>2</sup> + 20<i>t</i> + 1 modeli toʻp otilganidan <i>t</i> soniya keyingi balandligini (metrda) baholaydi. Modelga koʻra toʻpning eng katta balandligi necha metr?`,
+  m122: `Fabrika har kuni 4 000 ta quti qadoqlaydi. Bir kunlik mahsulotdan olingan 50 ta qutidan iborat tasodifiy tanlanmada 3 tasi shikastlangan edi. Tanlanmaga koʻra oʻsha kungi 4 000 ta qutidan taxminan nechtasi shikastlangan?`,
+  m123: `X universitetining 500 nafar talabasidan iborat tasodifiy tanlanmada bir kechalik oʻrtacha uyqu davomiyligi 6,8 soat, xatolik chegarasi 0,3 soat boʻldi. Qaysi xulosa eng oʻrinli?`,
+  m124: `Kompaniya oʻz saytida tashrif buyuruvchilardan yangi logotip yoqadimi, deb soʻrovnoma joyladi. Ovoz berishni oʻzi tanlagan 2 000 kishidan 85% i logotip yoqishini aytdi. Nima uchun bu natija kompaniyaning barcha mijozlari fikrini aks ettirmasligi mumkinligini qaysi fikr eng yaxshi tushuntiradi?`,
+  m125: `Tadqiqotchilar bir hududdan tasodifiy ravishda 300 ta fermer xoʻjaligini tanladi. Ulardan 150 tasiga tasodifiy ravishda X oʻgʻitini ishlatish, qolgan 150 tasiga esa oʻgʻit ishlatmaslik belgilandi. X oʻgʻitini ishlatgan xoʻjaliklarda hosildorlik oʻrtacha yuqoriroq boʻldi. Tadqiqot qaysi xulosani eng yaxshi tasdiqlaydi?`
+};
+// Choices that contain words, in their ORIGINAL order (mapped through q.order after shuffling).
+const CH_UZ = {
+  m26: ['Santexnik bir soatlik ishining narxi', 'Har bir chaqiruv uchun belgilangan toʻlov', 'Bir soatlik chaqiruvning umumiy narxi', 'Chaqiruv davom etadigan soatlar soni'],
+  m59: ['Hech qancha', 'Roppa-rosa bitta', 'Roppa-rosa ikkita', 'Cheksiz koʻp'],
+  m60: ['Aholi har yili 5% ga oʻsadi.', 'Aholi har yili 1,05 kishiga oʻsadi.', 'Aholi har yili 60 kishiga oʻsadi.', '2020-yilda aholi 1 260 kishi boʻlgan.'],
+  m69: ['Hech qancha', 'Roppa-rosa bitta', 'Roppa-rosa ikkita', 'Cheksiz koʻp'],
+  m88: ['Haftasiga har bir qoʻshimcha soat televizor koʻrish taxminiy test balini 0,8 ga kamaytiradi.',
+        'Testdagi har bir qoʻshimcha ball taxminiy televizor koʻrish vaqtini 0,8 soatga kamaytiradi.',
+        'Televizor koʻrmaydigan oʻquvchi uchun taxminiy ball 0,8 ga teng.',
+        'Haftasiga har bir qoʻshimcha soat televizor koʻrish taxminiy test balini 92 ga kamaytiradi.'],
+  m92: ['B tanlanmaning xatolik chegarasi A tanlanmanikidan kichik.',
+        'B tanlanmaning xatolik chegarasi A tanlanmanikidan katta.',
+        'Ikkala xatolik chegarasi teng, chunki tanlanmalar bir xil bosh toʻplamdan olingan.',
+        'B tanlanmaning xatolik chegarasi A tanlanmanikidan 9 marta katta.'],
+  m93: ['Har kuni koʻk choy ichish koʻngillilarga oʻxshash odamlarda stressni kamaytirishi ehtimoli bor.',
+        'Har kuni koʻk choy ichish barcha kattalarda stressni kamaytiradi.',
+        'Koʻk choy ichish va stress oʻrtasida hech qanday bogʻliqlik yoʻq.',
+        'Stress darajasining pastligi odamlarni koʻproq koʻk choy ichishga undaydi.'],
+  m94: ['Shahardagi kattalar orasida it boqish koʻproq jismoniy mashq qilish bilan bogʻliq, lekin soʻrov it boqish koʻproq mashq qilishga sabab boʻlishini koʻrsatmaydi.',
+        'It boqish shahardagi kattalarni koʻproq jismoniy mashq qilishga majbur qiladi.',
+        'Koʻproq jismoniy mashq qilish shahardagi kattalarni it sotib olishga undaydi.',
+        'Shahardagi kattalar orasida it boqish va jismoniy mashq oʻrtasida hech qanday bogʻliqlik yoʻq.'],
+  m95: ['Maktabdagi barcha oʻquvchilar roʻyxatidan tasodifan tanlangan 100 nafar oʻquvchidan soʻrash',
+        'Darsdan keyin kutubxonada boʻlgan 100 nafar oʻquvchidan soʻrash',
+        'Ertalab maktabga birinchi kelgan 100 nafar oʻquvchidan soʻrash',
+        'Maktab matematika jamoasidagi barcha oʻquvchilardan soʻrash'],
+  m123: ['X universitetidagi barcha talabalarning oʻrtacha uyqu davomiyligi 6,5 va 7,1 soat oraligʻida boʻlishi ehtimoli bor.',
+         'X universitetidagi har bir talaba bir kechada 6,5 dan 7,1 soatgacha uxlaydi.',
+         'Barcha universitetlar talabalarining oʻrtacha uyqu davomiyligi 6,5 va 7,1 soat oraligʻida.',
+         'X universitetidagi barcha talabalarning oʻrtacha uyqu davomiyligi roppa-rosa 6,8 soat.'],
+  m124: ['Ovoz beruvchilar oʻzlarini oʻzlari tanlagan, shuning uchun ular barcha mijozlarga xos boʻlmasligi mumkin.',
+         '2 000 kishilik tanlanma biror xulosa chiqarish uchun juda kichik.',
+         'Soʻrovnoma natijalaridan foizni hisoblab boʻlmaydi.',
+         'Bosh toʻplam haqida faqat tajriba asosida xulosa chiqarish mumkin.'],
+  m125: ['X oʻgʻiti shu hududdagi fermer xoʻjaliklarida hosildorlikni oshirishi ehtimoli bor.',
+         'X oʻgʻiti dunyodagi barcha fermer xoʻjaliklarida hosildorlikni oshiradi.',
+         'Yuqori hosildorlik fermerlarni X oʻgʻitini tanlashga undaydi.',
+         'Tadqiqot X oʻgʻiti va hosildorlik oʻrtasida sababni emas, faqat bogʻliqlikni koʻrsatadi.']
+};
+const Q_L = { ru: Q_RU, uz: Q_UZ }, CH_L = { ru: CH_RU, uz: CH_UZ };
+const locQ = q => uiL() !== 'en' && !!Q_L[uiL()][q.id];
+const qText = q => locQ(q) ? Q_L[uiL()][q.id] : q.q;
+const qLang = q => locQ(q) ? uiL() : 'en';
+const chText = (q, k) => { const m = uiL() !== 'en' && CH_L[uiL()][q.id]; return m ? m[q.order ? q.order[k] : k] : q.ch[k]; };
 const modName = m => `${secName(m.sec)}, ${T('module')} ${m.k}`;
 function labelText(spec) {
   if (spec.type === 'full') return T('fullLabel');
   if (spec.type === 'missed') return T('missedLabel');
+  if (spec.type === 'bank') return T('bankLabel') + ' · ' + secName(spec.sec);
+  if (spec.type === 'quick') return T('quickLabel') + ' · ' + skillName(spec.skill);
   return (spec.sec === 'mix' ? T('mixed') : secName(spec.sec)) + (spec.diff !== 'any' ? ' · ' + diffName(spec.diff) : '') + (spec.ndoms ? T('domainsN')(spec.ndoms) : '');
 }
 function langSelect(id) {
-  const opts = [['en', 'English'], ['ru', 'Русский'], ['mix', 'English + объяснения на русском']];
+  const opts = [['en', 'English'], ['ru', 'Русский'], ['uz', 'Oʻzbekcha'], ['mix', 'English + объяснения на русском'], ['mixuz', 'English + oʻzbekcha izohlar']];
   return `<label class="sr-only" for="${id}">${T('langLabel')}</label><select class="langsel" id="${id}" aria-label="${T('langLabel')}">${opts.map(([v, l]) => `<option value="${v}" ${LANG === v ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
 }
 function wireLang(id) {
@@ -1532,6 +2608,7 @@ function wireLang(id) {
 let view = 'home';
 function rerender() {
   if (view === 'home') renderHome();
+  else if (view === 'bank') renderBank();
   else if (view === 'test') renderTest();
   else if (view === 'between') renderBetween();
   else if (view === 'results') renderResults();
@@ -1541,10 +2618,23 @@ function rerender() {
 const HKEY = 'scorebound-history-v1';
 function loadHistory() { try { return JSON.parse(localStorage.getItem(HKEY)) || []; } catch (e) { return []; } }
 function saveHistory(h) { try { localStorage.setItem(HKEY, JSON.stringify(h.slice(0, 8))); } catch (e) {} }
+// Per-question status for the question bank: 'c' = last answered correctly, 'w' = last answered wrong.
+const QKEY = 'scorebound-qstatus-v1';
+function loadStatus() { try { return JSON.parse(localStorage.getItem(QKEY)) || {}; } catch (e) { return {}; } }
+function saveStatus(rows) {
+  const st = loadStatus();
+  rows.forEach(r => { if (!r.skipped) st[r.q.id] = r.ok ? 'c' : 'w'; });
+  try { localStorage.setItem(QKEY, JSON.stringify(st)); } catch (e) {}
+}
 
 // ---------- state ----------
 const app = document.getElementById('app');
-const cfg = { sec: 'rw', timed: true, feedback: 'end', doms: new Set(), diff: 'any' };
+const cfg = { sec: 'rw', timed: true, ext: false, feedback: 'end', doms: new Set(), diff: 'any' };
+// Timing: 'Test pace' = SAT time per module/question; '+50% time' = the common SAT accommodation.
+const paceMult = () => cfg.timed && cfg.ext ? 1.5 : 1;
+const paceButtons = () => `<button data-timed="1" aria-pressed="${cfg.timed && !cfg.ext}">${T('testPace')}</button><button data-timed="ext" aria-pressed="${cfg.timed && cfg.ext}">${T('extended')}</button><button data-timed="0" aria-pressed="${!cfg.timed}">${T('untimed')}</button>`;
+const setPace = v => { cfg.timed = v !== '0'; cfg.ext = v === 'ext'; };
+const minStr = sec => { const v = String(+(sec / 60).toFixed(1)); return uiL() === 'en' ? v : v.replace('.', ','); };
 let S = null;
 let tick = null;
 let brkTick = null;
@@ -1650,7 +2740,7 @@ function renderHome() {
   const mods = full ? fullPlan() : null;
   const ids = full ? [] : planIds();
   const qCount = full ? 2 * (MODSIZE.rw + MODSIZE.math) : ids.length;
-  const totalLimit = full ? mods.reduce((t, m) => t + m.limit, 0) : limitFor(ids);
+  const totalLimit = (full ? mods.reduce((t, m) => t + m.limit, 0) : limitFor(ids)) * paceMult();
   const hist = loadHistory();
   const domList = (cfg.sec === 'mix' || full) ? [...SECTIONS.rw.doms, ...SECTIONS.math.doms] : SECTIONS[cfg.sec].doms;
   const count = d => BANK.filter(q => q.dom === d && (cfg.diff === 'any' || q.d === cfg.diff)).length;
@@ -1663,6 +2753,7 @@ function renderHome() {
   app.innerHTML = `
   <div class="wrap">
     <header class="topbar">${brand}<div class="topbar-right"><small>${T('tagline')}</small>${langSelect('langHome')}</div></header>
+    ${tabsNav('home')}
     <section class="hero">
       <div>
         <h1>${T('heroH')}</h1>
@@ -1690,7 +2781,7 @@ function renderHome() {
         ${full ? `<div class="field">
           <span class="eyebrow">${T('structure')}</span>
           <ol class="modout">
-            ${mods.map((m, k) => `${k === 2 ? `<li class="brk"><span>${T('brk')}</span><span class="num">10 ${T('min')}</span></li>` : ''}<li><span>${modName(m)}${m.adaptive ? T('adaptive') : ''}</span><span class="num">${MODSIZE[m.sec]} ${T('qShort')} · ${m.limit / 60} ${T('min')}</span></li>`).join('')}
+            ${mods.map((m, k) => `${k === 2 ? `<li class="brk"><span>${T('brk')}</span><span class="num">10 ${T('min')}</span></li>` : ''}<li><span>${modName(m)}${m.adaptive ? T('adaptive') : ''}</span><span class="num">${MODSIZE[m.sec]} ${T('qShort')} · ${minStr(m.limit * paceMult())} ${T('min')}</span></li>`).join('')}
           </ol>
           <p class="note">${T('fullNote')}</p>
         </div>` : `<div class="field">
@@ -1700,7 +2791,7 @@ function renderHome() {
           </div>
         </div>`}
         <div class="field opts">
-          ${seg(T('timer'), `<button data-timed="1" aria-pressed="${cfg.timed}">${T('testPace')}</button><button data-timed="0" aria-pressed="${!cfg.timed}">${T('untimed')}</button>`)}
+          ${seg(T('timer'), paceButtons())}
           ${seg(T('showAns'), `<button data-fb="end" aria-pressed="${cfg.feedback === 'end'}">${T('atEnd')}</button><button data-fb="each" aria-pressed="${cfg.feedback === 'each'}">${T('afterEach')}</button>`)}
           ${full ? '' : seg(T('difficulty'), ['any', 'E', 'M', 'H'].map(v => `<button data-diff="${v}" aria-pressed="${cfg.diff === v}">${v === 'any' ? T('anyDiff') : diffName(v)}</button>`).join(''))}
         </div>
@@ -1722,9 +2813,10 @@ function renderHome() {
   </div>`;
 
   wireLang('langHome');
+  wireTabs();
   app.querySelectorAll('[data-sec]').forEach(b => b.onclick = () => { cfg.sec = b.dataset.sec; cfg.doms.clear(); renderHome(); });
   app.querySelectorAll('[data-dom]').forEach(b => b.onclick = () => { const d = b.dataset.dom; cfg.doms.has(d) ? cfg.doms.delete(d) : cfg.doms.add(d); renderHome(); });
-  app.querySelectorAll('[data-timed]').forEach(b => b.onclick = () => { cfg.timed = b.dataset.timed === '1'; renderHome(); });
+  app.querySelectorAll('[data-timed]').forEach(b => b.onclick = () => { setPace(b.dataset.timed); renderHome(); });
   app.querySelectorAll('[data-fb]').forEach(b => b.onclick = () => { cfg.feedback = b.dataset.fb; renderHome(); });
   app.querySelectorAll('[data-diff]').forEach(b => b.onclick = () => { cfg.diff = b.dataset.diff; renderHome(); });
   document.getElementById('startBtn').onclick = () => full
@@ -1733,10 +2825,165 @@ function renderHome() {
   window.scrollTo(0, 0);
 }
 
+// ---------- question bank ----------
+// Subtopics (skills) per topic (domain), in the order they first appear in the bank.
+const SKILLS = {};
+BANK.forEach(q => { const l = SKILLS[q.dom] || (SKILLS[q.dom] = []); if (!l.includes(q.skill)) l.push(q.skill); });
+const secSkills = sec => SECTIONS[sec].doms.flatMap(d => SKILLS[d] || []);
+const DORD = { E: 0, M: 1, H: 2 };
+const bcfg = { sec: 'rw', skills: new Set(secSkills('rw')), diffs: new Set(['E', 'M', 'H']), status: 'all', size: 10 };
+const escHtml = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+function tabsNav(cur) {
+  return `<nav class="tabs">${[['home', T('tabPractice')], ['bank', T('tabBank')]].map(([k, l]) =>
+    `<button data-tab="${k}" ${cur === k ? 'aria-current="page"' : ''}>${l}</button>`).join('')}</nav>`;
+}
+function wireTabs() { app.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => b.dataset.tab === 'bank' ? renderBank() : renderHome()); }
+const fromBank = () => S && S.spec && (S.spec.type === 'bank' || S.spec.type === 'quick');
+function goHome() { fromBank() ? renderBank() : renderHome(); }
+const sortBank = (a, b) => domOrder(a) - domOrder(b) || SKILLS[a.dom].indexOf(a.skill) - SKILLS[b.dom].indexOf(b.skill) || DORD[a.d] - DORD[b.d];
+function bankList(st, anySkill) {
+  return BANK.filter(q => q.sec === bcfg.sec && bcfg.diffs.has(q.d) && (anySkill || bcfg.skills.has(q.skill)) &&
+      (bcfg.status === 'all' || (bcfg.status === 'new' ? !st[q.id] : st[q.id] === bcfg.status)))
+    .sort(sortBank);
+}
+// Pick a short test: missed questions first, then untried, then ones already answered correctly.
+function pickQuick(qs, n, st) {
+  if (n === 'all' || n >= qs.length) return qs.slice().sort(sortBank).map(q => q.id);
+  const group = k => shuffle(qs.filter(q => (st[q.id] || 'n') === k));
+  return [...group('w'), ...group('n'), ...group('c')].slice(0, n).sort(sortBank).map(q => q.id);
+}
+const QUICK_N = 5;
+function startQuick(skill) {
+  const ids = pickQuick(BANK.filter(q => q.skill === skill), QUICK_N, loadStatus());
+  startSession([{ sec: byId[ids[0]].sec, k: 0, ids, limit: limitFor(ids) }], { type: 'quick', skill }, false);
+}
+// Subtopics with at least one miss, weakest first. stats: [{ s, c, t }]
+const weakSort = list => list.filter(w => w.c < w.t).sort((a, b) => a.c / a.t - b.c / b.t || b.t - a.t);
+function weakFromStatus(st) {
+  const m = {};
+  BANK.forEach(q => { const v = st[q.id]; if (!v) return; const w = m[q.skill] || (m[q.skill] = { s: q.skill, c: 0, t: 0 }); w.t++; if (v === 'c') w.c++; });
+  return weakSort(Object.values(m));
+}
+function weakList(items) {
+  return `<ul class="weaklist">${items.map(w => {
+    const p = Math.round(100 * w.c / w.t);
+    const n = Math.min(QUICK_N, BANK.filter(q => q.skill === w.s).length);
+    return `<li><div class="dom"><div class="row"><span>${skillName(w.s)}</span><span>${w.c}/${w.t}</span></div>
+      <div class="bar"><i class="${p < 60 ? 'weak' : ''}" style="width:${Math.max(p, 2)}%"></i></div></div>
+      <button class="btn btn-sm" data-quick="${w.s}">${T('quickN')(n)}</button></li>`; }).join('')}</ul>`;
+}
+const wireQuick = () => app.querySelectorAll('[data-quick]').forEach(b => b.onclick = () => startQuick(b.dataset.quick));
+const BANK_KEYS = ['data-bsec', 'data-bdom', 'data-bskill', 'data-bdiff', 'data-bst', 'data-timed', 'data-fb', 'data-ball', 'data-bsize'];
+function renderBank() {
+  // Keep keyboard focus on the same control across re-renders.
+  const ae = document.activeElement;
+  const fk = ae && BANK_KEYS.find(k => ae.hasAttribute && ae.hasAttribute(k));
+  const fsel = fk ? `[${fk}="${CSS.escape(ae.getAttribute(fk))}"]` : null;
+  const entering = view !== 'bank';
+  view = 'bank';
+  stopTimer();
+  if (brkTick) { clearInterval(brkTick); brkTick = null; }
+  S = null;
+  const st = loadStatus();
+  const list = bankList(st);
+  const base = bankList(st, true);
+  const nSkill = s => base.filter(q => q.skill === s).length;
+  const preview = q => q.sec === 'rw' && q.passage ? stripTags(q.passage.split(B).join(' ____ ')) : stripTags(qText(q).replace(/<div class="tablescroll">[\s\S]*?<\/div>/, ''));
+  const seg = (label, items) => `<div><span class="eyebrow" style="display:block;margin-bottom:8px">${label}</span>
+    <div class="seg" role="group" aria-label="${label}">${items}</div></div>`;
+  const stLabel = { c: T('stRight'), w: T('stWrong') };
+  const weak = weakFromStatus(st);
+  const testN = bcfg.size === 'all' ? list.length : Math.min(bcfg.size, list.length);
+
+  app.innerHTML = `
+  <div class="wrap">
+    <header class="topbar">${brand}<div class="topbar-right"><small>${T('tagline')}</small>${langSelect('langBank')}</div></header>
+    ${tabsNav('bank')}
+    <section class="qb-head">
+      <h1>${T('bankH')}</h1>
+      <p>${T('bankP')(BANK.length)}</p>
+    </section>
+    <div class="qb-grid">
+      <aside class="panel qb-side">
+        <div class="secpick" role="radiogroup" aria-label="${T('section')}">
+          ${['rw', 'math'].map(k => `<button class="seccard" role="radio" aria-checked="${bcfg.sec === k}" data-bsec="${k}"><b>${secName(k)}</b><span>${T('nQuestions')(BANK.filter(q => q.sec === k).length)}</span></button>`).join('')}
+        </div>
+        <div class="field">
+          <div class="treehead"><span class="eyebrow">${T('topics')}</span>
+            <span class="lnk"><button class="linkbtn" data-ball="1">${T('selAll')}</button><button class="linkbtn" data-ball="0">${T('clear')}</button></span></div>
+          <ul class="tree">
+            ${SECTIONS[bcfg.sec].doms.map(d => {
+              const sk = SKILLS[d] || [];
+              const on = sk.filter(s => bcfg.skills.has(s)).length;
+              return `<li class="tdom">
+                <label class="tcheck"><input type="checkbox" data-bdom="${d}" ${on === sk.length ? 'checked' : ''} data-ind="${on > 0 && on < sk.length ? 1 : 0}"><span>${domName(d)}</span><span class="num">${base.filter(q => q.dom === d).length}</span></label>
+                <ul class="tskills">${sk.map(s => `<li><label class="tcheck ${nSkill(s) ? '' : 'zero'}"><input type="checkbox" data-bskill="${s}" ${bcfg.skills.has(s) ? 'checked' : ''}><span>${skillName(s)}</span><span class="num">${nSkill(s)}</span></label></li>`).join('')}</ul>
+              </li>`; }).join('')}
+          </ul>
+        </div>
+        <div class="field">${seg(T('difficulty'), ['E', 'M', 'H'].map(v => `<button data-bdiff="${v}" aria-pressed="${bcfg.diffs.has(v)}">${diffName(v)}</button>`).join(''))}</div>
+        <div class="field">${seg(T('status'), [['all', 'stAll'], ['new', 'stNew'], ['w', 'stWrong'], ['c', 'stRight']].map(([v, k]) => `<button data-bst="${v}" aria-pressed="${bcfg.status === v}">${T(k)}</button>`).join(''))}
+          <p class="note" style="margin:8px 0 0;font-size:12px">${T('statusNote')}</p></div>
+      </aside>
+      <section aria-labelledby="qb-n">
+        <section class="panel weakbox" aria-labelledby="weak-h">
+          <h2 id="weak-h">${T('weakH')}</h2>
+          ${weak.length ? `<p>${T('weakSub')}</p>${weakList(weak.slice(0, 5))}` : `<p>${T('weakEmpty')}</p>`}
+        </section>
+        <div class="qb-tools">
+          <h2 id="qb-n">${T('nQuestions')(list.length)}</h2>
+          <button class="btn btn-pencil" id="bankStart" ${list.length ? '' : 'disabled'}>${T('practiceN')(testN)}</button>
+        </div>
+        ${testN < list.length ? `<p class="note" style="margin:-6px 0 14px">${T('priorityNote')}</p>` : ''}
+        <div class="qb-opts">
+          ${seg(T('testSize'), [5, 10, 'all'].map(v => `<button data-bsize="${v}" aria-pressed="${bcfg.size === v}">${v === 'all' ? T('allQ') : v}</button>`).join(''))}
+          ${seg(T('timer'), paceButtons())}
+          ${seg(T('showAns'), `<button data-fb="end" aria-pressed="${cfg.feedback === 'end'}">${T('atEnd')}</button><button data-fb="each" aria-pressed="${cfg.feedback === 'each'}">${T('afterEach')}</button>`)}
+        </div>
+        ${list.length ? `<ol class="qlist">${list.map((q, i) => `
+          <li><button class="qrow" data-bq="${i}">
+            <span class="n">${i + 1}</span>
+            <span class="tl"><span>${domName(q.dom)} · ${skillName(q.skill)} · ${diffName(q.d)}</span></span>
+            <span class="side">
+              <span class="dbars" aria-hidden="true">${[0, 1, 2].map(k => `<i class="${k <= DORD[q.d] ? 'on' : ''}"></i>`).join('')}</span>
+              <span class="qst ${st[q.id] || ''}" aria-hidden="true">${st[q.id] === 'c' ? '✓' : st[q.id] === 'w' ? '✕' : ''}</span>
+              ${st[q.id] ? `<span class="sr-only">${stLabel[st[q.id]]}</span>` : ''}
+            </span>
+            <span class="pv" lang="${q.sec === 'rw' ? 'en' : qLang(q)}">${escHtml(preview(q).slice(0, 240))}</span>
+          </button></li>`).join('')}</ol>`
+        : `<div class="empty">${T('noMatch')}</div>`}
+      </section>
+    </div>
+  </div>`;
+
+  wireLang('langBank');
+  wireTabs();
+  app.querySelectorAll('[data-ind="1"]').forEach(el => el.indeterminate = true);
+  app.querySelectorAll('[data-bsec]').forEach(b => b.onclick = () => { bcfg.sec = b.dataset.bsec; bcfg.skills = new Set(secSkills(bcfg.sec)); renderBank(); });
+  app.querySelectorAll('[data-ball]').forEach(b => b.onclick = () => { bcfg.skills = new Set(b.dataset.ball === '1' ? secSkills(bcfg.sec) : []); renderBank(); });
+  app.querySelectorAll('[data-bdom]').forEach(el => el.onchange = () => {
+    (SKILLS[el.dataset.bdom] || []).forEach(s => el.checked ? bcfg.skills.add(s) : bcfg.skills.delete(s)); renderBank(); });
+  app.querySelectorAll('[data-bskill]').forEach(el => el.onchange = () => {
+    el.checked ? bcfg.skills.add(el.dataset.bskill) : bcfg.skills.delete(el.dataset.bskill); renderBank(); });
+  app.querySelectorAll('[data-bdiff]').forEach(b => b.onclick = () => { const v = b.dataset.bdiff; bcfg.diffs.has(v) ? bcfg.diffs.delete(v) : bcfg.diffs.add(v); renderBank(); });
+  app.querySelectorAll('[data-bst]').forEach(b => b.onclick = () => { bcfg.status = b.dataset.bst; renderBank(); });
+  app.querySelectorAll('[data-timed]').forEach(b => b.onclick = () => { setPace(b.dataset.timed); renderBank(); });
+  app.querySelectorAll('[data-fb]').forEach(b => b.onclick = () => { cfg.feedback = b.dataset.fb; renderBank(); });
+  app.querySelectorAll('[data-bsize]').forEach(b => b.onclick = () => { const v = b.dataset.bsize; bcfg.size = v === 'all' ? 'all' : Number(v); renderBank(); });
+  wireQuick();
+  const go = (ids, at) => startSession([{ sec: bcfg.sec, k: 0, ids, limit: limitFor(ids) }], { type: 'bank', sec: bcfg.sec }, false, at);
+  document.getElementById('bankStart').onclick = () => go(pickQuick(list, bcfg.size, st), 0);
+  app.querySelectorAll('[data-bq]').forEach(b => b.onclick = () => go(list.map(q => q.id), Number(b.dataset.bq)));
+  if (fsel) { const el = app.querySelector(fsel); if (el) el.focus(); }
+  if (entering) window.scrollTo(0, 0);
+}
+
 // ---------- session ----------
-function startSession(mods, spec, full) {
-  S = { mods, m: 0, full: !!full, ids: mods[0].ids, limit: mods[0].limit, spec,
-        i: 0, answers: {}, marked: new Set(), struck: {}, checked: new Set(),
+function startSession(mods, spec, full, at = 0) {
+  const mult = paceMult();
+  mods.forEach(m => { m.limit = Math.round(m.limit * mult); });
+  S = { mult, qtime: {}, timerHidden: false, warned: false, toastUntil: 0, mods, m: 0, full: !!full, ids: mods[0].ids, limit: mods[0].limit, spec,
+        i: at, answers: {}, marked: new Set(), struck: {}, checked: new Set(),
         timed: cfg.timed, feedback: cfg.feedback, elapsed: 0, used: 0, nav: false, exitAsk: false,
         usedIds: new Set(mods.flatMap(m => m.ids || [])) };
   startTimer();
@@ -1747,15 +2994,33 @@ function startTimer() {
   stopTimer();
   let last = Date.now();
   tick = setInterval(() => {
-    const now = Date.now(); S.elapsed += (now - last) / 1000; last = now;
-    if (!S.timed) return;
+    const now = Date.now(), dt = (now - last) / 1000; last = now;
+    S.elapsed += dt;
+    if (view === 'test' && S.ids) { const id = S.ids[S.i]; S.qtime[id] = (S.qtime[id] || 0) + dt; }
     const t = document.getElementById('timer');
+    if (!S.timed) { if (t) t.textContent = fmt(S.elapsed); return; }
     const rem = S.limit - S.elapsed;
+    // Like the real test: with 5 minutes left the timer comes back (and can't be hidden) and a notice appears.
+    if (rem <= 300 && !S.warned && S.limit > 300) {
+      S.warned = true; S.timerHidden = false; S.toastUntil = now + 8000;
+      if (t) t.hidden = false;
+      const tb = document.getElementById('timerToggle'); if (tb) { tb.disabled = true; tb.textContent = T('hideT'); }
+      const ts = document.getElementById('toast'); if (ts) ts.textContent = T('fiveLeft');
+    }
+    if (S.toastUntil && now > S.toastUntil) { S.toastUntil = 0; const ts = document.getElementById('toast'); if (ts) ts.textContent = ''; }
     if (t) { t.textContent = fmt(rem); t.classList.toggle('low', rem <= 60); }
-    if (rem <= 0) finish();
+    if (rem <= 0) { S.mods[S.m].timedOut = true; finish(); }
   }, 250);
 }
 function stopTimer() { if (tick) clearInterval(tick); tick = null; }
+function timerHtml() {
+  const rem = S.limit - S.elapsed;
+  const locked = S.timed && rem <= 300 && S.limit > 300;   // last 5 minutes: always visible
+  const hide = S.timerHidden && !locked;
+  const shown = S.timed ? fmt(rem) : fmt(S.elapsed);
+  return `<span class="timer num ${S.timed && rem <= 60 ? 'low' : ''}" id="timer" ${hide ? 'hidden' : ''} ${S.timed ? '' : `aria-label="${T('elapsedL')}" title="${T('elapsedL')}"`}>${shown}</span>
+    <button class="linkbtn tbtn" id="timerToggle" ${locked ? 'disabled' : ''}>${hide ? T('showT') : T('hideT')}</button>`;
+}
 const sessionTitle = () => S.full ? modName(S.mods[S.m]) : labelText(S.spec);
 
 function renderTest() {
@@ -1805,7 +3070,7 @@ function renderTest() {
   app.innerHTML = `
   <div class="testbar">
     <div class="secname">${sessionTitle()}<small>${sec} · ${domName(q.dom)}</small></div>
-    <div class="timer-wrap">${S.timed ? `<span class="timer num" id="timer">${fmt(S.limit - S.elapsed)}</span>` : `<span class="eyebrow">${T('untimed')}</span>`}</div>
+    <div class="timer-wrap">${timerHtml()}</div>
     <div class="right">
       ${langSelect('langTest')}
       ${S.exitAsk
@@ -1813,6 +3078,7 @@ function renderTest() {
         : `<button class="linkbtn" id="exitBtn">${T('exit')}</button>`}
     </div>
   </div>
+  <div class="toast" id="toast" role="status" aria-live="polite">${S.toastUntil > Date.now() ? T('fiveLeft') : ''}</div>
   <div class="qwrap ${q.passage ? 'split' : 'solo'}">
     ${q.passage ? `<article class="passage" aria-label="${T('passage')}" lang="en">${q.passage}</article>` : ''}
     <section class="qpane" aria-label="${T('questionN')(S.i + 1)}">
@@ -1878,8 +3144,9 @@ function renderTest() {
   const cb = document.getElementById('checkBtn'); if (cb) cb.onclick = check;
   app.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { S.i = +b.dataset.go; S.nav = false; renderTest(); });
   const sb = document.getElementById('submitBtn'); if (sb) sb.onclick = finish;
+  const tt = document.getElementById('timerToggle'); if (tt) tt.onclick = () => { S.timerHidden = !S.timerHidden; renderTest(); };
   const eb = document.getElementById('exitBtn'); if (eb) eb.onclick = () => { S.exitAsk = true; renderTest(); };
-  const ey = document.getElementById('exitYes'); if (ey) ey.onclick = renderHome;
+  const ey = document.getElementById('exitYes'); if (ey) ey.onclick = goHome;
   const en = document.getElementById('exitNo'); if (en) en.onclick = () => { S.exitAsk = false; renderTest(); };
 }
 function canCheckNow() { const id = S.ids[S.i]; const a = S.answers[id]; return S.feedback === 'each' && !S.checked.has(id) && a !== undefined && a !== ''; }
@@ -1926,11 +3193,18 @@ function betweenModules() {
       const el = document.getElementById('brk');
       const left = (S.breakEnds - Date.now()) / 1000;
       if (el) el.textContent = left > 0 ? fmt(left) : T('breakOver');
-      if (left <= 0) { clearInterval(brkTick); brkTick = null; }
+      if (left <= 0) { clearInterval(brkTick); brkTick = null; if (view === 'between') startNextModule(); }
     }, 500);
   }
   renderBetween();
   window.scrollTo(0, 0);
+}
+function startNextModule() {
+  if (brkTick) { clearInterval(brkTick); brkTick = null; }
+  S.between = false; S.breakEnds = null; S.m++;
+  const n = S.mods[S.m];
+  Object.assign(S, { ids: n.ids, limit: n.limit, elapsed: 0, i: 0, nav: false, exitAsk: false, warned: false, toastUntil: 0 });
+  startTimer(); renderTest(); window.scrollTo(0, 0);
 }
 function renderBetween() {
   view = 'between';
@@ -1943,21 +3217,17 @@ function renderBetween() {
     <section class="between">
       <div class="eyebrow">${T('modSubmitted')(S.m + 1, S.mods.length)}</div>
       <h1>${T('complete')(modName(cur))}</h1>
+      ${cur.timedOut ? `<p class="timeup" role="status">${T('timeUpMod')}</p>` : ''}
       <p>${T('answeredOf')(answered, cur.ids.length)}${next.adaptive ? T('nextChosen') : ''}</p>
-      ${S.breakEnds ? `<div class="breakbox"><div><span class="eyebrow">${T('brk')}</span><p>${T('breakText')}</p></div><span class="timer num" id="brk">${left > 0 ? fmt(left) : T('breakOver')}</span></div>` : ''}
-      <ol class="modout">${S.mods.map((m, k) => `<li class="${k <= S.m ? 'done' : k === S.m + 1 ? 'next' : ''}"><span>${modName(m)}</span><span class="num">${k <= S.m ? T('submitted') : (k === S.m + 1 ? T('upNext') : '') + m.limit / 60 + ' ' + T('min')}</span></li>`).join('')}</ol>
+      ${S.breakEnds ? `<div class="breakbox"><div><span class="eyebrow">${T('brk')}</span><p>${T('breakText')} ${T('breakAuto')}</p></div><span class="timer num" id="brk">${left > 0 ? fmt(left) : T('breakOver')}</span></div>` : ''}
+      <ol class="modout">${S.mods.map((m, k) => `<li class="${k <= S.m ? 'done' : k === S.m + 1 ? 'next' : ''}"><span>${modName(m)}</span><span class="num">${k <= S.m ? T('submitted') : (k === S.m + 1 ? T('upNext') : '') + minStr(m.limit) + ' ' + T('min')}</span></li>`).join('')}</ol>
       <div class="actions"><button class="btn btn-pencil" id="nextMod">${T('startMod')(modName(next))}</button><button class="linkbtn" id="endFull">${T('endTest')}</button></div>
       <p class="note">${T('endNote')}</p>
     </section>
   </div>`;
   wireLang('langBetween');
   const clearBrk = () => { if (brkTick) { clearInterval(brkTick); brkTick = null; } };
-  document.getElementById('nextMod').onclick = () => {
-    clearBrk(); S.between = false; S.breakEnds = null; S.m++;
-    const n = S.mods[S.m];
-    Object.assign(S, { ids: n.ids, limit: n.limit, elapsed: 0, i: 0, nav: false, exitAsk: false });
-    startTimer(); renderTest(); window.scrollTo(0, 0);
-  };
+  document.getElementById('nextMod').onclick = startNextModule;
   document.getElementById('endFull').onclick = () => {
     clearBrk(); S.between = false; S.done = true;
     S.mods.forEach((m, k) => { if (m.adaptive && !m.ids) buildAdaptive(k); });
@@ -1985,6 +3255,7 @@ function finalizeResults() {
                  correct: R.correct, total: R.rows.length,
                  scores: (R.total ? [{ k: T('totalShort'), v: R.total }] : []).concat(R.scores.map(s => ({ k: secShort(s.key), v: s.v }))) });
   saveHistory(hist);
+  saveStatus(R.rows);
   renderResults();
   window.scrollTo(0, 0);
 }
@@ -1995,8 +3266,22 @@ function renderResults() {
   const byDom = {};
   rows.forEach(r => { const d = byDom[r.q.dom] || (byDom[r.q.dom] = { c: 0, t: 0 }); d.t++; if (r.ok) d.c++; });
   const missed = rows.filter(r => !r.ok).map(r => r.q.id);
+  const bySkill = {};
+  rows.forEach(r => { const w = bySkill[r.q.skill] || (bySkill[r.q.skill] = { s: r.q.skill, c: 0, t: 0 }); w.t++; if (r.ok) w.c++; });
+  const sessWeak = weakSort(Object.values(bySkill));
+  // Pacing: average time per question vs SAT pace (71 s R&W, 95 s Math, scaled for +50% time).
+  const qt = S.qtime || {};
+  const target = q => SECTIONS[q.sec].perQ * (S.mult || 1);
+  const pace = ['rw', 'math'].map(sec => {
+    const rs = rows.filter(r => r.q.sec === sec);
+    if (!rs.length) return null;
+    const avg = rs.reduce((t, r) => t + (qt[r.q.id] || 0), 0) / rs.length;
+    return { sec, avg, target: SECTIONS[sec].perQ * (S.mult || 1) };
+  }).filter(Boolean);
+  const isSlow = q => (qt[q.id] || 0) > 2 * target(q);
+  const slowCount = rows.filter(r => isSlow(r.q)).length;
   const modLine = k => S.full ? S.mods.filter(m => m.sec === k).map(m =>
-      `${uiL() === 'ru' ? 'Модуль' : 'Module'} ${m.k}${m.route ? T(m.route === 'hard' ? 'harder' : 'easier') : ''}: ${m.ids.filter(id => isCorrect(byId[id], S.answers[id])).length}/${m.ids.length}`).join(' · ') : '';
+      `${T('modCap')} ${m.k}${m.route ? T(m.route === 'hard' ? 'harder' : 'easier') : ''}: ${m.ids.filter(id => isCorrect(byId[id], S.answers[id])).length}/${m.ids.length}`).join(' · ') : '';
   const pct = Math.round(100 * correct / rows.length);
   const ansText = (q, a) => (a === undefined || a === '') ? '—' : q.spr !== undefined ? a : letter(a);
   const card = (label, v, frac, pctPos, ticks, line) => `
@@ -2010,11 +3295,12 @@ function renderResults() {
 
   app.innerHTML = `
   <div class="wrap">
-    <header class="topbar">${brand}<div class="topbar-right">${langSelect('langRes')}<button class="linkbtn" id="homeBtn">${T('backSetup')}</button></div></header>
+    <header class="topbar">${brand}<div class="topbar-right">${langSelect('langRes')}<button class="linkbtn" id="homeBtn">${fromBank() ? T('backBank') : T('backSetup')}</button></div></header>
     <section class="res-head">
       <div>
         <div class="eyebrow">${labelText(S.spec)}${T('resultsSuffix')}</div>
         <h1 style="margin-top:8px">${T('headline')(pct)}</h1>
+        ${S.mods.some(m => m.timedOut) ? `<p class="timeup" role="status" style="margin-top:12px">${T('timeUpRes')}</p>` : ''}
         <p>${T('youAnswered')(correct, rows.length, pct)} ${S.full ? T('fullScoreNote') : T('scoreNote')}</p>
       </div>
       <div class="scorecards">
@@ -2033,6 +3319,18 @@ function renderResults() {
         ${Object.entries(byDom).map(([d, v]) => { const p = Math.round(100 * v.c / v.t); return `
           <div class="dom"><div class="row"><span>${domName(d)}</span><span>${v.c}/${v.t}</span></div>
           <div class="bar"><i class="${p < 60 ? 'weak' : ''}" style="width:${Math.max(p, 2)}%"></i></div></div>`; }).join('')}
+        <div class="weaksess">
+          <h3 class="weakhead">${T('pacing')}</h3>
+          ${pace.map(p => `<div class="dom" style="margin-top:12px"><div class="row"><span>${secName(p.sec)}</span><span>${fmt(p.avg)} ${T('perQShort')}</span></div>
+            <div class="pbar"><i class="${p.avg > p.target ? 'weak' : ''}" style="width:${Math.max(2, Math.min(100, Math.round(50 * p.avg / p.target)))}%"></i></div>
+            <p class="weaksub" style="margin-top:6px">${T('paceLine')(fmt(p.target), p.avg <= p.target)}</p></div>`).join('')}
+          ${slowCount ? `<p class="weaksub" style="margin-top:10px">${T('slowN')(slowCount)}</p>` : ''}
+        </div>
+        ${sessWeak.length ? `<div class="weaksess">
+          <h3 class="weakhead">${T('weakSessH')}</h3>
+          <p class="weaksub">${T('weakSessSub')}</p>
+          ${weakList(sessWeak.slice(0, 4))}
+        </div>` : ''}
         <div class="actions">
           ${missed.length ? `<button class="btn btn-pencil" id="retryBtn">${T('retry')(missed.length)}</button>` : ''}
           <button class="btn" id="newBtn">${T('newSession')}</button>
@@ -2047,7 +3345,7 @@ function renderResults() {
                 <span class="mark ${r.ok ? 'ok' : r.skipped ? 'skip' : 'no'}" aria-label="${r.ok ? T('correctS') : r.skipped ? T('skipped') : T('incorrect')}">${r.ok ? '✓' : r.skipped ? '–' : '✕'}</span>
                 <span class="num qn" style="color:var(--muted)">Q${k + 1}</span>
                 <span class="t">${skillName(r.q.skill)} (${diffName(r.q.d)}): <span lang="${qLang(r.q)}">${stripTags(qText(r.q)).slice(0, 90)}</span></span>
-                <span class="pair">${T('youKey')(ansText(r.q, r.a), keyText(r.q))}</span>
+                <span class="pair">${T('youKey')(ansText(r.q, r.a), keyText(r.q))} · <span class="${isSlow(r.q) ? 'slowt' : ''}">${fmt(qt[r.q.id] || 0)}</span></span>
               </summary>
               <div class="body">
                 <div style="margin-bottom:8px" lang="${qLang(r.q)}">${qText(r.q)}</div>
@@ -2060,8 +3358,9 @@ function renderResults() {
     </div>
   </div>`;
   wireLang('langRes');
-  document.getElementById('homeBtn').onclick = renderHome;
-  document.getElementById('newBtn').onclick = renderHome;
+  document.getElementById('homeBtn').onclick = goHome;
+  document.getElementById('newBtn').onclick = goHome;
+  wireQuick();
   const rb = document.getElementById('retryBtn');
   if (rb) rb.onclick = () => startSession([{ sec: null, k: 0, ids: missed, limit: limitFor(missed) }], { type: 'missed' });
 }
