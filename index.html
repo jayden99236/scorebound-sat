@@ -1,0 +1,2073 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Free digital SAT practice: 147 original questions, an adaptive full-length test, estimated scores, and explanations in English or Russian.">
+<style>
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font: 14px/1.5 system-ui, sans-serif; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>Scorebound SAT Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a test-booklet desk. Home = setup sheet + score log; test = passage | question split with a fixed answer bar; results = score scale + domain bars + review. */
+:root {
+  --paper: #F5F6FA;
+  --surface: #FFFFFF;
+  --ink: #16213A;
+  --muted: #5B6478;
+  --line: #DCE0EA;
+  --pencil: #F2B705;
+  --pencil-ink: #3A2C00;
+  --pencil-soft: #FFF3C4;
+  --navy: #22346B;
+  --good: #1D7F55;
+  --good-soft: #E1F3EA;
+  --bad: #B83A26;
+  --bad-soft: #FBE7E3;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Public Sans", "Segoe UI", system-ui, sans-serif;
+  --f-read: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-mono: "JetBrains Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0F1422; --surface: #171E30; --ink: #E6EAF4; --muted: #9AA3B8; --line: #2A3350;
+    --pencil: #F5C842; --pencil-ink: #241B00; --pencil-soft: #3A3215; --navy: #9DB2F2;
+    --good: #4CC48E; --good-soft: #15342A; --bad: #F08A76; --bad-soft: #3D1F1A; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0F1422; --surface: #171E30; --ink: #E6EAF4; --muted: #9AA3B8; --line: #2A3350;
+  --pencil: #F5C842; --pencil-ink: #241B00; --pencil-soft: #3A3215; --navy: #9DB2F2;
+  --good: #4CC48E; --good-soft: #15342A; --bad: #F08A76; --bad-soft: #3D1F1A; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper); color: var(--ink); font: 15px/1.55 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--pencil); outline-offset: 2px; }
+.wrap { max-width: 1080px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+.eyebrow { font: 600 11px/1 var(--f-body); letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+
+/* Top bar */
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 18px; border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 10px; font: 800 20px/1 var(--f-display); letter-spacing: -.01em; }
+.brand-mark { width: 26px; height: 26px; border-radius: 50%; border: 2.5px solid var(--ink); position: relative; }
+.brand-mark::after { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--pencil); }
+.topbar small { color: var(--muted); font-size: 13px; }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1.5px solid var(--line); background: var(--surface); border-radius: 10px; padding: 10px 16px; font-weight: 600; }
+.btn:hover { border-color: var(--muted); }
+.btn-primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.btn-primary:hover { opacity: .9; border-color: var(--ink); }
+.btn-pencil { background: var(--pencil); color: var(--pencil-ink); border-color: var(--pencil); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.linkbtn { background: none; border: 0; padding: 4px 0; color: var(--muted); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+/* Home */
+.hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; align-items: end; padding-block: 40px 28px; }
+.hero h1 { font-size: clamp(30px, 5vw, 48px); font-weight: 800; letter-spacing: -.02em; }
+.hero h1 em { font-style: normal; background: linear-gradient(transparent 62%, var(--pencil) 62%, var(--pencil) 92%, transparent 92%); }
+.hero p { color: var(--muted); max-width: 52ch; margin: 14px 0 0; }
+.scale { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+.scale-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.scale-row + .scale-row { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line); }
+.scale-row b { font: 700 22px/1 var(--f-mono); }
+.scale-row span { color: var(--muted); font-size: 13px; }
+
+.home-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; padding-bottom: 48px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px; min-width: 0; }
+.panel h2 { font-size: 20px; margin-bottom: 4px; }
+.panel > p.sub { color: var(--muted); margin: 0 0 18px; font-size: 14px; }
+.field { margin-top: 20px; }
+.field > .eyebrow { display: block; margin-bottom: 10px; }
+.secpick { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.seccard { text-align: left; border: 1.5px solid var(--line); border-radius: 12px; padding: 14px; background: var(--paper); display: grid; gap: 4px; }
+.seccard b { font: 700 16px/1.2 var(--f-display); }
+.seccard span { color: var(--muted); font-size: 13px; }
+.seccard[aria-checked="true"] { border-color: var(--ink); background: var(--surface); box-shadow: inset 0 0 0 1px var(--ink); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1.5px solid var(--line); background: var(--paper); border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 600; }
+.chip .num { color: var(--muted); margin-left: 4px; font-size: 12px; }
+.chip[aria-pressed="true"] { background: var(--pencil-soft); border-color: var(--pencil); }
+.seg { display: inline-flex; border: 1.5px solid var(--line); border-radius: 10px; padding: 3px; gap: 3px; background: var(--paper); flex-wrap: wrap; }
+.seg button { border: 0; background: none; border-radius: 7px; padding: 7px 12px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+.opts { display: flex; flex-wrap: wrap; gap: 20px; }
+.startrow { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line); }
+.startrow .meta { color: var(--muted); font-size: 14px; }
+
+.log { list-style: none; margin: 0; padding: 0; }
+.log li { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 12px 0; border-top: 1px solid var(--line); }
+.log li:first-child { border-top: 0; }
+.log .when { color: var(--muted); font-size: 12px; }
+.log .sc { font: 700 18px/1 var(--f-mono); grid-row: span 2; align-self: center; text-align: right; }
+.log .sc small { display: block; font: 500 11px/1.4 var(--f-body); color: var(--muted); }
+.empty { border: 1.5px dashed var(--line); border-radius: 12px; padding: 18px; color: var(--muted); font-size: 14px; }
+.tips { margin: 18px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 13px; color: var(--muted); }
+.tips kbd { font: 600 11px var(--f-mono); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 1px 5px; color: var(--ink); background: var(--paper); }
+
+/* Test */
+.testbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; padding-block: 12px; border-bottom: 1px solid var(--line); }
+.testbar .secname { font: 700 15px/1.2 var(--f-display); }
+.testbar .secname small { display: block; font: 500 12px var(--f-body); color: var(--muted); }
+.timer { font: 700 20px/1 var(--f-mono); font-variant-numeric: tabular-nums; padding: 6px 12px; border-radius: 8px; }
+.timer.low { background: var(--bad-soft); color: var(--bad); }
+.timer-wrap { display: flex; align-items: center; gap: 8px; }
+.testbar .right { justify-self: end; display: flex; gap: 8px; align-items: center; }
+
+.qwrap { max-width: 1080px; margin: 0 auto; padding-block: 24px 120px; display: grid; gap: 28px; }
+.qwrap.split { grid-template-columns: 1fr 1fr; }
+.qwrap.solo { max-width: 720px; }
+.passage { font: 400 17px/1.7 var(--f-read); min-width: 0; padding-right: 28px; border-right: 1px solid var(--line); }
+.passage p { margin: 0 0 1em; max-width: 62ch; }
+.passage table { border-collapse: collapse; font: 14px var(--f-body); margin: 6px 0 14px; }
+.passage caption { text-align: left; font-weight: 700; padding-bottom: 6px; }
+.passage th, .passage td { border: 1px solid var(--line); padding: 6px 12px; text-align: left; }
+.passage td.n { font-family: var(--f-mono); text-align: right; }
+.passage ul { margin: 0; padding-left: 1.2em; }
+.passage li { margin-bottom: 6px; }
+.passage .blank { display: inline-block; min-width: 64px; border-bottom: 2px solid var(--ink); }
+.tablescroll { overflow-x: auto; }
+.qpane { min-width: 0; }
+.qhead { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-bottom: 12px; margin-bottom: 16px; border-bottom: 3px double var(--line); }
+.qbadge { font: 700 15px/1 var(--f-mono); background: var(--ink); color: var(--paper); border-radius: 6px; padding: 6px 9px; }
+.markbtn { display: inline-flex; align-items: center; gap: 6px; border: 0; background: none; font-weight: 600; font-size: 14px; color: var(--muted); padding: 4px 6px; border-radius: 6px; }
+.markbtn svg { width: 16px; height: 16px; }
+.markbtn[aria-pressed="true"] { color: var(--bad); }
+.markbtn[aria-pressed="true"] svg path { fill: var(--bad); }
+.skilltag { margin-left: auto; font-size: 12px; color: var(--muted); }
+.stem { font-size: 16px; margin: 0 0 18px; }
+.stem.math { font: 400 18px/1.65 var(--f-read); }
+.choices { display: grid; gap: 10px; }
+.crow { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: stretch; }
+.choice { display: flex; align-items: center; gap: 14px; text-align: left; border: 1.5px solid var(--line); background: var(--surface); border-radius: 12px; padding: 12px 14px; min-width: 0; }
+.choice:hover:not(:disabled) { border-color: var(--muted); }
+.choice .ctext { min-width: 0; overflow-wrap: anywhere; }
+.choice.mathc .ctext { font: 400 17px var(--f-read); }
+.bub { flex: none; width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--ink); display: grid; place-items: center; font: 700 13px var(--f-mono); transition: background .12s; }
+.choice[aria-checked="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.choice[aria-checked="true"] .bub { background: var(--ink); color: var(--paper); }
+.crow.struck .choice .ctext { text-decoration: line-through; color: var(--muted); }
+.crow.struck .choice { opacity: .7; }
+.strike { border: 1.5px solid var(--line); background: var(--surface); border-radius: 10px; width: 42px; font: 700 12px var(--f-mono); color: var(--muted); text-decoration: line-through; }
+.strike[aria-pressed="true"] { background: var(--paper); color: var(--ink); text-decoration: none; }
+.choice.is-correct { border-color: var(--good); background: var(--good-soft); box-shadow: none; }
+.choice.is-correct .bub { background: var(--good); border-color: var(--good); color: var(--surface); }
+.choice.is-wrong { border-color: var(--bad); background: var(--bad-soft); box-shadow: none; }
+.choice.is-wrong .bub { background: var(--bad); border-color: var(--bad); color: var(--surface); }
+.choice:disabled { cursor: default; }
+.gridin { display: grid; gap: 8px; max-width: 280px; }
+.gridin input { font: 700 22px var(--f-mono); padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--surface); width: 100%; }
+.gridin input:focus { border-color: var(--ink); outline: none; box-shadow: 0 0 0 3px var(--pencil-soft); }
+.gridin small { color: var(--muted); font-size: 13px; }
+.gridin.is-correct input { border-color: var(--good); background: var(--good-soft); }
+.gridin.is-wrong input { border-color: var(--bad); background: var(--bad-soft); }
+.feedback { margin-top: 18px; border-radius: 12px; padding: 14px 16px; background: var(--paper); border: 1px solid var(--line); }
+.feedback b { display: block; margin-bottom: 4px; }
+.feedback.ok b { color: var(--good); }
+.feedback.no b { color: var(--bad); }
+.feedback p { margin: 0; font-size: 14px; }
+
+.testfoot { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--surface); border-top: 1px solid var(--line);
+  padding: 12px max(16px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.testfoot .inner { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; }
+.testfoot .inner > :last-child { justify-self: end; display: flex; gap: 8px; }
+.navtoggle { border: 1.5px solid var(--ink); background: var(--ink); color: var(--paper); border-radius: 10px; padding: 9px 14px; font-weight: 700; display: inline-flex; gap: 6px; align-items: center; }
+.navpanel { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(76px + env(safe-area-inset-bottom, 0px)); z-index: 7; width: min(520px, calc(100vw - 32px)); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: 0 12px 40px rgba(10,20,40,.22); }
+.navpanel h3 { font-size: 16px; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin: 8px 0 14px; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -2px; margin-right: 4px; border: 1.5px dashed var(--muted); }
+.legend i.a { background: var(--ink); border: 0; }
+.legend i.m { background: var(--bad); border: 0; }
+.navgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 8px; }
+.navgrid button { height: 40px; border-radius: 8px; border: 1.5px dashed var(--muted); background: var(--surface); font: 700 14px var(--f-mono); position: relative; }
+.navgrid button.ans { background: var(--ink); color: var(--paper); border: 1.5px solid var(--ink); }
+.navgrid button.cur { outline: 3px solid var(--pencil); outline-offset: 1px; }
+.navgrid button.mk::after { content: ""; position: absolute; top: -4px; right: -4px; width: 11px; height: 11px; border-radius: 50%; background: var(--bad); border: 2px solid var(--surface); }
+.navpanel .submitrow { margin-top: 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.navpanel .warn { font-size: 13px; color: var(--muted); }
+.exitbox { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 13px; }
+
+/* Results */
+.res-head { padding-block: 36px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: end; }
+.res-head h1 { font-size: clamp(28px, 4.5vw, 42px); font-weight: 800; letter-spacing: -.02em; }
+.res-head p { color: var(--muted); margin: 10px 0 0; }
+.scorecards { display: grid; gap: 12px; }
+.scorecard { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; }
+.scorecard .top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.scorecard .big { font: 700 44px/1 var(--f-mono); letter-spacing: -.02em; }
+.track { position: relative; height: 10px; border-radius: 99px; background: var(--paper); border: 1px solid var(--line); margin: 16px 0 6px; }
+.track .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 99px; background: var(--pencil); }
+.track .pin { position: absolute; top: 50%; width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--ink); background: var(--surface); transform: translate(-50%, -50%); }
+.ticks { display: flex; justify-content: space-between; font: 500 11px var(--f-mono); color: var(--muted); }
+.res-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 24px; padding-bottom: 56px; align-items: start; }
+.statline { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
+.stat { border-radius: 12px; background: var(--paper); padding: 12px; }
+.stat b { display: block; font: 700 20px/1.1 var(--f-mono); }
+.stat span { font-size: 12px; color: var(--muted); }
+.dom { margin-top: 14px; }
+.dom .row { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; }
+.dom .row span:last-child { font-family: var(--f-mono); color: var(--muted); font-size: 13px; }
+.dom .bar { height: 8px; background: var(--paper); border-radius: 99px; margin-top: 6px; overflow: hidden; }
+.dom .bar i { display: block; height: 100%; background: var(--navy); border-radius: 99px; }
+.dom .bar i.weak { background: var(--bad); }
+.review { display: grid; gap: 10px; }
+.ritem { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); overflow: hidden; }
+.ritem summary { list-style: none; display: grid; grid-template-columns: auto auto 1fr auto; gap: 12px; align-items: center; padding: 12px 14px; cursor: pointer; }
+.ritem summary::-webkit-details-marker { display: none; }
+.ritem .mark { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font: 700 12px var(--f-mono); color: var(--surface); }
+.ritem .mark.ok { background: var(--good); }
+.ritem .mark.no { background: var(--bad); }
+.ritem .mark.skip { background: var(--muted); }
+.ritem .t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+.ritem .pair { font: 600 12px var(--f-mono); color: var(--muted); white-space: nowrap; }
+.ritem .body { padding: 0 14px 14px 50px; font-size: 14px; }
+.ritem .body p { margin: 0 0 8px; }
+.ritem .body .ex { background: var(--paper); border-radius: 8px; padding: 10px 12px; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+
+/* Full-length test */
+.modout { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.modout li { display: flex; justify-content: space-between; gap: 12px; padding: 10px 14px; border-top: 1px solid var(--line); font-size: 14px; background: var(--surface); }
+.modout li:first-child { border-top: 0; }
+.modout li .num { color: var(--muted); font-size: 12px; white-space: nowrap; }
+.modout li.brk { background: var(--paper); color: var(--muted); font-style: italic; }
+.modout li.done { color: var(--muted); }
+.modout li.done span:first-child { text-decoration: line-through; }
+.modout li.next { background: var(--pencil-soft); font-weight: 600; }
+.note { color: var(--muted); font-size: 13px; margin: 10px 0 0; max-width: 62ch; }
+.between { max-width: 640px; margin: 0 auto; padding-block: 48px; display: grid; gap: 16px; }
+.between h1 { font-size: clamp(28px, 4.5vw, 40px); font-weight: 800; letter-spacing: -.02em; }
+.between p { margin: 0; }
+.breakbox { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+.breakbox > div { min-width: 0; flex: 1 1 240px; }
+.breakbox p { color: var(--muted); font-size: 14px; margin-top: 6px; }
+.stem table { border-collapse: collapse; font: 14px var(--f-body); margin: 12px 0; }
+.stem th, .stem td { border: 1px solid var(--line); padding: 6px 12px; text-align: left; font-variant-numeric: tabular-nums; }
+
+/* Language menu and hover explanation */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.topbar { flex-wrap: wrap; }
+.topbar-right { display: flex; align-items: center; justify-content: flex-end; gap: 12px; flex-wrap: wrap; min-width: 0; }
+.langsel { font: 600 13px var(--f-body); color: var(--ink); background: var(--surface); border: 1.5px solid var(--line); border-radius: 8px; padding: 6px 8px; max-width: 100%; }
+.testbar .right { flex-wrap: wrap; }
+.qhead { position: relative; }
+.expbtn { display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--line); background: var(--surface); border-radius: 999px; padding: 4px 11px 4px 5px; font-size: 13px; font-weight: 600; }
+.expbtn:hover, .exp-wrap.open .expbtn { border-color: var(--pencil); background: var(--pencil-soft); }
+.expbtn .qm { width: 20px; height: 20px; border-radius: 50%; background: var(--pencil); color: var(--pencil-ink); display: grid; place-items: center; font: 700 12px var(--f-mono); }
+.exp-pop { display: none; position: absolute; left: 0; right: 0; top: 100%; z-index: 8; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; box-shadow: 0 14px 40px rgba(10,20,40,.22); font-size: 14px; line-height: 1.6; }
+.exp-pop::before { content: ""; position: absolute; left: 0; right: 0; top: -26px; height: 26px; }
+.exp-wrap:hover .exp-pop, .exp-wrap:focus-within .exp-pop, .exp-wrap.open .exp-pop { display: block; }
+.exp-pop .lbl { display: block; font: 600 11px/1 var(--f-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.exp-pop b { display: block; margin-bottom: 4px; color: var(--good); }
+.exp-pop p { margin: 0; }
+.exhead { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+.exhead .lbl, .exhead b { margin: 0; }
+.ex .exhead .lbl { font: 600 11px/1 var(--f-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.exlang { border: 1.5px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 3px 11px; font: 600 12px var(--f-body); white-space: nowrap; }
+.exlang:hover { border-color: var(--pencil); background: var(--pencil-soft); }
+
+@media (max-width: 860px) {
+  .hero, .home-grid, .res-head, .res-grid { grid-template-columns: 1fr; }
+  .qwrap.split { grid-template-columns: 1fr; }
+  .passage { border-right: 0; padding-right: 0; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+}
+@media (max-width: 560px) {
+  .secpick { grid-template-columns: 1fr; }
+  .testbar { grid-template-columns: 1fr auto; }
+  .testbar .right { grid-column: 1 / -1; justify-self: stretch; justify-content: space-between; }
+  .testfoot .inner { grid-template-columns: auto 1fr auto; }
+  .testfoot .inner > :nth-child(2) { justify-self: center; }
+  .statline { grid-template-columns: 1fr 1fr 1fr; }
+  .ritem summary { grid-template-columns: auto 1fr auto; }
+  .ritem summary .qn { display: none; }
+  .ritem .body { padding-left: 14px; }
+  .skilltag { margin-left: 0; width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<main id="app"></main>
+
+<script>
+const SECTIONS = {
+  rw:   { name: 'Reading and Writing', short: 'R&W', perQ: 71,
+          doms: ['Craft and Structure', 'Information and Ideas', 'Standard English Conventions', 'Expression of Ideas'] },
+  math: { name: 'Math', short: 'Math', perQ: 95,
+          doms: ['Algebra', 'Advanced Math', 'Problem-Solving and Data Analysis', 'Geometry and Trigonometry'] }
+};
+const WIC = 'Which choice completes the text with the most logical and precise word or phrase?';
+const CONV = 'Which choice completes the text so that it conforms to the conventions of Standard English?';
+const LOGIC = 'Which choice most logically completes the text?';
+const TRANS = 'Which choice completes the text with the most logical transition?';
+const B = '<span class="blank" aria-label="blank"></span>';
+
+const BANK = [
+  // ---------- Reading and Writing ----------
+  { id: 'rw1', sec: 'rw', dom: 'Craft and Structure', skill: 'Words in Context',
+    passage: `<p>The architect's early sketches for the plaza were deliberately ${B}: rather than committing to a single design, she left room for the city's planners and residents to reshape the space.</p>`,
+    q: WIC, ch: ['provisional', 'ornate', 'derivative', 'meticulous'], a: 0,
+    ex: 'The colon signals that what follows explains the blank. Sketches that avoid "committing to a single design" and leave room for change are provisional, meaning temporary or open to revision.' },
+  { id: 'rw2', sec: 'rw', dom: 'Craft and Structure', skill: 'Words in Context',
+    passage: `<p>Although the novelist was famously ${B} in interviews, offering only brief and guarded answers, her letters reveal a writer eager to discuss her craft at length.</p>`,
+    q: WIC, ch: ['candid', 'reticent', 'verbose', 'hostile'], a: 1,
+    ex: '"Although" sets up a contrast with letters where she discusses her craft "at length." Giving "brief and guarded answers" means she was reticent: reserved and unwilling to say much.' },
+  { id: 'rw3', sec: 'rw', dom: 'Craft and Structure', skill: 'Words in Context',
+    passage: `<p>The committee's report was praised for its ${B}: in only four pages, it addressed every concern that residents had raised at the public hearings.</p>`,
+    q: WIC, ch: ['concision', 'ambiguity', 'redundancy', 'whimsy'], a: 0,
+    ex: 'Covering every concern in only four pages shows concision, the quality of saying a lot in few words. Redundancy is the opposite.' },
+  { id: 'rw4', sec: 'rw', dom: 'Craft and Structure', skill: 'Text Structure and Purpose',
+    passage: `<p>Tardigrades, microscopic animals often called water bears, can survive near-total dehydration. When their surroundings dry out, they retract their legs and curl into a state called a tun, in which their metabolism drops to less than 0.01 percent of its normal rate. Researchers have revived tardigrades from this state after years of dormancy.</p>`,
+    q: 'Which choice best describes the function of the second sentence in the overall structure of the text?',
+    ch: ['It explains how tardigrades survive the condition described in the first sentence.',
+         'It challenges a common assumption about how tardigrades respond to drying out.',
+         'It presents an exception to the claim made in the first sentence.',
+         'It describes the method researchers used to revive dormant tardigrades.'], a: 0,
+    ex: 'Sentence one states that tardigrades survive dehydration. Sentence two describes the mechanism (curling into a tun and slowing metabolism). It does not challenge anything, and the revival is described in sentence three.' },
+  { id: 'rw5', sec: 'rw', dom: 'Information and Ideas', skill: 'Central Ideas and Details',
+    passage: `<p>Many cities have relaxed their rules on rooftop beehives, and the number of urban hives has grown quickly. However, ecologists caution that honeybees compete with wild bees for nectar and pollen from the same flowers. In neighborhoods where flowering plants are scarce, adding more hives may reduce the food available to native bee species.</p>`,
+    q: 'Which choice best states the main idea of the text?',
+    ch: ['Urban beekeeping may harm native bees in places where flowers are limited.',
+         'Cities should ban rooftop beehives to protect wild bee populations.',
+         'Honeybees produce more honey in cities than in rural areas.',
+         'Native bees prefer different flowers than honeybees do.'], a: 0,
+    ex: 'The text moves from the growth of urban hives to a caution: competition for flowers can hurt native bees where flowers are scarce. The text never calls for a ban, and it never compares which flowers each kind of bee prefers.' },
+  { id: 'rw6', sec: 'rw', dom: 'Information and Ideas', skill: 'Command of Evidence (Quantitative)',
+    passage: `<div class="tablescroll"><table><caption>Apple harvest at Hollins Orchard</caption>
+      <thead><tr><th>Year</th><th>Harvest (tons)</th></tr></thead>
+      <tbody><tr><td>2017</td><td class="n">42</td></tr><tr><td>2018</td><td class="n">51</td></tr><tr><td>2019</td><td class="n">47</td></tr><tr><td>2020</td><td class="n">55</td></tr></tbody></table></div>
+      <p>A student is writing about Hollins Orchard. She notes that the orchard's apple harvest generally increased from 2017 to 2020, though it ${B}</p>`,
+    q: 'Which choice most effectively uses data from the table to complete the statement?',
+    ch: ['dipped from 51 tons in 2018 to 47 tons in 2019.', 'peaked at 47 tons in 2019.',
+         'fell every year after 2017.', 'was lowest in 2020, at 55 tons.'], a: 0,
+    ex: 'The harvest rose overall (42 to 55), with one decrease from 2018 (51) to 2019 (47). The other choices misread the table: the peak was 55 in 2020, and 2020 was the highest year, not the lowest.' },
+  { id: 'rw7', sec: 'rw', dom: 'Information and Ideas', skill: 'Inferences',
+    passage: `<p>Seed banks preserve plant species by drying seeds and storing them at very low temperatures so they can be planted decades later. But some seeds, including those of avocado and cacao, die when they are dried and frozen. As a result, ${B}</p>`,
+    q: LOGIC,
+    ch: ['seed banks cannot preserve these species using their standard storage methods.',
+         'avocado and cacao are not at risk of disappearing.',
+         'most seed banks store only crops grown for food.',
+         'freezing improves the germination rate of most seeds.'], a: 0,
+    ex: 'Standard storage means drying and freezing. If avocado and cacao seeds die under those conditions, standard methods cannot preserve them. Nothing in the text supports the other choices.' },
+  { id: 'rw8', sec: 'rw', dom: 'Information and Ideas', skill: 'Inferences',
+    passage: `<p>Historians long believed that the coastal town of Marren was founded by fishermen, pointing to its natural harbor as evidence. Recent excavations of the settlement's oldest layers, however, uncovered plows and grain-grinding stones but no nets, hooks, or boat remains. These findings suggest that ${B}</p>`,
+    q: LOGIC,
+    ch: ['Marren\'s earliest residents may have relied on farming rather than fishing.',
+         'the harbor at Marren was built before the town was settled.',
+         'fishermen never lived in Marren at any point in its history.',
+         'the plows and grinding stones were imported from inland towns.'], a: 0,
+    ex: 'The oldest layers show farming tools and no fishing gear, which points to farming as the early way of life. Saying fishermen "never" lived there goes too far, since the dig covered only the oldest layers.' },
+  { id: 'rw9', sec: 'rw', dom: 'Standard English Conventions', skill: 'Boundaries',
+    passage: `<p>The museum's newest exhibit features more than 200 hand-drawn ${B} the oldest dates to the fourteenth century.</p>`,
+    q: CONV, ch: ['maps, the oldest', 'maps; the oldest', 'maps the oldest', 'maps, which the oldest'], a: 1,
+    ex: 'Both parts are independent clauses. A semicolon can join them. A comma alone creates a comma splice, no punctuation creates a run-on, and "which the oldest" is ungrammatical.' },
+  { id: 'rw10', sec: 'rw', dom: 'Standard English Conventions', skill: 'Form, Structure, and Sense',
+    passage: `<p>The collection of letters written by the expedition's crew members ${B} held at a university archive in Oslo.</p>`,
+    q: CONV, ch: ['are', 'were', 'is', 'have been'], a: 2,
+    ex: 'The subject is "collection," which is singular. "Of letters written by the expedition\'s crew members" is a prepositional phrase that does not change the subject, so the verb is "is."' },
+  { id: 'rw11', sec: 'rw', dom: 'Standard English Conventions', skill: 'Form, Structure, and Sense',
+    passage: `<p>Both ${B} proposals for the new library emphasized natural light and open reading rooms.</p>`,
+    q: CONV, ch: ['architects', 'architect\'s', 'architects\'', 'architects\'s'], a: 2,
+    ex: '"Both" tells you there are two architects, and the proposals belong to them, so you need the plural possessive: architects\'.' },
+  { id: 'rw12', sec: 'rw', dom: 'Standard English Conventions', skill: 'Boundaries',
+    passage: `<p>Ada ${B} wrote what many historians consider the first published computer program.</p>`,
+    q: CONV,
+    ch: ['Lovelace, a nineteenth-century mathematician,', 'Lovelace a nineteenth-century mathematician,',
+         'Lovelace, a nineteenth-century mathematician', 'Lovelace; a nineteenth-century mathematician'], a: 0,
+    ex: '"A nineteenth-century mathematician" is a nonessential appositive. It needs a comma on both sides. The other choices drop a comma or use a semicolon, which cannot separate a subject from its verb.' },
+  { id: 'rw13', sec: 'rw', dom: 'Expression of Ideas', skill: 'Transitions',
+    passage: `<p>Early refrigerators used toxic gases such as ammonia and sulfur dioxide as coolants. ${B} a leak could be deadly, which pushed engineers to search for safer alternatives.</p>`,
+    q: TRANS, ch: ['Consequently,', 'Nevertheless,', 'For example,', 'In contrast,'], a: 0,
+    ex: 'Deadly leaks are a result of using toxic coolants, so a cause-and-effect transition fits: "Consequently."' },
+  { id: 'rw14', sec: 'rw', dom: 'Expression of Ideas', skill: 'Transitions',
+    passage: `<p>The first trial of the new fertilizer showed no measurable effect on corn yield. ${B} a second trial, conducted on richer soil, produced a 12 percent increase.</p>`,
+    q: TRANS, ch: ['Similarly,', 'However,', 'Therefore,', 'In addition,'], a: 1,
+    ex: 'The second result (a 12 percent increase) contrasts with the first (no effect). "However" signals that contrast.' },
+  { id: 'rw15', sec: 'rw', dom: 'Expression of Ideas', skill: 'Rhetorical Synthesis',
+    passage: `<p>While researching a topic, a student has taken the following notes:</p>
+      <ul><li>The Great Barrier Reef is the world's largest coral reef system.</li>
+      <li>It stretches about 2,300 kilometers.</li>
+      <li>It is located off the coast of Queensland, Australia.</li>
+      <li>It is home to more than 1,500 species of fish.</li></ul>`,
+    q: 'The student wants to emphasize the size of the Great Barrier Reef. Which choice most effectively uses relevant information from the notes to accomplish this goal?',
+    ch: ['Stretching about 2,300 kilometers, the Great Barrier Reef is the world\'s largest coral reef system.',
+         'The Great Barrier Reef is located off the coast of Queensland, Australia.',
+         'More than 1,500 species of fish live on the Great Barrier Reef.',
+         'Queensland, Australia, is home to a coral reef system called the Great Barrier Reef.'], a: 0,
+    ex: 'Only the "Stretching about 2,300 kilometers" choice mentions size, using both the length (2,300 km) and the "world\'s largest" fact. The others focus on location or biodiversity.' },
+
+  // ---------- Math ----------
+  { id: 'm1', sec: 'math', dom: 'Algebra', skill: 'Linear equations in one variable',
+    q: 'If 3<i>x</i> − 7 = 11, what is the value of <i>x</i>?', ch: ['4/3', '4', '6', '18'], a: 2,
+    ex: 'Add 7 to both sides: 3<i>x</i> = 18. Divide by 3: <i>x</i> = 6.' },
+  { id: 'm2', sec: 'math', dom: 'Algebra', skill: 'Linear functions',
+    q: 'A gym charges a one-time sign-up fee of $40 plus $25 per month. Which function gives the total cost <i>C</i>, in dollars, of a membership for <i>m</i> months?',
+    ch: ['<i>C</i> = 40<i>m</i> + 25', '<i>C</i> = 25<i>m</i> + 40', '<i>C</i> = 65<i>m</i>', '<i>C</i> = 25(<i>m</i> + 40)'], a: 1,
+    ex: 'The monthly charge multiplies by <i>m</i> (25<i>m</i>), and the fee is added once (+40).' },
+  { id: 'm3', sec: 'math', dom: 'Algebra', skill: 'Systems of linear equations',
+    q: '<i>x</i> + <i>y</i> = 10<br><i>x</i> − <i>y</i> = 4<br><br>If (<i>x</i>, <i>y</i>) is the solution to the system of equations above, what is the value of <i>x</i>?',
+    spr: 7, ex: 'Add the equations: 2<i>x</i> = 14, so <i>x</i> = 7. (Then <i>y</i> = 3.)' },
+  { id: 'm4', sec: 'math', dom: 'Algebra', skill: 'Linear equations in two variables',
+    q: 'A line in the <i>xy</i>-plane passes through the points (2, 5) and (6, 13). What is the slope of the line?',
+    spr: 2, ex: 'Slope = (13 − 5) ÷ (6 − 2) = 8 ÷ 4 = 2.' },
+  { id: 'm5', sec: 'math', dom: 'Advanced Math', skill: 'Nonlinear equations',
+    q: 'What is the sum of the solutions to <i>x</i><sup>2</sup> − 5<i>x</i> + 6 = 0?', ch: ['−5', '1', '5', '6'], a: 2,
+    ex: 'Factor: (<i>x</i> − 2)(<i>x</i> − 3) = 0, so <i>x</i> = 2 or 3. The sum is 5. (Shortcut: for <i>x</i><sup>2</sup> + <i>bx</i> + <i>c</i>, the sum of the roots is −<i>b</i>.)' },
+  { id: 'm6', sec: 'math', dom: 'Advanced Math', skill: 'Nonlinear functions',
+    q: 'The function <i>f</i> is defined by <i>f</i>(<i>x</i>) = 2<i>x</i><sup>2</sup> − 3. What is the value of <i>f</i>(−2)?', ch: ['−11', '−5', '5', '11'], a: 2,
+    ex: '(−2)<sup>2</sup> = 4, so <i>f</i>(−2) = 2(4) − 3 = 5. A common mistake is squaring after multiplying, which gives −11.' },
+  { id: 'm7', sec: 'math', dom: 'Advanced Math', skill: 'Nonlinear functions',
+    q: 'A colony of 500 bacteria doubles in size every 3 hours. Which expression gives the number of bacteria after <i>t</i> hours?',
+    ch: ['500(2)<sup><i>t</i>/3</sup>', '500(2)<sup>3<i>t</i></sup>', '500(3)<sup><i>t</i>/2</sup>', '1,000<i>t</i> / 3'], a: 0,
+    ex: 'The number of doublings after <i>t</i> hours is <i>t</i>/3, so the population is 500 × 2<sup><i>t</i>/3</sup>. Check: at <i>t</i> = 3 you get 1,000.' },
+  { id: 'm8', sec: 'math', dom: 'Advanced Math', skill: 'Equivalent expressions',
+    q: 'Which expression is equivalent to (<i>x</i> + 3)<sup>2</sup>?',
+    ch: ['<i>x</i><sup>2</sup> + 9', '<i>x</i><sup>2</sup> + 3<i>x</i> + 9', '<i>x</i><sup>2</sup> + 6<i>x</i> + 9', '2<i>x</i> + 6'], a: 2,
+    ex: '(<i>x</i> + 3)(<i>x</i> + 3) = <i>x</i><sup>2</sup> + 3<i>x</i> + 3<i>x</i> + 9 = <i>x</i><sup>2</sup> + 6<i>x</i> + 9. Don\'t forget the middle term.' },
+  { id: 'm9', sec: 'math', dom: 'Advanced Math', skill: 'Nonlinear equations',
+    q: 'If 2<sup><i>x</i> + 1</sup> = 32, what is the value of <i>x</i>?',
+    spr: 4, ex: '32 = 2<sup>5</sup>, so <i>x</i> + 1 = 5 and <i>x</i> = 4.' },
+  { id: 'm10', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'One-variable data',
+    q: 'The mean of the five numbers 4, 8, 10, 14, and <i>x</i> is 9. What is the value of <i>x</i>?',
+    spr: 9, ex: 'Five numbers with a mean of 9 add to 45. 4 + 8 + 10 + 14 = 36, so <i>x</i> = 45 − 36 = 9.' },
+  { id: 'm11', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Percentages',
+    q: 'A jacket regularly priced at $80 is on sale for 25% off. An 8% sales tax is applied to the sale price. What is the total cost of the jacket?',
+    ch: ['$60.00', '$64.80', '$66.40', '$86.40'], a: 1,
+    ex: 'Sale price: 80 × 0.75 = 60. With tax: 60 × 1.08 = 64.80.' },
+  { id: 'm12', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Probability',
+    q: 'A bag contains 6 red marbles, 4 blue marbles, and 10 green marbles. If one marble is chosen at random, what is the probability that it is blue?',
+    ch: ['1/10', '1/5', '1/4', '2/5'], a: 1,
+    ex: 'There are 6 + 4 + 10 = 20 marbles, and 4 are blue: 4/20 = 1/5.' },
+  { id: 'm13', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Right triangles',
+    q: 'A right triangle has legs of length 6 and 8. What is the length of the hypotenuse?',
+    spr: 10, ex: '6<sup>2</sup> + 8<sup>2</sup> = 36 + 64 = 100, and √100 = 10. (This is a 3-4-5 triangle scaled by 2.)' },
+  { id: 'm14', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Circles',
+    q: 'In the <i>xy</i>-plane, a circle has the equation (<i>x</i> − 3)<sup>2</sup> + (<i>y</i> + 2)<sup>2</sup> = 49. What are the coordinates of the center of the circle?',
+    ch: ['(3, −2)', '(−3, 2)', '(3, 2)', '(−3, −2)'], a: 0,
+    ex: 'The form is (<i>x</i> − <i>h</i>)<sup>2</sup> + (<i>y</i> − <i>k</i>)<sup>2</sup> = <i>r</i><sup>2</sup> with center (<i>h</i>, <i>k</i>). Here <i>h</i> = 3 and <i>y</i> + 2 = <i>y</i> − (−2), so <i>k</i> = −2. The radius is 7.' },
+  { id: 'm15', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Right triangle trigonometry',
+    q: 'In right triangle <i>ABC</i>, angle <i>C</i> is the right angle and sin <i>A</i> = 3/5. What is cos <i>A</i>?',
+    ch: ['3/4', '4/5', '5/3', '5/4'], a: 1,
+    ex: 'sin <i>A</i> = opposite/hypotenuse = 3/5, so the adjacent side is 4 (a 3-4-5 triangle). cos <i>A</i> = adjacent/hypotenuse = 4/5.' },
+  { id: 'm16', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Area and volume',
+    q: 'A circle has a circumference of 10π. What is the area of the circle?',
+    ch: ['5π', '10π', '25π', '100π'], a: 2,
+    ex: 'Circumference = 2π<i>r</i> = 10π, so <i>r</i> = 5. Area = π<i>r</i><sup>2</sup> = 25π.' },
+
+  // ---------- Reading and Writing: Craft and Structure (added) ----------
+  { id: 'rw16', sec: 'rw', dom: 'Craft and Structure', skill: 'Words in Context',
+    passage: `<p>Marine biologist Sylvia Earle has spent decades ${B} for ocean conservation, testifying before lawmakers and founding organizations dedicated to protecting marine habitats.</p>`,
+    q: WIC, ch: ['advocating', 'apologizing', 'substituting', 'competing'], a: 0,
+    ex: "Testifying before lawmakers and founding conservation groups are ways of publicly supporting a cause, which is what advocating means." },
+  { id: 'rw17', sec: 'rw', dom: 'Craft and Structure', skill: 'Words in Context',
+    passage: `<p>The new bridge design was ${B} by engineers, who found that its cables could not withstand the region's strong winds; the city returned to an earlier plan.</p>`,
+    q: WIC, ch: ['endorsed', 'rejected', 'imitated', 'celebrated'], a: 1,
+    ex: "The engineers found a serious flaw, and the city went back to an earlier plan. That means the design was rejected." },
+  { id: 'rw18', sec: 'rw', dom: 'Craft and Structure', skill: 'Words in Context',
+    passage: `<p>Rather than presenting a single unified theory, the philosopher's final book is ${B}: a collection of short essays on topics ranging from friendship to astronomy.</p>`,
+    q: WIC, ch: ['systematic', 'eclectic', 'repetitive', 'abbreviated'], a: 1,
+    ex: "Essays on topics \"ranging from friendship to astronomy\" draw on many different sources and subjects, which is what eclectic means. \"Systematic\" fits the unified theory the book avoids." },
+  { id: 'rw19', sec: 'rw', dom: 'Craft and Structure', skill: 'Words in Context',
+    passage: `<p>Jazz pianist Mary Lou Williams was known for her ability to ${B} her style: over a long career, she moved comfortably from swing to bebop to sacred music.</p>`,
+    q: WIC, ch: ['adapt', 'conceal', 'restrict', 'abandon'], a: 0,
+    ex: "Moving comfortably between genres shows that she could change her style to fit new settings, which is what adapt means." },
+  { id: 'rw20', sec: 'rw', dom: 'Craft and Structure', skill: 'Words in Context',
+    passage: `<p>Because the data from the first survey were ${B}, with many participants skipping questions, the researchers designed a second, shorter survey.</p>`,
+    q: WIC, ch: ['comprehensive', 'incomplete', 'fabricated', 'consistent'], a: 1,
+    ex: "Participants skipping questions leaves gaps in the data, so the data were incomplete. Nothing suggests the data were made up (fabricated)." },
+  { id: 'rw21', sec: 'rw', dom: 'Craft and Structure', skill: 'Words in Context',
+    passage: `<p>Initial reviews of the film were ${B}, but critics grew more enthusiastic as audiences embraced it, and it is now considered a classic.</p>`,
+    q: WIC, ch: ['lukewarm', 'ecstatic', 'unanimous', 'lengthy'], a: 0,
+    ex: "\"But\" and \"grew more enthusiastic\" tell you the first reviews were not very enthusiastic. Lukewarm means mildly positive at best." },
+  { id: 'rw22', sec: 'rw', dom: 'Craft and Structure', skill: 'Text Structure and Purpose',
+    passage: `<p>Many people assume that deserts are nearly lifeless. In fact, the Sonoran Desert in North America supports more than 2,000 species of plants, along with hundreds of species of birds and reptiles.</p>`,
+    q: 'Which choice best states the main purpose of the text?',
+    ch: ['To challenge a common assumption by describing the variety of life in one desert',
+         'To explain why deserts receive so little rainfall',
+         'To compare the Sonoran Desert with other deserts around the world',
+         'To argue that desert species are in danger of disappearing'], a: 0,
+    ex: "The text names an assumption (deserts are lifeless) and then counters it with figures about the Sonoran Desert. It doesn't discuss rainfall, other deserts, or threats." },
+  { id: 'rw23', sec: 'rw', dom: 'Craft and Structure', skill: 'Text Structure and Purpose',
+    passage: `<p>In 1933, Florence Price became the first Black woman to have a symphony performed by a major American orchestra. Yet for decades after her death, much of her music went unplayed. Then, in 2009, a large collection of her manuscripts was found in an abandoned house in Illinois, sparking new interest in her work.</p>`,
+    q: 'Which choice best describes the overall structure of the text?',
+    ch: ['It identifies an achievement, notes a period of neglect, and then describes an event that reversed that neglect.',
+         'It presents a claim about a composer and then gives evidence that disproves it.',
+         'It explains a musical technique and then shows how one composer used it.',
+         'It compares the careers of two composers who worked in the same period.'], a: 0,
+    ex: "Sentence 1 is the achievement (the 1933 symphony), sentence 2 is the neglect (\"went unplayed\"), and sentence 3 is the reversal (the 2009 discovery that sparked new interest)." },
+  { id: 'rw24', sec: 'rw', dom: 'Craft and Structure', skill: 'Text Structure and Purpose',
+    passage: `<p>Honeyguides are African birds that lead people to wild beehives. The birds cannot easily break into the hives themselves, but after people open a hive to collect honey, the honeyguides eat the leftover wax. This partnership benefits both species.</p>`,
+    q: 'Which choice best describes the function of the third sentence in the overall structure of the text?',
+    ch: ['It sums up the relationship described in the previous sentences.',
+         'It introduces a counterargument to the first sentence.',
+         'It gives a new example of a similar partnership.',
+         'It questions whether the earlier observations are accurate.'], a: 0,
+    ex: "The first two sentences show how each side gains (people get honey, birds get wax). The third sentence sums that up as a partnership that \"benefits both species.\"" },
+  { id: 'rw25', sec: 'rw', dom: 'Craft and Structure', skill: 'Cross-Text Connections',
+    passage: `<p><b>Text 1</b><br>Some economists argue that raising the minimum wage causes businesses to hire fewer workers, since each worker becomes more expensive to employ.</p>
+      <p><b>Text 2</b><br>Researchers compared restaurants in neighboring counties and found that employment did not fall in counties that raised their minimum wage relative to counties that did not. The researchers suggest that higher wages reduced costly employee turnover.</p>`,
+    q: 'Based on the texts, how would the researchers in Text 2 most likely respond to the economists in Text 1?',
+    ch: ['By noting that their study did not find the drop in employment that the economists predict',
+         'By agreeing that higher labor costs always reduce hiring',
+         'By arguing that restaurants should not raise wages',
+         'By claiming that employee turnover has nothing to do with wages'], a: 0,
+    ex: "Text 1 predicts fewer jobs after a raise. Text 2 found employment \"did not fall,\" which directly contradicts that prediction. Text 2 also links wages to turnover, so it would not say turnover is unrelated." },
+  { id: 'rw26', sec: 'rw', dom: 'Craft and Structure', skill: 'Cross-Text Connections',
+    passage: `<p><b>Text 1</b><br>For much of the twentieth century, paleontologists pictured dinosaurs as slow, cold-blooded reptiles that dragged their tails along the ground.</p>
+      <p><b>Text 2</b><br>Fossilized dinosaur trackways rarely show tail-drag marks. In addition, growth rings in dinosaur bones suggest that many species grew quickly, the way warm-blooded animals do.</p>`,
+    q: 'Based on the texts, how would the author of Text 2 most likely view the picture of dinosaurs described in Text 1?',
+    ch: ['As outdated, because fossil evidence contradicts it',
+         'As accurate for most dinosaur species',
+         'As impossible to test with fossil evidence',
+         'As based mainly on the study of trackways'], a: 0,
+    ex: "Text 2 cites two kinds of fossil evidence (no tail-drag marks, fast growth) that go against the \"slow, cold-blooded, tail-dragging\" picture, so the author would see it as outdated." },
+
+  // ---------- Reading and Writing: Information and Ideas (added) ----------
+  { id: 'rw27', sec: 'rw', dom: 'Information and Ideas', skill: 'Central Ideas and Details',
+    passage: `<p>For centuries, Venice has struggled with flooding. In 2020, the city began operating MOSE, a system of 78 movable barriers that rise from the seafloor to keep high tides out of the lagoon. Although the project was costly and long delayed, the barriers have prevented several major floods since they began operating.</p>`,
+    q: 'Which choice best states the main idea of the text?',
+    ch: ['Venice now uses a barrier system that has helped protect it from flooding.',
+         'The MOSE barriers have ended all flooding in Venice.',
+         'Venice should abandon MOSE because of its high cost.',
+         'Flooding in Venice first became a problem in 2020.'], a: 0,
+    ex: "The text describes the barrier system and says it has prevented several major floods. Saying it ended \"all flooding\" overstates, abandoning MOSE is never argued, and 2020 contradicts \"for centuries.\"" },
+  { id: 'rw28', sec: 'rw', dom: 'Information and Ideas', skill: 'Central Ideas and Details',
+    passage: `<p>Octopuses can change color in a fraction of a second. They do this with thousands of skin cells called chromatophores, each containing a small sac of pigment. Muscles around each sac stretch it open to display its color or squeeze it closed to hide it.</p>`,
+    q: 'According to the text, how do octopuses display color?',
+    ch: ['Muscles stretch open sacs of pigment inside chromatophores.',
+         'They absorb light from their surroundings.',
+         'They shed their outer layer of skin.',
+         'Chemical reactions in their blood change their color.'], a: 0,
+    ex: "The last sentence says muscles \"stretch it open to display its color.\" The other choices aren't mentioned." },
+  { id: 'rw29', sec: 'rw', dom: 'Information and Ideas', skill: 'Command of Evidence (Textual)',
+    passage: `<p>In a short story, a young woman named Mara lives in a small mountain village. A student claims that Mara is reluctant to leave the village, even though she says she wants to see the world.</p>`,
+    q: "Which quotation from the story would most directly support the student's claim?",
+    ch: ['"Each time she reached the edge of the village road, Mara found a reason to turn back."',
+         '"Mara laughed with the travelers who passed through the square."',
+         '"The village had three wells and a single bakery."',
+         '"Mara\'s brother had left for the city years before."'], a: 0,
+    ex: "Repeatedly turning back at the edge of the village shows reluctance to leave. The other quotations describe the village or other people, not Mara's hesitation." },
+  { id: 'rw30', sec: 'rw', dom: 'Information and Ideas', skill: 'Command of Evidence (Quantitative)',
+    passage: `<div class="tablescroll"><table><caption>Average one-way commute in Linden City, by travel mode</caption>
+      <thead><tr><th>Mode</th><th>Minutes</th></tr></thead>
+      <tbody><tr><td>Car</td><td class="n">27</td></tr><tr><td>Bus</td><td class="n">41</td></tr><tr><td>Bicycle</td><td class="n">19</td></tr><tr><td>Walking</td><td class="n">15</td></tr></tbody></table></div>
+      <p>A city planner claims that, on average, Linden City residents who bike to work have shorter commutes than those who drive.</p>`,
+    q: "Which choice best describes data from the table that support the planner's claim?",
+    ch: ['The average bicycle commute is 19 minutes, while the average car commute is 27 minutes.',
+         'The average bus commute, at 41 minutes, is the longest of the four modes.',
+         'The average walking commute, at 15 minutes, is the shortest of the four modes.',
+         'The average car commute is 14 minutes shorter than the average bus commute.'], a: 0,
+    ex: "The claim compares biking with driving, so the evidence must include both: 19 minutes by bicycle versus 27 by car. The other choices are true but don't compare those two modes." },
+  { id: 'rw31', sec: 'rw', dom: 'Information and Ideas', skill: 'Command of Evidence (Quantitative)',
+    passage: `<div class="tablescroll"><table><caption>Share of Country X's electricity generated by solar power</caption>
+      <thead><tr><th>Year</th><th>Share</th></tr></thead>
+      <tbody><tr><td>2015</td><td class="n">2%</td></tr><tr><td>2018</td><td class="n">5%</td></tr><tr><td>2021</td><td class="n">9%</td></tr><tr><td>2024</td><td class="n">14%</td></tr></tbody></table></div>
+      <p>Between 2015 and 2024, the share of Country X's electricity that came from solar power ${B}</p>`,
+    q: 'Which choice most effectively uses data from the table to complete the statement?',
+    ch: ['increased by 12 percentage points.', 'exactly doubled.', 'decreased each year.', 'increased by 14 percentage points.'], a: 0,
+    ex: "14% − 2% = 12 percentage points. It grew sevenfold, so it did not just double, and 14 points ignores the 2% starting value." },
+  { id: 'rw32', sec: 'rw', dom: 'Information and Ideas', skill: 'Inferences',
+    passage: `<p>Ice cores drilled from glaciers contain tiny bubbles of air that were trapped as the ice formed. Because deeper layers of ice formed earlier than shallower layers, scientists can analyze bubbles from different depths to ${B}</p>`,
+    q: LOGIC,
+    ch: ['learn how the makeup of the atmosphere has changed over time.',
+         'predict what the weather will be in the coming week.',
+         'measure how quickly glaciers move across land.',
+         'determine the depth of the nearest ocean.'], a: 0,
+    ex: "Bubbles hold old air, and depth corresponds to age. Comparing depths therefore compares the atmosphere at different times." },
+  { id: 'rw33', sec: 'rw', dom: 'Information and Ideas', skill: 'Inferences',
+    passage: `<p>In a study, one group of participants was told that a puzzle measured intelligence, while another group was told that the same puzzle was a game. Participants in the second group spent more time on the puzzle and reported enjoying it more. This finding suggests that ${B}</p>`,
+    q: LOGIC,
+    ch: ['the way a task is described can affect how people engage with it.',
+         'games are generally more difficult than intelligence tests.',
+         'people who are more intelligent prefer games to tests.',
+         'puzzles are rarely enjoyable for adults.'], a: 0,
+    ex: "The puzzle was identical, and only its description changed. Since behavior differed, the description affected engagement." },
+  { id: 'rw34', sec: 'rw', dom: 'Information and Ideas', skill: 'Command of Evidence (Textual)',
+    passage: `<p>A botanist hypothesizes that a certain mountain wildflower depends on bumblebees for pollination.</p>`,
+    q: "Which finding, if true, would most directly support the botanist's hypothesis?",
+    ch: ['When netting kept bumblebees away from the flowers, the plants produced almost no seeds.',
+         'The wildflower blooms earlier in the spring than most nearby plants.',
+         'Butterflies and beetles also visit the wildflower.',
+         'Bumblebees generally prefer blue flowers to yellow ones.'], a: 0,
+    ex: "If removing bumblebees stops seed production, the plant depends on them. Other insects visiting would weaken the idea, and bloom timing or general color preference says nothing about this plant's dependence." },
+  { id: 'rw35', sec: 'rw', dom: 'Information and Ideas', skill: 'Central Ideas and Details',
+    passage: `<p>Before the printing press, books in Europe were copied by hand, a process that could take months for a single volume. Printing allowed hundreds of identical copies to be produced quickly, which lowered the cost of books and helped ideas spread across the continent.</p>`,
+    q: 'Which choice best states the main idea of the text?',
+    ch: ['The printing press made books cheaper and faster to produce, helping ideas spread.',
+         'Hand-copied books were more accurate than printed books.',
+         'The printing press was invented outside of Europe.',
+         'Books became harder to find after the printing press appeared.'], a: 0,
+    ex: "The text contrasts slow hand copying with fast printing and states the effects: lower cost and wider spread of ideas." },
+  { id: 'rw36', sec: 'rw', dom: 'Information and Ideas', skill: 'Inferences',
+    passage: `<p>Sea otters eat sea urchins, and sea urchins feed on kelp. When sea otter populations declined along parts of the Pacific coast, the kelp forests in those areas shrank dramatically. This pattern suggests that ${B}</p>`,
+    q: LOGIC,
+    ch: ['sea otters help protect kelp forests by limiting the number of sea urchins.',
+         'kelp is the main food source for sea otters.',
+         'sea urchins avoid areas where kelp grows.',
+         'sea otters damage kelp forests when their numbers rise.'], a: 0,
+    ex: "Fewer otters means more urchins, and more urchins eat more kelp. So otters keep urchins in check, which protects the kelp." },
+
+  // ---------- Reading and Writing: Standard English Conventions (added) ----------
+  { id: 'rw37', sec: 'rw', dom: 'Standard English Conventions', skill: 'Form, Structure, and Sense',
+    passage: `<p>By the time the rescue team arrived, the hikers ${B} shelter in a nearby cave.</p>`,
+    q: CONV, ch: ['find', 'will find', 'had found', 'are finding'], a: 2,
+    ex: "\"By the time\" plus a past event (\"arrived\") calls for the past perfect: the hikers had found shelter before the team arrived." },
+  { id: 'rw38', sec: 'rw', dom: 'Standard English Conventions', skill: 'Form, Structure, and Sense',
+    passage: `<p>The city orchestra announced that ${B} would perform a free concert in Riverside Park next month.</p>`,
+    q: CONV, ch: ['they', 'it', 'we', 'them'], a: 1,
+    ex: "\"Orchestra\" is a singular collective noun, so the pronoun is \"it.\" \"Them\" is also the wrong case for a subject." },
+  { id: 'rw39', sec: 'rw', dom: 'Standard English Conventions', skill: 'Boundaries',
+    passage: `<p>The traditional bread recipe calls for just three ${B} flour, water, and salt.</p>`,
+    q: CONV, ch: ['ingredients:', 'ingredients,', 'ingredients;', 'ingredients'], a: 0,
+    ex: "A colon introduces a list after a complete clause. A semicolon must join two independent clauses, and \"flour, water, and salt\" isn't one." },
+  { id: 'rw40', sec: 'rw', dom: 'Standard English Conventions', skill: 'Boundaries',
+    passage: `<p>Astronomer Henrietta Leavitt studied thousands of variable ${B} her work later helped scientists measure the distances to faraway galaxies.</p>`,
+    q: CONV, ch: ['stars, and', 'stars and,', 'stars,', 'stars and'], a: 0,
+    ex: "Two independent clauses can be joined with a comma plus a coordinating conjunction (\", and\"). A comma alone is a comma splice." },
+  { id: 'rw41', sec: 'rw', dom: 'Standard English Conventions', skill: 'Form, Structure, and Sense',
+    passage: `<p>Each of the paintings in the gallery's east wing ${B} the river at a different time of day.</p>`,
+    q: CONV, ch: ['show', 'shows', 'are showing', 'have shown'], a: 1,
+    ex: "The subject is \"Each,\" which is singular. \"Of the paintings\" doesn't change that, so the verb is \"shows.\"" },
+  { id: 'rw42', sec: 'rw', dom: 'Standard English Conventions', skill: 'Form, Structure, and Sense',
+    passage: `<p>Having studied the ancient manuscripts for years, ${B}</p>`,
+    q: CONV,
+    ch: ["the language's grammar was finally clear to the linguist.",
+         "the linguist finally understood the language's grammar.",
+         'the grammar of the language finally made sense.',
+         'it was finally clear what the grammar of the language was.'], a: 1,
+    ex: "The opening phrase describes whoever studied the manuscripts, so that person must come right after the comma. Only one choice puts \"the linguist\" there. The others create dangling modifiers." },
+  { id: 'rw43', sec: 'rw', dom: 'Standard English Conventions', skill: 'Form, Structure, and Sense',
+    passage: `<p>The ${B} nesting habits have shifted as rising temperatures change the timing of spring.</p>`,
+    q: CONV, ch: ["region's birds", "regions bird's", "region's birds'", "regions' bird's"], a: 2,
+    ex: "The birds belong to one region (region's), and the nesting habits belong to many birds (birds'). So both words need to be possessive: region's birds'." },
+  { id: 'rw44', sec: 'rw', dom: 'Standard English Conventions', skill: 'Boundaries',
+    passage: `<p>The Atacama ${B} is one of the driest places on Earth.</p>`,
+    q: CONV,
+    ch: ["Desert, which stretches along Chile's Pacific coast,", "Desert which stretches along Chile's Pacific coast,",
+         "Desert, which stretches along Chile's Pacific coast", "Desert; which stretches along Chile's Pacific coast,"], a: 0,
+    ex: "The \"which\" clause adds extra information, so it needs a comma before and after it. Only one choice has both." },
+  { id: 'rw45', sec: 'rw', dom: 'Standard English Conventions', skill: 'Form, Structure, and Sense',
+    passage: `<p>The ancient city's walls, ${B} from local limestone, still stand more than 2,000 years after their construction.</p>`,
+    q: CONV, ch: ['built', 'building', 'were built', 'they were built'], a: 0,
+    ex: "The phrase between the commas modifies \"walls\" and needs a past participle: \"built from local limestone.\" \"Were built\" and \"they were built\" add a second main verb or clause, which breaks the sentence." },
+  { id: 'rw46', sec: 'rw', dom: 'Standard English Conventions', skill: 'Form, Structure, and Sense',
+    passage: `<p>After customers raised concerns, the company updated ${B} privacy policy to explain how personal data are stored.</p>`,
+    q: CONV, ch: ['its', "it's", 'their', "its'"], a: 0,
+    ex: "\"Its\" is the possessive for a singular noun like \"company.\" \"It's\" means \"it is,\" and \"its'\" is never correct." },
+
+  // ---------- Reading and Writing: Expression of Ideas (added) ----------
+  { id: 'rw47', sec: 'rw', dom: 'Expression of Ideas', skill: 'Transitions',
+    passage: `<p>Exposure times for the earliest cameras could last several minutes. ${B} people being photographed had to stay perfectly still, sometimes with the help of hidden head braces.</p>`,
+    q: TRANS, ch: ['As a result,', 'In contrast,', 'Nevertheless,', 'For instance,'], a: 0,
+    ex: "Long exposures caused people to need to hold still, which is a cause-and-effect relationship: \"As a result.\"" },
+  { id: 'rw48', sec: 'rw', dom: 'Expression of Ideas', skill: 'Transitions',
+    passage: `<p>Coffee plants grow best at high elevations with steady temperatures. Tea plants, ${B} can tolerate a wider range of climates, from tropical lowlands to cool mountain slopes.</p>`,
+    q: TRANS, ch: ['by contrast,', 'for example,', 'as a result,', 'in other words,'], a: 0,
+    ex: "Coffee needs narrow conditions, while tea tolerates a wide range. That's a contrast." },
+  { id: 'rw49', sec: 'rw', dom: 'Expression of Ideas', skill: 'Transitions',
+    passage: `<p>The study's sample was small, including only 40 participants. ${B} its findings should be confirmed by larger studies before they are applied widely.</p>`,
+    q: TRANS, ch: ['Therefore,', 'Likewise,', 'Instead,', 'For example,'], a: 0,
+    ex: "The small sample is the reason the findings need confirming. That's a conclusion, so \"Therefore\" fits." },
+  { id: 'rw50', sec: 'rw', dom: 'Expression of Ideas', skill: 'Transitions',
+    passage: `<p>Mangrove trees survive in salty water that would kill most plants. Some species filter salt out at their roots. ${B} some species get rid of excess salt through special glands in their leaves.</p>`,
+    q: TRANS, ch: ['Additionally,', 'Therefore,', 'For instance,', 'Nevertheless,'], a: 0,
+    ex: "The second sentence adds another way mangroves handle salt, so the transition should signal addition." },
+  { id: 'rw51', sec: 'rw', dom: 'Expression of Ideas', skill: 'Transitions',
+    passage: `<p>The city's new protected bike lanes were designed mainly to improve safety. ${B} the lanes appear to have boosted business at nearby shops, according to a recent survey of store owners.</p>`,
+    q: TRANS, ch: ['In addition,', 'Instead,', 'Nonetheless,', 'Specifically,'], a: 0,
+    ex: "Boosting business is an extra benefit on top of safety. It's not a contrast or a specific example of safety." },
+  { id: 'rw52', sec: 'rw', dom: 'Expression of Ideas', skill: 'Rhetorical Synthesis',
+    passage: `<p>While researching a topic, a student has taken the following notes:</p>
+      <ul><li>Maria Tallchief (1925–2013) was an American ballet dancer.</li>
+      <li>She was a member of the Osage Nation.</li>
+      <li>She is widely considered America's first major prima ballerina.</li>
+      <li>She danced with the New York City Ballet.</li></ul>`,
+    q: 'The student wants to introduce Maria Tallchief to an audience unfamiliar with her. Which choice most effectively uses relevant information from the notes to accomplish this goal?',
+    ch: ["Maria Tallchief, a member of the Osage Nation, is widely considered America's first major prima ballerina.",
+         'Tallchief danced with the New York City Ballet.',
+         'The New York City Ballet has featured many talented dancers.',
+         'Tallchief was born in 1925 and died in 2013.'], a: 0,
+    ex: "An introduction should say who she is and why she matters. Only the choice naming her as America's first major prima ballerina does both. The others leave out who she is or aren't about her." },
+  { id: 'rw53', sec: 'rw', dom: 'Expression of Ideas', skill: 'Rhetorical Synthesis',
+    passage: `<p>While researching a topic, a student has taken the following notes:</p>
+      <ul><li>Mauna Loa, in Hawaii, is a shield volcano with gentle slopes.</li>
+      <li>Its eruptions usually produce flowing rivers of lava.</li>
+      <li>Mount St. Helens, in Washington State, is a steep stratovolcano.</li>
+      <li>It is known for explosive eruptions, including a major one in 1980.</li></ul>`,
+    q: 'The student wants to contrast the eruptions of the two volcanoes. Which choice most effectively uses relevant information from the notes to accomplish this goal?',
+    ch: ['Mauna Loa\'s eruptions usually produce flowing lava, whereas Mount St. Helens is known for explosive eruptions, such as one in 1980.',
+         'Mauna Loa and Mount St. Helens are both volcanoes in the United States.',
+         'Mount St. Helens had a major eruption in 1980.',
+         'Mauna Loa is a shield volcano with gentle slopes.'], a: 0,
+    ex: "Only the \"whereas\" choice describes the eruptions of both volcanoes and sets them against each other with \"whereas.\"" },
+  { id: 'rw54', sec: 'rw', dom: 'Expression of Ideas', skill: 'Rhetorical Synthesis',
+    passage: `<p>While researching a topic, a student has taken the following notes:</p>
+      <ul><li>Researchers surveyed 500 commuters in Copenhagen in 2022.</li>
+      <li>Some commuters cycled to work; others drove.</li>
+      <li>Cyclists reported lower stress levels than drivers did.</li></ul>`,
+    q: "The student wants to present the study's main finding. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    ch: ['A 2022 survey of Copenhagen commuters found that those who cycled to work reported lower stress than those who drove.',
+         'Researchers surveyed 500 commuters in Copenhagen in 2022.',
+         'Some Copenhagen commuters cycle to work, while others drive.',
+         'Copenhagen is a city where many people commute.'], a: 0,
+    ex: "The finding is the stress comparison between cyclists and drivers. Only one choice states it. The others describe how the study was set up or the city." },
+
+  // ---------- Math: Algebra (added) ----------
+  { id: 'm17', sec: 'math', dom: 'Algebra', skill: 'Linear equations in one variable',
+    q: 'If 5(<i>x</i> − 2) = 3<i>x</i> + 4, what is the value of <i>x</i>?',
+    spr: 7, ex: 'Distribute: 5<i>x</i> − 10 = 3<i>x</i> + 4. Subtract 3<i>x</i> and add 10: 2<i>x</i> = 14, so <i>x</i> = 7.' },
+  { id: 'm18', sec: 'math', dom: 'Algebra', skill: 'Linear equations in two variables',
+    q: 'What is the <i>y</i>-intercept of the graph of <i>y</i> = −3<i>x</i> + 6 in the <i>xy</i>-plane?',
+    ch: ['(0, 6)', '(6, 0)', '(0, −3)', '(2, 0)'], a: 0,
+    ex: 'The <i>y</i>-intercept is where <i>x</i> = 0: <i>y</i> = −3(0) + 6 = 6, giving (0, 6). (2, 0) is the <i>x</i>-intercept.' },
+  { id: 'm19', sec: 'math', dom: 'Algebra', skill: 'Linear equations in two variables',
+    q: 'Which equation represents a line that is parallel to the line <i>y</i> = 4<i>x</i> − 1?',
+    ch: ['<i>y</i> = 4<i>x</i> + 7', '<i>y</i> = −4<i>x</i> − 1', '<i>y</i> = ¼<i>x</i> − 1', '<i>y</i> = −¼<i>x</i> + 2'], a: 0,
+    ex: 'Parallel lines have equal slopes. Only <i>y</i> = 4<i>x</i> + 7 has slope 4. <i>y</i> = −¼<i>x</i> + 2 has the negative reciprocal slope, which makes it perpendicular.' },
+  { id: 'm20', sec: 'math', dom: 'Algebra', skill: 'Linear inequalities',
+    q: 'A delivery truck can carry at most 2,000 pounds. It already holds 600 pounds of equipment, and each box weighs 35 pounds. Which inequality represents the number of boxes, <i>b</i>, the truck can carry?',
+    ch: ['35<i>b</i> + 600 ≤ 2,000', '35<i>b</i> − 600 ≤ 2,000', '600<i>b</i> + 35 ≤ 2,000', '35<i>b</i> + 600 ≥ 2,000'], a: 0,
+    ex: 'Total weight is 600 + 35<i>b</i>, and "at most" means ≤ 2,000.' },
+  { id: 'm21', sec: 'math', dom: 'Algebra', skill: 'Linear inequalities',
+    q: 'A delivery truck can carry at most 2,000 pounds. It already holds 600 pounds of equipment, and each box weighs 35 pounds. What is the greatest number of boxes the truck can carry?',
+    spr: 40, ex: '600 + 35<i>b</i> ≤ 2,000 → 35<i>b</i> ≤ 1,400 → <i>b</i> ≤ 40.' },
+  { id: 'm22', sec: 'math', dom: 'Algebra', skill: 'Systems of linear equations',
+    q: '2<i>x</i> + 3<i>y</i> = 12<br><i>y</i> = <i>x</i> − 1<br><br>If (<i>x</i>, <i>y</i>) is the solution to the system above, what is the value of <i>y</i>?',
+    spr: 2, ex: 'Substitute: 2<i>x</i> + 3(<i>x</i> − 1) = 12 → 5<i>x</i> − 3 = 12 → <i>x</i> = 3. Then <i>y</i> = 3 − 1 = 2.' },
+  { id: 'm23', sec: 'math', dom: 'Algebra', skill: 'Systems of linear equations',
+    q: '3<i>x</i> + <i>ky</i> = 8<br>6<i>x</i> + 4<i>y</i> = 5<br><br>In the system above, <i>k</i> is a constant. If the system has no solution, what is the value of <i>k</i>?',
+    spr: 2, ex: 'No solution means the lines are parallel and distinct. Coefficients must be proportional: 3/6 = <i>k</i>/4, so <i>k</i> = 2. Check that the constants aren\'t in the same ratio: 8/5 ≠ 1/2, so the lines are distinct.' },
+  { id: 'm24', sec: 'math', dom: 'Algebra', skill: 'Systems of linear equations',
+    q: 'A theater sells adult tickets for $12 and child tickets for $8. On one night it sold 50 tickets for a total of $520. How many adult tickets did it sell?',
+    spr: 30, ex: '<i>a</i> + <i>c</i> = 50 and 12<i>a</i> + 8<i>c</i> = 520. Substitute <i>c</i> = 50 − <i>a</i>: 12<i>a</i> + 400 − 8<i>a</i> = 520 → 4<i>a</i> = 120 → <i>a</i> = 30.' },
+  { id: 'm25', sec: 'math', dom: 'Algebra', skill: 'Linear functions',
+    q: 'For the linear function <i>f</i>, <i>f</i>(1) = 7 and <i>f</i>(4) = 16. What is the value of <i>f</i>(0)?',
+    spr: 4, ex: 'Slope = (16 − 7) ÷ (4 − 1) = 3. Going from <i>x</i> = 1 back to <i>x</i> = 0 subtracts 3: <i>f</i>(0) = 7 − 3 = 4.' },
+  { id: 'm26', sec: 'math', dom: 'Algebra', skill: 'Linear functions',
+    q: 'The equation <i>C</i> = 15<i>h</i> + 50 gives the cost <i>C</i>, in dollars, of a plumber\'s visit that lasts <i>h</i> hours. What is the best interpretation of 15 in this context?',
+    ch: ['The cost per hour of the plumber\'s work', 'The fixed fee charged for each visit', 'The total cost of a one-hour visit', 'The number of hours the visit lasts'], a: 0,
+    ex: '15 multiplies <i>h</i>, so cost goes up $15 for each additional hour. The 50 is the fixed fee, and a one-hour visit costs $65.' },
+  { id: 'm27', sec: 'math', dom: 'Algebra', skill: 'Linear equations in one variable',
+    q: 'Which of the following is a solution to |<i>x</i> − 4| = 9?',
+    ch: ['−13', '−5', '5', '9'], a: 1,
+    ex: '<i>x</i> − 4 = 9 or <i>x</i> − 4 = −9, so <i>x</i> = 13 or <i>x</i> = −5. Only −5 is listed.' },
+
+  // ---------- Math: Advanced Math (added) ----------
+  { id: 'm28', sec: 'math', dom: 'Advanced Math', skill: 'Equivalent expressions',
+    q: 'Which expression is equivalent to <i>x</i><sup>2</sup> − 9?',
+    ch: ['(<i>x</i> − 3)<sup>2</sup>', '(<i>x</i> − 3)(<i>x</i> + 3)', '(<i>x</i> − 9)(<i>x</i> + 1)', '(<i>x</i> + 3)<sup>2</sup>'], a: 1,
+    ex: 'Difference of squares: <i>a</i><sup>2</sup> − <i>b</i><sup>2</sup> = (<i>a</i> − <i>b</i>)(<i>a</i> + <i>b</i>). With <i>b</i> = 3 you get (<i>x</i> − 3)(<i>x</i> + 3).' },
+  { id: 'm29', sec: 'math', dom: 'Advanced Math', skill: 'Nonlinear functions',
+    q: 'What is the vertex of the graph of <i>y</i> = (<i>x</i> − 2)<sup>2</sup> + 5 in the <i>xy</i>-plane?',
+    ch: ['(2, 5)', '(−2, 5)', '(2, −5)', '(5, 2)'], a: 0,
+    ex: 'Vertex form <i>y</i> = (<i>x</i> − <i>h</i>)<sup>2</sup> + <i>k</i> has vertex (<i>h</i>, <i>k</i>) = (2, 5).' },
+  { id: 'm30', sec: 'math', dom: 'Advanced Math', skill: 'Nonlinear equations',
+    q: 'What is the positive solution to <i>x</i><sup>2</sup> = 4<i>x</i> + 12?',
+    spr: 6, ex: 'Rearrange: <i>x</i><sup>2</sup> − 4<i>x</i> − 12 = 0 → (<i>x</i> − 6)(<i>x</i> + 2) = 0. The solutions are 6 and −2, and the positive one is 6.' },
+  { id: 'm31', sec: 'math', dom: 'Advanced Math', skill: 'Nonlinear functions',
+    q: 'The function <i>f</i> is defined by <i>f</i>(<i>x</i>) = 3<sup><i>x</i></sup>. What is the value of <i>f</i>(4)?',
+    spr: 81, ex: '3<sup>4</sup> = 3 × 3 × 3 × 3 = 81.' },
+  { id: 'm32', sec: 'math', dom: 'Advanced Math', skill: 'Nonlinear functions',
+    q: 'The functions <i>g</i> and <i>h</i> are defined by <i>g</i>(<i>x</i>) = <i>x</i><sup>2</sup> + 1 and <i>h</i>(<i>x</i>) = 2<i>x</i> − 3. What is the value of <i>g</i>(<i>h</i>(2))?',
+    spr: 2, ex: 'Work inside out: <i>h</i>(2) = 2(2) − 3 = 1. Then <i>g</i>(1) = 1<sup>2</sup> + 1 = 2.' },
+  { id: 'm33', sec: 'math', dom: 'Advanced Math', skill: 'Nonlinear functions',
+    q: 'A car valued at $24,000 loses 15% of its value each year. Which function gives the car\'s value <i>V</i>, in dollars, <i>t</i> years from now?',
+    ch: ['<i>V</i>(<i>t</i>) = 24,000(0.85)<sup><i>t</i></sup>', '<i>V</i>(<i>t</i>) = 24,000(0.15)<sup><i>t</i></sup>', '<i>V</i>(<i>t</i>) = 24,000(1.15)<sup><i>t</i></sup>', '<i>V</i>(<i>t</i>) = 24,000 − 0.15<i>t</i>'], a: 0,
+    ex: 'Losing 15% each year leaves 85% of the value, so you multiply by 0.85 once per year: 24,000(0.85)<sup><i>t</i></sup>. Using 0.15 would keep only 15%.' },
+  { id: 'm34', sec: 'math', dom: 'Advanced Math', skill: 'Equivalent expressions',
+    q: 'Which expression is equivalent to (2<i>x</i><sup>2</sup> + 3<i>x</i>) − (<i>x</i><sup>2</sup> − 5<i>x</i> + 4)?',
+    ch: ['<i>x</i><sup>2</sup> + 8<i>x</i> − 4', '<i>x</i><sup>2</sup> − 2<i>x</i> − 4', '<i>x</i><sup>2</sup> + 8<i>x</i> + 4', '3<i>x</i><sup>2</sup> − 2<i>x</i> + 4'], a: 0,
+    ex: 'Distribute the minus sign to every term: 2<i>x</i><sup>2</sup> + 3<i>x</i> − <i>x</i><sup>2</sup> + 5<i>x</i> − 4 = <i>x</i><sup>2</sup> + 8<i>x</i> − 4.' },
+  { id: 'm35', sec: 'math', dom: 'Advanced Math', skill: 'Equivalent expressions',
+    q: 'For <i>x</i> ≠ 0, which expression is equivalent to (<i>x</i><sup>2</sup> + 6<i>x</i>) ÷ <i>x</i>?',
+    ch: ['<i>x</i> + 6', '<i>x</i> + 6<i>x</i>', '<i>x</i><sup>2</sup> + 6', '7<i>x</i>'], a: 0,
+    ex: 'Divide each term by <i>x</i>: <i>x</i><sup>2</sup>/<i>x</i> + 6<i>x</i>/<i>x</i> = <i>x</i> + 6.' },
+  { id: 'm36', sec: 'math', dom: 'Advanced Math', skill: 'Nonlinear equations',
+    q: 'For what value of the constant <i>c</i> does the equation <i>x</i><sup>2</sup> + 6<i>x</i> + <i>c</i> = 0 have exactly one real solution?',
+    spr: 9, ex: 'One real solution means the discriminant is zero: 6<sup>2</sup> − 4(1)(<i>c</i>) = 0 → 36 = 4<i>c</i> → <i>c</i> = 9. Then the equation is (<i>x</i> + 3)<sup>2</sup> = 0.' },
+  { id: 'm37', sec: 'math', dom: 'Advanced Math', skill: 'Nonlinear equations',
+    q: 'If √(<i>x</i> + 3) = 5, what is the value of <i>x</i>?',
+    spr: 22, ex: 'Square both sides: <i>x</i> + 3 = 25, so <i>x</i> = 22. Check: √25 = 5.' },
+
+  // ---------- Math: Problem-Solving and Data Analysis (added) ----------
+  { id: 'm38', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Rates and units',
+    q: 'A printer prints 18 pages in 45 seconds. At this rate, how many pages can it print in 5 minutes?',
+    spr: 120, ex: '18 ÷ 45 = 0.4 pages per second. 5 minutes = 300 seconds, and 0.4 × 300 = 120.' },
+  { id: 'm39', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'One-variable data',
+    q: 'What is the median of the data set 3, 7, 7, 9, 12, 15?',
+    spr: 8, ex: 'With six values, the median is the mean of the two middle values: (7 + 9) ÷ 2 = 8.' },
+  { id: 'm40', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Probability',
+    q: 'A survey asked 140 students in grades 11 and 12 whether they prefer sports or arts activities. The results are shown below.<div class="tablescroll"><table><thead><tr><th></th><th>Sports</th><th>Arts</th><th>Total</th></tr></thead><tbody><tr><td>Grade 11</td><td>40</td><td>20</td><td>60</td></tr><tr><td>Grade 12</td><td>30</td><td>50</td><td>80</td></tr></tbody></table></div>If a grade 12 student from the survey is selected at random, what is the probability that the student prefers arts?',
+    ch: ['5/14', '3/8', '5/8', '5/7'], a: 2,
+    ex: 'The question limits you to grade 12 students (80 of them). 50 of those prefer arts: 50/80 = 5/8. 5/14 uses all 140 students, which is a common trap.' },
+  { id: 'm41', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Ratios and proportions',
+    q: 'A recipe uses 3 cups of flour for every 2 cups of sugar. If a baker uses 12 cups of flour, how many cups of sugar should be used?',
+    spr: 8, ex: '12 cups of flour is 4 times 3, so use 4 × 2 = 8 cups of sugar.' },
+
+  // ---------- Math: Geometry and Trigonometry (added) ----------
+  { id: 'm42', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Lines and angles',
+    q: 'Two angles are supplementary. The measure of one angle is 4 times the measure of the other. What is the measure, in degrees, of the smaller angle?',
+    spr: 36, ex: 'Supplementary angles add to 180°: <i>x</i> + 4<i>x</i> = 180 → 5<i>x</i> = 180 → <i>x</i> = 36.' },
+  { id: 'm43', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Area and volume',
+    q: 'A right circular cylinder has a radius of 3 and a height of 10. What is its volume?',
+    ch: ['30π', '60π', '90π', '900π'], a: 2,
+    ex: 'V = π<i>r</i><sup>2</sup><i>h</i> = π(9)(10) = 90π.' },
+  { id: 'm44', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Similar triangles',
+    q: 'Triangle <i>ABC</i> is similar to triangle <i>DEF</i>, with <i>A</i>, <i>B</i>, and <i>C</i> corresponding to <i>D</i>, <i>E</i>, and <i>F</i>. If <i>AB</i> = 4, <i>DE</i> = 10, and <i>BC</i> = 6, what is <i>EF</i>?',
+    spr: 15, ex: 'The scale factor is 10/4 = 2.5. <i>EF</i> = 6 × 2.5 = 15.' },
+
+  // ====== Harder questions (feed the adaptive Module 2) ======
+  // ---------- R&W: Craft and Structure ----------
+  { id: 'rw55', sec: 'rw', dom: 'Craft and Structure', skill: 'Words in Context', d: 'H',
+    passage: `<p>In her study of nineteenth-century trade networks, the historian resists the ${B} impulse to credit a single merchant family with the region's prosperity, instead tracing how dozens of small traders contributed to it.</p>`,
+    q: WIC, ch: ['reductive', 'meticulous', 'altruistic', 'contrarian'], a: 0,
+    ex: "Giving one family all the credit oversimplifies a story that involved dozens of traders. Reductive means oversimplifying something complex." },
+  { id: 'rw56', sec: 'rw', dom: 'Craft and Structure', skill: 'Words in Context', d: 'H',
+    passage: `<p>Critics who dismissed the sculptor's late work as merely ${B} overlooked its formal daring: although the pieces reuse motifs from her earlier career, they recombine those motifs in ways that upend their original meanings.</p>`,
+    q: WIC, ch: ['derivative', 'inscrutable', 'ephemeral', 'austere'], a: 0,
+    ex: "The critics' complaint is tied to the work reusing earlier motifs. Derivative means copied from or based on earlier work, which the author argues misses how the pieces transform those motifs." },
+  { id: 'rw57', sec: 'rw', dom: 'Craft and Structure', skill: 'Words in Context', d: 'H',
+    passage: `<p>The committee's endorsement of the proposal was ${B} at best: members approved it only after attaching so many conditions that its original goals were nearly unrecognizable.</p>`,
+    q: WIC, ch: ['qualified', 'unequivocal', 'premature', 'clandestine'], a: 0,
+    ex: "Approval that comes with many conditions is limited or partial, which is what qualified means. Unequivocal (without reservation) is the opposite." },
+  { id: 'rw58', sec: 'rw', dom: 'Craft and Structure', skill: 'Text Structure and Purpose', d: 'H',
+    passage: `<p>Biologists have long assumed that the bright coloring of poison dart frogs evolved only as a warning to predators. Yet a recent study of one species found that females consistently chose brighter males as mates, even when duller males were equally healthy. The researchers don't dispute the warning function; rather, they suggest that mate choice may have reinforced it.</p>`,
+    q: 'Which choice best describes the overall structure of the text?',
+    ch: ['It presents a long-held explanation, describes a finding that complicates it, and proposes that a second factor also played a role.',
+         'It presents a long-held explanation and then describes evidence that disproves it entirely.',
+         'It describes two competing studies and argues that one of them is flawed.',
+         'It explains a behavior and then lists several exceptions to it.'], a: 0,
+    ex: "The researchers \"don't dispute the warning function,\" so the old explanation isn't thrown out. They add mate choice as a second factor. That rules out the \"disproves it entirely\" choice." },
+  { id: 'rw59', sec: 'rw', dom: 'Craft and Structure', skill: 'Cross-Text Connections', d: 'H',
+    passage: `<p><b>Text 1</b><br>Many scholars treat the letters of the novelist Edith Marlowe as a reliable guide to her intentions, citing her detailed descriptions of how she planned each book.</p>
+      <p><b>Text 2</b><br>Marlowe's letters were written to her publisher, who controlled her advances. It would be naive to assume she never shaped her account of her methods to reassure him that each manuscript was carefully planned, and therefore marketable.</p>`,
+    q: 'Based on the texts, how would the author of Text 2 most likely respond to the scholars in Text 1?',
+    ch: ["By cautioning that the letters may reflect Marlowe's practical motives rather than simply her actual methods",
+         'By arguing that Marlowe never planned any of her novels',
+         'By agreeing that the letters are the most reliable source on her intentions',
+         "By claiming that Marlowe's publisher wrote the letters himself"], a: 0,
+    ex: "Text 2 suggests Marlowe had a reason (her advances) to present herself as a careful planner, so the letters may not be a neutral record. It never goes as far as saying she didn't plan at all." },
+  { id: 'rw60', sec: 'rw', dom: 'Craft and Structure', skill: 'Text Structure and Purpose', d: 'M',
+    passage: `<p>Some city officials argue that widening highways reduces traffic. However, studies in several cities have found that within a few years of widening, traffic returns to its earlier levels, because the added space encourages more people to drive. Economists call this effect induced demand.</p>`,
+    q: 'Which choice best describes the function of the third sentence in the overall structure of the text?',
+    ch: ['It names the effect described in the previous sentence.',
+         'It offers a counterargument to the studies just mentioned.',
+         'It proposes a solution to the traffic problem.',
+         'It questions how the studies were carried out.'], a: 0,
+    ex: "The second sentence describes the effect (extra lanes attract more drivers). The third sentence just gives it a name: induced demand." },
+
+  // ---------- R&W: Information and Ideas ----------
+  { id: 'rw61', sec: 'rw', dom: 'Information and Ideas', skill: 'Inferences', d: 'H',
+    passage: `<p>Archaeologists excavating a Bronze Age settlement found that pottery in the oldest layers was made from local clay, while pottery in later layers was made from clay found only 300 kilometers away. Because the later pottery shows the same shaping and firing techniques as the earlier pottery, the researchers argue that ${B}</p>`,
+    q: LOGIC,
+    ch: ["the settlement's potters likely obtained distant clay and shaped it themselves using familiar methods.",
+         'the settlement was abandoned and later resettled by people from 300 kilometers away.',
+         'the local clay had become unusable by the time the later layers formed.',
+         'the later pots were made in distant workshops and traded to the settlement as finished goods.'], a: 0,
+    ex: "Same techniques suggest the same local potters. Distant clay suggests the raw material came from far away. Together, local potters were working imported clay. New settlers or outside workshops would likely bring different techniques." },
+  { id: 'rw62', sec: 'rw', dom: 'Information and Ideas', skill: 'Command of Evidence (Textual)', d: 'H',
+    passage: `<p>An ecologist hypothesizes that the decline of a songbird species in a forest is caused mainly by new roads that break up its habitat, rather than by a decline in the insects it eats.</p>`,
+    q: "Which finding, if true, would most directly support the ecologist's hypothesis?",
+    ch: ['Insect populations in the forest have stayed stable, while the songbird has declined most sharply in areas near new roads.',
+         'The songbird has declined equally across the forest, and insect populations have also fallen.',
+         'Several other bird species in the forest also feed on insects.',
+         'Most of the roads in the forest were built within the past decade.'], a: 0,
+    ex: "To favor roads over insects, you need evidence that rules out insects (they're stable) and links the decline to roads (sharpest near them). The first choice does both. The second points toward insects instead." },
+  { id: 'rw63', sec: 'rw', dom: 'Information and Ideas', skill: 'Command of Evidence (Textual)', d: 'H',
+    passage: `<p>A researcher claims that the opening of a new public library in Hartwell caused an increase in reading among the city's teenagers, pointing to a 30 percent rise in teen library card sign-ups since the library opened.</p>`,
+    q: "Which finding, if true, would most directly weaken the researcher's claim?",
+    ch: ['Teen library card sign-ups rose by about 30 percent over the same period in nearby cities that did not open new libraries.',
+         'The new library has a large section of books written for teenagers.',
+         'Teen visits to the library rose steadily after it opened.',
+         'Teenagers surveyed said they enjoy the events held at the new library.'], a: 0,
+    ex: "If sign-ups rose just as much in cities without a new library, something else is likely behind the rise. The other findings are consistent with the claim." },
+  { id: 'rw64', sec: 'rw', dom: 'Information and Ideas', skill: 'Command of Evidence (Quantitative)', d: 'H',
+    passage: `<div class="tablescroll"><table><caption>Average daily screen time (hours)</caption>
+      <thead><tr><th>Group</th><th>Before</th><th>After 4 weeks</th></tr></thead>
+      <tbody><tr><td>A (took the program)</td><td class="n">6.2</td><td class="n">4.1</td></tr><tr><td>B (did not)</td><td class="n">6.0</td><td class="n">5.8</td></tr></tbody></table></div>
+      <p>Researchers concluded that the program itself, rather than some other factor affecting all participants, reduced screen time.</p>`,
+    q: "Which choice most effectively uses data from the table to support the researchers' conclusion?",
+    ch: ["Group A's screen time fell by about 2.1 hours, while Group B's fell by only about 0.2 hours.",
+         'Both groups started with similar screen time, about 6 hours per day.',
+         "Group B's screen time after four weeks was 5.8 hours per day.",
+         'Screen time decreased in both groups over the four weeks.'], a: 0,
+    ex: "To credit the program rather than a shared factor, you need to compare the change in the group that took it with the change in the group that didn't. Only the first choice makes that comparison (2.1 vs 0.2 hours). The last choice actually suggests a shared factor." },
+  { id: 'rw65', sec: 'rw', dom: 'Information and Ideas', skill: 'Inferences', d: 'H',
+    passage: `<p>Plants grown beside a highway flowered about a week earlier than identical plants grown in a field 2 kilometers away. The air near the highway was about 2°C warmer, but it also contained higher levels of nitrogen compounds from vehicle exhaust, which can act as fertilizer. The researchers therefore caution that ${B}</p>`,
+    q: LOGIC,
+    ch: ['the earlier flowering cannot yet be attributed to temperature alone.',
+         'highways should be moved away from areas where plants grow.',
+         'nitrogen compounds are known to delay flowering in most plants.',
+         'temperature has no effect on when plants flower.'], a: 0,
+    ex: "Two things differed near the highway (warmth and nitrogen), so either could explain early flowering. That's why the researchers can't credit temperature alone. Saying temperature has \"no effect\" goes too far." },
+  { id: 'rw66', sec: 'rw', dom: 'Information and Ideas', skill: 'Central Ideas and Details', d: 'H',
+    passage: `<p>The economist's model accurately predicted consumer spending during periods of steady growth, but it failed to anticipate the sharp drop in spending that followed the 2008 financial crisis. Her critics see this failure as proof that the model is fundamentally flawed. She counters that no model built on decades of ordinary economic behavior could be expected to capture a rare shock, and that the model remains useful for the conditions it was designed to describe.</p>`,
+    q: 'Which choice best states the main idea of the text?',
+    ch: ["An economist defends her model's usefulness despite its failure to predict an unusual event.",
+         "The economist's model is fundamentally flawed and should no longer be used.",
+         'Consumer spending is impossible to predict with any economic model.',
+         'Critics agree that the model works well during periods of steady growth.'], a: 0,
+    ex: "The text presents a failure, the critics' view, and then the economist's defense, which gets the final word. The second choice is only the critics' view, and the text never says the critics agree about steady growth." },
+  { id: 'rw67', sec: 'rw', dom: 'Information and Ideas', skill: 'Command of Evidence (Textual)', d: 'M',
+    passage: `<p>In a novel, the narrator describes her grandmother this way: "She praised every meal she was served, then quietly added salt when she thought no one was watching."</p>`,
+    q: "Based on the text, which choice best describes the narrator's grandmother?",
+    ch: ['Tactful about her preferences', 'Openly critical of other people', 'Indifferent to the taste of food', 'Unable to cook for herself'], a: 0,
+    ex: "She praises the food out loud but fixes it privately. That shows she cares about taste but keeps her opinion to herself to be polite, which is tactful." },
+
+  // ---------- R&W: Standard English Conventions ----------
+  { id: 'rw68', sec: 'rw', dom: 'Standard English Conventions', skill: 'Boundaries', d: 'H',
+    passage: `<p>The festival's lineup included bands from Austin, ${B} Portland, Oregon; and Asheville, North Carolina.</p>`,
+    q: CONV, ch: ['Texas;', 'Texas,', 'Texas:', 'Texas'], a: 0,
+    ex: "When list items already contain commas (city, state), semicolons separate the items. The other items are separated by semicolons, so \"Texas;\" keeps the list consistent." },
+  { id: 'rw69', sec: 'rw', dom: 'Standard English Conventions', skill: 'Boundaries', d: 'H',
+    passage: `<p>The expedition's most valuable find—a nearly complete fossil skeleton of an early ${B} was discovered by a graduate student during her first field season.</p>`,
+    q: CONV, ch: ['whale—', 'whale,', 'whale;', 'whale'], a: 0,
+    ex: "The extra information opens with a dash, so it must close with a dash. A comma or semicolon can't close a dash pair, and leaving it open makes the sentence ungrammatical." },
+  { id: 'rw70', sec: 'rw', dom: 'Standard English Conventions', skill: 'Form, Structure, and Sense', d: 'H',
+    passage: `<p>Among the artifacts recovered from the shipwreck ${B} a brass navigational instrument and several sealed jars of olive oil.</p>`,
+    q: CONV, ch: ['was', 'is', 'were', 'has been'], a: 2,
+    ex: "The sentence is inverted: the subject comes after the verb. The subject is \"an instrument and several jars,\" which is plural, so the verb is \"were.\" \"Artifacts\" is inside a prepositional phrase, not the subject." },
+  { id: 'rw71', sec: 'rw', dom: 'Standard English Conventions', skill: 'Boundaries', d: 'H',
+    passage: `<p>The novel ${B} won the prize in 1998 has since been translated into more than 40 languages.</p>`,
+    q: CONV, ch: ['that', ', which', ', that', 'which,'], a: 0,
+    ex: "The clause identifies which novel is meant, so it's essential and takes no commas. \"That\" introduces an essential clause. \", which\" would need a closing comma after 1998." },
+  { id: 'rw72', sec: 'rw', dom: 'Standard English Conventions', skill: 'Form, Structure, and Sense', d: 'H',
+    passage: `<p>Physicist Chien-Shiung Wu, whose experiments in the 1950s overturned a long-accepted principle of physics, ${B} widely regarded as one of the most important experimental physicists of the twentieth century.</p>`,
+    q: CONV, ch: ['being', 'is', 'having been', 'to be'], a: 1,
+    ex: "The subject \"Chien-Shiung Wu\" needs a main verb. The long \"whose\" clause between the commas is a distraction. \"Being,\" \"having been,\" and \"to be\" aren't main verbs." },
+  { id: 'rw73', sec: 'rw', dom: 'Standard English Conventions', skill: 'Form, Structure, and Sense', d: 'H',
+    passage: `<p>Neither the director nor the actors ${B} aware that the final scene would be cut from the film.</p>`,
+    q: CONV, ch: ['was', 'were', 'is', 'has been'], a: 1,
+    ex: "With \"neither...nor,\" the verb agrees with the closer subject, \"the actors,\" which is plural. The sentence is in the past (\"would be cut\"), so \"were.\"" },
+  { id: 'rw74', sec: 'rw', dom: 'Standard English Conventions', skill: 'Boundaries', d: 'H',
+    passage: `<p>The trial produced promising ${B} the researchers cautioned that a larger study was needed before the treatment could be recommended.</p>`,
+    q: CONV, ch: ['results; however,', 'results, however,', 'results however,', 'results; however'], a: 0,
+    ex: "\"However\" here connects two independent clauses, so it needs a semicolon before it and a comma after. A comma before it creates a comma splice." },
+
+  // ---------- R&W: Expression of Ideas ----------
+  { id: 'rw75', sec: 'rw', dom: 'Expression of Ideas', skill: 'Transitions', d: 'H',
+    passage: `<p>Many economists predicted that remote work would cause downtown businesses to collapse, and in some cities this has largely happened. ${B} downtown restaurants and shops in other cities have adapted by serving residents rather than office workers, and many are thriving.</p>`,
+    q: TRANS, ch: ['By contrast,', 'Consequently,', 'Similarly,', 'In other words,'], a: 0,
+    ex: "Collapse in some cities is set against thriving businesses in other cities. That's a contrast." },
+  { id: 'rw76', sec: 'rw', dom: 'Expression of Ideas', skill: 'Transitions', d: 'H',
+    passage: `<p>The first edition of the encyclopedia was widely praised for its scope. Its accuracy, ${B} was another matter: reviewers found hundreds of errors in its geography entries alone.</p>`,
+    q: TRANS, ch: ['however,', 'therefore,', 'for example,', 'similarly,'], a: 0,
+    ex: "Praise for scope is followed by criticism of accuracy (\"another matter\"), so the transition must signal contrast." },
+  { id: 'rw77', sec: 'rw', dom: 'Expression of Ideas', skill: 'Transitions', d: 'H',
+    passage: `<p>The new vaccine must be kept refrigerated, which makes it difficult to distribute in remote areas. ${B} it is highly effective, and health officials are working to develop portable cooling units so that more communities can receive it.</p>`,
+    q: TRANS, ch: ['Still,', 'Thus,', 'Likewise,', 'For instance,'], a: 0,
+    ex: "The first sentence gives a drawback, and the second turns to a strength despite that drawback. \"Still\" signals that concession." },
+  { id: 'rw78', sec: 'rw', dom: 'Expression of Ideas', skill: 'Transitions', d: 'H',
+    passage: `<p>Researchers had expected the drug to lower blood pressure in all participants. ${B} it lowered blood pressure only in participants who also exercised regularly.</p>`,
+    q: TRANS, ch: ['Instead,', 'Moreover,', 'Similarly,', 'Accordingly,'], a: 0,
+    ex: "The actual result replaced the expected one, which \"Instead\" signals. \"Accordingly\" would mean the result followed from the expectation." },
+  { id: 'rw79', sec: 'rw', dom: 'Expression of Ideas', skill: 'Rhetorical Synthesis', d: 'H',
+    passage: `<p>While researching a topic, a student has taken the following notes:</p>
+      <ul><li>Spider silk is a natural fiber produced by spiders.</li>
+      <li>Kevlar is a synthetic fiber developed in 1965.</li>
+      <li>By weight, spider silk is stronger than steel.</li>
+      <li>By weight, Kevlar is also stronger than steel.</li>
+      <li>Spider silk can stretch much farther than Kevlar before breaking.</li></ul>`,
+    q: 'The student wants to emphasize a similarity between spider silk and Kevlar. Which choice most effectively uses relevant information from the notes to accomplish this goal?',
+    ch: ['By weight, both spider silk and Kevlar are stronger than steel.',
+         'Spider silk can stretch much farther than Kevlar before breaking.',
+         'Unlike spider silk, Kevlar is a synthetic fiber, first developed in 1965.',
+         'Spider silk, a natural fiber produced by spiders, is stronger than steel by weight.'], a: 0,
+    ex: "Only the first choice states something both fibers share. Two choices describe differences, and the last one mentions only spider silk." },
+  { id: 'rw80', sec: 'rw', dom: 'Expression of Ideas', skill: 'Rhetorical Synthesis', d: 'H',
+    passage: `<p>While researching a topic, a student has taken the following notes:</p>
+      <ul><li>Coral bleaching occurs when corals expel the algae living in their tissues.</li>
+      <li>Bleaching is often triggered by high water temperatures.</li>
+      <li>A team of researchers tested whether heat-tolerant algae could help corals resist bleaching.</li>
+      <li>Corals hosting heat-tolerant algae bleached less during a simulated heat wave.</li></ul>`,
+    q: "The student wants to explain the aim of the research to an audience unfamiliar with coral bleaching. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    ch: ['Researchers tested whether heat-tolerant algae could help corals resist bleaching, which happens when corals expel the algae in their tissues, often because of high water temperatures.',
+         'Corals hosting heat-tolerant algae bleached less during a simulated heat wave.',
+         'Coral bleaching is often triggered by high water temperatures.',
+         'Researchers studied a process in which corals expel algae.'], a: 0,
+    ex: "The goal has two parts: state the aim and explain bleaching for newcomers. Only the first choice does both. The second gives a result, not the aim." },
+  { id: 'rw81', sec: 'rw', dom: 'Expression of Ideas', skill: 'Rhetorical Synthesis', d: 'H',
+    passage: `<p>While researching a topic, a student has taken the following notes:</p>
+      <ul><li>Poet Lena Ortiz published her first collection in 1990.</li>
+      <li>Her early poems used strict rhyme and meter.</li>
+      <li>Her poems written after 2010 are in free verse.</li>
+      <li>She has won two national poetry awards.</li></ul>`,
+    q: "The student wants to contrast the form of Ortiz's early and later poems. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    ch: ["Whereas Ortiz's early poems used strict rhyme and meter, her poems written after 2010 are in free verse.",
+         'Ortiz, who published her first collection in 1990, has won two national poetry awards.',
+         "Ortiz's poems written after 2010 are in free verse.",
+         "Ortiz's early poems used strict rhyme and meter, and she has won two national poetry awards."], a: 0,
+    ex: "A contrast needs both forms, early and later, set against each other. Only the \"Whereas\" choice does that." },
+
+  // ---------- Math: Algebra ----------
+  { id: 'm45', sec: 'math', dom: 'Algebra', skill: 'Linear equations in one variable', d: 'H',
+    q: 'In the equation 4(<i>x</i> − <i>a</i>) + 2 = 4<i>x</i> − 10, <i>a</i> is a constant. If the equation has infinitely many solutions, what is the value of <i>a</i>?',
+    spr: 3, ex: 'Expand: 4<i>x</i> − 4<i>a</i> + 2 = 4<i>x</i> − 10. The <i>x</i> terms match, so infinitely many solutions requires −4<i>a</i> + 2 = −10, giving <i>a</i> = 3.' },
+  { id: 'm46', sec: 'math', dom: 'Algebra', skill: 'Linear equations in two variables', d: 'H',
+    q: 'The line <i>y</i> = <i>kx</i> + 4, where <i>k</i> is a constant, passes through the point (−2, 10). What is the <i>x</i>-coordinate of the line\'s <i>x</i>-intercept?',
+    spr: 4 / 3, key: '4/3', ex: '10 = −2<i>k</i> + 4 → <i>k</i> = −3. Set <i>y</i> = 0: 0 = −3<i>x</i> + 4 → <i>x</i> = 4/3. (1.333 is also accepted.)' },
+  { id: 'm47', sec: 'math', dom: 'Algebra', skill: 'Systems of linear equations', d: 'M',
+    q: 'A store sells notebooks for $3 each and binders for $7 each. Mia bought 10 items and spent exactly $50. How many binders did she buy?',
+    spr: 5, ex: '<i>n</i> + <i>b</i> = 10 and 3<i>n</i> + 7<i>b</i> = 50. Substitute <i>n</i> = 10 − <i>b</i>: 30 + 4<i>b</i> = 50 → <i>b</i> = 5.' },
+  { id: 'm48', sec: 'math', dom: 'Algebra', skill: 'Systems of linear equations', d: 'H',
+    q: '2<i>x</i> − 5<i>y</i> = 7<br><i>ax</i> + 15<i>y</i> = −21<br><br>In the system above, <i>a</i> is a constant. If the system has infinitely many solutions, what is the value of <i>a</i>?',
+    spr: -6, ex: 'Infinitely many solutions means one equation is a multiple of the other. Going from −5<i>y</i> to 15<i>y</i> multiplies by −3, and 7 × (−3) = −21 checks out. So <i>a</i> = 2 × (−3) = −6.' },
+  { id: 'm49', sec: 'math', dom: 'Algebra', skill: 'Linear inequalities', d: 'H',
+    q: 'Which point (<i>x</i>, <i>y</i>) is a solution to the system of inequalities <i>y</i> &gt; 2<i>x</i> − 3 and <i>y</i> &lt; −<i>x</i> + 6?',
+    ch: ['(4, 4)', '(3, 2)', '(1, 4)', '(−1, 8)'], a: 2, fixed: true,
+    ex: 'Test (1, 4): 4 &gt; 2(1) − 3 = −1 ✓ and 4 &lt; −1 + 6 = 5 ✓. (4, 4) fails the first inequality (4 &gt; 5 is false), (3, 2) fails it too (2 &gt; 3), and (−1, 8) fails the second (8 &lt; 7).' },
+  { id: 'm50', sec: 'math', dom: 'Algebra', skill: 'Linear functions', d: 'H',
+    q: 'A tank holds 500 liters of water and drains at a constant rate. After 8 minutes, it holds 340 liters. How many minutes after draining begins will the tank be empty?',
+    spr: 25, ex: 'It loses 160 liters in 8 minutes, or 20 liters per minute. 500 ÷ 20 = 25 minutes.' },
+  { id: 'm51', sec: 'math', dom: 'Algebra', skill: 'Systems of linear equations', d: 'H',
+    q: '3<i>x</i> + 2<i>y</i> = 11<br><i>x</i> − 2<i>y</i> = 1<br><br>If (<i>x</i>, <i>y</i>) satisfies the system above, what is the value of 4<i>x</i>?',
+    spr: 12, ex: 'Add the equations: the <i>y</i> terms cancel and 4<i>x</i> = 12. No need to solve for <i>x</i> first.' },
+  { id: 'm52', sec: 'math', dom: 'Algebra', skill: 'Linear equations in two variables', d: 'H',
+    q: 'Line ℓ is perpendicular to the line 2<i>x</i> + 3<i>y</i> = 6 and passes through the point (4, 1). What is the <i>y</i>-coordinate of the <i>y</i>-intercept of line ℓ?',
+    spr: -5, ex: 'The given line has slope −2/3, so ℓ has slope 3/2. <i>y</i> − 1 = (3/2)(<i>x</i> − 4) → <i>y</i> = 1.5<i>x</i> − 5. The <i>y</i>-intercept is −5.' },
+  { id: 'm53', sec: 'math', dom: 'Algebra', skill: 'Linear inequalities', d: 'H',
+    q: 'A company\'s annual revenue <i>R</i>, in thousands of dollars, is modeled by <i>R</i> = 12<i>t</i> + 150, where <i>t</i> is the number of years since 2015. According to the model, in what year will revenue first exceed $300,000?',
+    spr: 2028, ex: '$300,000 is 300 thousand. 12<i>t</i> + 150 &gt; 300 → <i>t</i> &gt; 12.5. The first whole year after that is <i>t</i> = 13, which is 2015 + 13 = 2028.' },
+
+  // ---------- Math: Advanced Math ----------
+  { id: 'm54', sec: 'math', dom: 'Advanced Math', skill: 'Nonlinear equations', d: 'H',
+    q: 'The equation <i>x</i><sup>2</sup> + <i>bx</i> + 16 = 0, where <i>b</i> is a constant, has 2 as one of its solutions. What is the other solution?',
+    spr: 8, ex: 'For <i>x</i><sup>2</sup> + <i>bx</i> + <i>c</i>, the product of the solutions is <i>c</i> = 16. So 2 × <i>r</i> = 16 and <i>r</i> = 8. (Then <i>b</i> = −10.)' },
+  { id: 'm55', sec: 'math', dom: 'Advanced Math', skill: 'Nonlinear functions', d: 'H',
+    q: 'The function <i>f</i> is defined by <i>f</i>(<i>x</i>) = (<i>x</i> − 3)(<i>x</i> + 5). For what value of <i>x</i> does <i>f</i>(<i>x</i>) reach its minimum?',
+    spr: -1, ex: 'A parabola\'s vertex is halfway between its zeros. The zeros are 3 and −5, and (3 + (−5)) ÷ 2 = −1.' },
+  { id: 'm56', sec: 'math', dom: 'Advanced Math', skill: 'Nonlinear functions', d: 'H',
+    q: 'The graph of <i>g</i>(<i>x</i>) = <i>a</i>(<i>x</i> − 2)<sup>2</sup> + 7, where <i>a</i> is a constant, passes through the point (4, −5). What is the value of <i>a</i>?',
+    spr: -3, ex: '−5 = <i>a</i>(4 − 2)<sup>2</sup> + 7 → −5 = 4<i>a</i> + 7 → 4<i>a</i> = −12 → <i>a</i> = −3.' },
+  { id: 'm57', sec: 'math', dom: 'Advanced Math', skill: 'Nonlinear equations', d: 'H',
+    q: 'If 9<sup><i>x</i></sup> = 27, what is the value of <i>x</i>?',
+    spr: 1.5, key: '3/2', ex: 'Write both sides as powers of 3: 3<sup>2<i>x</i></sup> = 3<sup>3</sup>, so 2<i>x</i> = 3 and <i>x</i> = 3/2 (or 1.5).' },
+  { id: 'm58', sec: 'math', dom: 'Advanced Math', skill: 'Equivalent expressions', d: 'H',
+    q: 'Which expression is equivalent to (<i>x</i><sup>2</sup> − 4) ÷ (<i>x</i><sup>2</sup> + 4<i>x</i> + 4), for <i>x</i> ≠ −2?',
+    ch: ['(<i>x</i> − 2) ÷ (<i>x</i> + 2)', '(<i>x</i> + 2) ÷ (<i>x</i> − 2)', '−1', '(<i>x</i> − 4) ÷ (4<i>x</i> + 4)'], a: 0,
+    ex: 'Factor: (<i>x</i> − 2)(<i>x</i> + 2) ÷ (<i>x</i> + 2)<sup>2</sup>. Cancel one factor of (<i>x</i> + 2) to get (<i>x</i> − 2) ÷ (<i>x</i> + 2). You can\'t cancel the <i>x</i><sup>2</sup> terms directly.' },
+  { id: 'm59', sec: 'math', dom: 'Advanced Math', skill: 'Nonlinear equations', d: 'H',
+    q: 'How many real solutions does the equation 2<i>x</i><sup>2</sup> − 4<i>x</i> + 5 = 0 have?',
+    ch: ['Zero', 'Exactly one', 'Exactly two', 'Infinitely many'], a: 0, fixed: true,
+    ex: 'The discriminant is <i>b</i><sup>2</sup> − 4<i>ac</i> = 16 − 40 = −24. A negative discriminant means no real solutions.' },
+  { id: 'm60', sec: 'math', dom: 'Advanced Math', skill: 'Nonlinear functions', d: 'H',
+    q: 'The function <i>P</i>(<i>t</i>) = 1,200(1.05)<sup><i>t</i></sup> models the population of a town <i>t</i> years after 2020. Which statement is true according to the model?',
+    ch: ['The population increases by 5% each year.', 'The population increases by 1.05 people each year.',
+         'The population increases by 60 people each year.', 'The population in 2020 was 1,260.'], a: 0,
+    ex: 'A growth factor of 1.05 means each year\'s population is 105% of the year before, a 5% increase. "60 people each year" describes linear growth, and at <i>t</i> = 0 the population is 1,200.' },
+  { id: 'm61', sec: 'math', dom: 'Advanced Math', skill: 'Systems of nonlinear equations', d: 'H',
+    q: '<i>y</i> = <i>x</i><sup>2</sup> − 4<i>x</i> + 7<br><i>y</i> = 2<i>x</i> − 2<br><br>If (<i>x</i>, <i>y</i>) is a solution to the system above, what is the value of <i>x</i>?',
+    spr: 3, ex: 'Set equal: <i>x</i><sup>2</sup> − 4<i>x</i> + 7 = 2<i>x</i> − 2 → <i>x</i><sup>2</sup> − 6<i>x</i> + 9 = 0 → (<i>x</i> − 3)<sup>2</sup> = 0, so <i>x</i> = 3. The line is tangent to the parabola.' },
+  { id: 'm62', sec: 'math', dom: 'Advanced Math', skill: 'Nonlinear functions', d: 'H',
+    q: 'The polynomial <i>p</i> is defined by <i>p</i>(<i>x</i>) = <i>x</i><sup>3</sup> − 2<i>x</i><sup>2</sup> − 9<i>x</i> + 18. Which of the following is a factor of <i>p</i>(<i>x</i>)?',
+    ch: ['<i>x</i> + 2', '<i>x</i> − 2', '<i>x</i> + 1', '<i>x</i> − 9'], a: 1,
+    ex: '(<i>x</i> − <i>r</i>) is a factor exactly when <i>p</i>(<i>r</i>) = 0. <i>p</i>(2) = 8 − 8 − 18 + 18 = 0. Grouping confirms it: <i>x</i><sup>2</sup>(<i>x</i> − 2) − 9(<i>x</i> − 2) = (<i>x</i> − 2)(<i>x</i> − 3)(<i>x</i> + 3).' },
+
+  // ---------- Math: Problem-Solving and Data Analysis ----------
+  { id: 'm63', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'Percentages', d: 'H',
+    q: 'The price of a bicycle was increased by 20% and then the new price was decreased by 20%. The final price is what percent of the original price?',
+    spr: 96, ex: '1.20 × 0.80 = 0.96, so the final price is 96% of the original. The changes don\'t cancel because the 20% decrease applies to a larger amount.' },
+  { id: 'm64', sec: 'math', dom: 'Problem-Solving and Data Analysis', skill: 'One-variable data', d: 'H',
+    q: 'A data set of 10 values has a mean of 12. When the value 30 is removed from the data set, what is the mean of the remaining values?',
+    spr: 10, ex: 'The original sum is 10 × 12 = 120. Removing 30 leaves 90 across 9 values: 90 ÷ 9 = 10.' },
+
+  // ---------- Math: Geometry and Trigonometry ----------
+  { id: 'm65', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Circles', d: 'H',
+    q: 'In the <i>xy</i>-plane, the graph of <i>x</i><sup>2</sup> + <i>y</i><sup>2</sup> − 6<i>x</i> + 8<i>y</i> = 0 is a circle. What is the radius of the circle?',
+    spr: 5, ex: 'Complete the square: (<i>x</i><sup>2</sup> − 6<i>x</i> + 9) + (<i>y</i><sup>2</sup> + 8<i>y</i> + 16) = 25, so (<i>x</i> − 3)<sup>2</sup> + (<i>y</i> + 4)<sup>2</sup> = 25 and the radius is 5.' },
+  { id: 'm66', sec: 'math', dom: 'Geometry and Trigonometry', skill: 'Circles', d: 'H',
+    q: 'A circle has a radius of 6. What is the length of an arc of the circle with a central angle of 120°?',
+    ch: ['2π', '4π', '6π', '12π'], a: 1,
+    ex: '120° is 1/3 of 360°. The circumference is 2π(6) = 12π, and 1/3 of that is 4π.' }
+];
+// Difficulty for the original questions (new ones carry their own d).
+(function tagDifficulty() {
+  const T = {
+    E: 'rw3 rw4 rw16 rw17 rw19 rw20 rw21 rw22 rw24 rw26 rw5 rw7 rw27 rw28 rw29 rw32 rw35 rw38 rw39 rw41 rw46 rw13 rw14 rw15 rw47 rw48 rw49 rw54 ' +
+       'm1 m2 m3 m4 m17 m18 m19 m26 m5 m6 m8 m28 m29 m31 m35 m10 m12 m39 m41 m13 m42 m43',
+    M: 'rw1 rw2 rw18 rw23 rw25 rw6 rw8 rw30 rw31 rw33 rw34 rw36 rw9 rw10 rw11 rw12 rw37 rw40 rw42 rw44 rw45 rw50 rw51 rw52 rw53 ' +
+       'm20 m21 m22 m24 m25 m27 m7 m9 m30 m32 m33 m34 m37 m11 m38 m40 m14 m15 m16 m44',
+    H: 'rw43 m23 m36'
+  };
+  const map = {};
+  Object.entries(T).forEach(([d, s]) => s.split(' ').forEach(id => map[id] = d));
+  BANK.forEach(q => { if (!q.d) q.d = map[q.id]; });
+})();
+const DNAME = { E: 'Easy', M: 'Medium', H: 'Hard' };
+// Spread correct answers across A–D with a fixed per-question order (same every visit).
+// Purely numeric math choices stay in ascending order, as on the real test.
+(function spreadAnswers() {
+  const hash = s => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
+  BANK.forEach(q => {
+    if (!q.ch || q.fixed) return;
+    const plain = q.ch.map(c => c.replace(/<[^>]+>/g, '').replace(/[$,π]/g, '').replace('−', '-'));
+    if (q.sec === 'math' && plain.every(c => /^-?[\d.\/]+$/.test(c))) return;
+    let seed = hash(q.id + 'x');
+    const order = [0, 1, 2, 3];
+    for (let i = 3; i > 0; i--) { seed = (Math.imul(seed, 1103515245) + 12345) >>> 0; const j = (seed >>> 8) % (i + 1); [order[i], order[j]] = [order[j], order[i]]; }
+    q.ch = order.map(k => q.ch[k]);
+    q.a = order.indexOf(q.a);
+    q.order = order;
+  });
+})();
+const byId = Object.fromEntries(BANK.map(q => [q.id, q]));
+
+// ---------- Russian explanations (English words from the passages stay in English) ----------
+const EX_RU = {
+  rw1: `Двоеточие показывает, что дальше объясняется пропуск. Эскизы, в которых архитектор не стала «committing to a single design» и оставила место для изменений, — предварительные: provisional значит «временный, допускающий изменения».`,
+  rw2: `«Although» задаёт противопоставление с письмами, где она обсуждает своё ремесло «at length» (подробно). Раз она давала «brief and guarded answers» (короткие и сдержанные ответы), она была reticent — сдержанной, неразговорчивой.`,
+  rw3: `Охватить все замечания всего на четырёх страницах — это concision, то есть краткость: умение сказать много малым числом слов. Redundancy (избыточность) — противоположность.`,
+  rw4: `Первое предложение сообщает, что тихоходки переживают обезвоживание. Второе описывает механизм (они сворачиваются в «тун» и замедляют обмен веществ). Оно ничего не опровергает, а оживление описано в третьем предложении.`,
+  rw5: `Текст переходит от роста числа городских ульев к предостережению: конкуренция за цветы может вредить диким пчёлам там, где цветов мало. Текст не призывает к запрету и не сравнивает, какие цветы предпочитают разные пчёлы.`,
+  rw6: `Урожай в целом вырос (с 42 до 55) с одним снижением — с 2018 (51) до 2019 (47). Остальные варианты неверно читают таблицу: максимум был 55 в 2020 году, и 2020 год — самый высокий, а не самый низкий.`,
+  rw7: `Стандартное хранение — это высушивание и заморозка. Если семена авокадо и какао при этом погибают, стандартные методы не могут их сохранить. Остальные варианты текст не подтверждает.`,
+  rw8: `В самых древних слоях нашли сельскохозяйственные орудия и не нашли рыболовных снастей — это указывает на земледелие. Сказать, что рыбаки «never» там жили, — слишком сильно, ведь раскопки охватили только древнейшие слои.`,
+  rw9: `Обе части — независимые предложения, и их можно соединить точкой с запятой. Одна запятая даёт comma splice (ошибочную «склейку» запятой), отсутствие знака — слитное предложение, а «which the oldest» грамматически неверно.`,
+  rw10: `Подлежащее — «collection» (единственное число). «Of letters written by the expedition's crew members» — предложная группа, она не меняет подлежащее, поэтому глагол «is».`,
+  rw11: `«Both» показывает, что архитекторов двое, а проекты принадлежат им. Значит, нужен притяжательный падеж множественного числа: architects'.`,
+  rw12: `«A nineteenth-century mathematician» — необязательное приложение, его нужно выделить запятыми с двух сторон. В остальных вариантах нет одной из запятых или стоит точка с запятой, которая не может отделять подлежащее от сказуемого.`,
+  rw13: `Смертельно опасные утечки — следствие использования ядовитых хладагентов, поэтому нужна связка причины и следствия: «Consequently» (следовательно).`,
+  rw14: `Второй результат (рост на 12 процентов) противопоставлен первому (никакого эффекта). «However» (однако) выражает это противопоставление.`,
+  rw15: `Только вариант «Stretching about 2,300 kilometers» говорит о размере, причём использует и длину (2 300 км), и факт «world's largest». Остальные — о местоположении или биоразнообразии.`,
+  rw16: `Выступления перед законодателями и создание природоохранных организаций — способы публично поддерживать дело. Это и есть advocating (выступать в защиту).`,
+  rw17: `Инженеры нашли серьёзный изъян, и город вернулся к прежнему плану. Значит, проект был rejected (отклонён).`,
+  rw18: `Эссе на темы «ranging from friendship to astronomy» охватывают самые разные предметы — это eclectic (разнородный). «Systematic» подходит к единой теории, от которой книга как раз отказывается.`,
+  rw19: `Свободный переход между жанрами показывает, что она умела менять стиль под новые условия, то есть adapt (приспосабливать).`,
+  rw20: `Участники пропускали вопросы, поэтому в данных есть пробелы — они incomplete (неполные). Ничто не говорит о том, что данные выдуманы (fabricated).`,
+  rw21: `«But» и «grew more enthusiastic» показывают, что первые отзывы были не слишком восторженными. Lukewarm — «прохладный», в лучшем случае умеренно положительный.`,
+  rw22: `Текст называет распространённое мнение (пустыни безжизненны) и опровергает его данными о пустыне Сонора. О дождях, других пустынях или угрозах в нём речи нет.`,
+  rw23: `Предложение 1 — достижение (симфония 1933 года), предложение 2 — забвение («went unplayed»), предложение 3 — поворот (находка 2009 года, вызвавшая новый интерес).`,
+  rw24: `Первые два предложения показывают выгоду каждой стороны (люди получают мёд, птицы — воск). Третье подводит итог: это партнёрство, которое «benefits both species».`,
+  rw25: `Текст 1 предсказывает сокращение рабочих мест после повышения зарплаты. Текст 2 обнаружил, что занятость «did not fall», а это прямо противоречит прогнозу. Кроме того, текст 2 связывает зарплаты с текучестью кадров, так что он не стал бы утверждать, что они не связаны.`,
+  rw26: `Текст 2 приводит два вида данных по окаменелостям (нет следов волочения хвоста, быстрый рост), которые противоречат образу медленных, холоднокровных, волочащих хвост динозавров. Поэтому автор счёл бы этот образ устаревшим.`,
+  rw27: `Текст описывает систему барьеров и сообщает, что она предотвратила несколько крупных наводнений. Утверждение, что она остановила «all flooding», преувеличивает, отказ от MOSE в тексте не предлагается, а 2020 год противоречит «for centuries».`,
+  rw28: `В последнем предложении сказано, что мышцы «stretch it open to display its color». Остальные варианты в тексте не упоминаются.`,
+  rw29: `Мара раз за разом поворачивает назад у края деревни — это и показывает нежелание уезжать. Остальные цитаты описывают деревню или других людей, а не колебания Мары.`,
+  rw30: `Утверждение сравнивает велосипед и автомобиль, поэтому в доказательстве должны быть оба: 19 минут на велосипеде против 27 на машине. Остальные варианты верны, но не сравнивают эти два способа.`,
+  rw31: `14% − 2% = 12 процентных пунктов. Доля выросла в семь раз, а не просто удвоилась, а «14 пунктов» не учитывает начальные 2%.`,
+  rw32: `В пузырьках сохраняется древний воздух, а глубина соответствует возрасту. Поэтому, сравнивая разные глубины, учёные сравнивают атмосферу в разные эпохи.`,
+  rw33: `Головоломка была одна и та же, менялось только её описание. Раз поведение различалось, на вовлечённость повлияло описание.`,
+  rw34: `Если без шмелей семена не образуются, растение от них зависит. Посещение другими насекомыми ослабило бы гипотезу, а время цветения или общие предпочтения шмелей ничего не говорят о зависимости именно этого растения.`,
+  rw35: `Текст противопоставляет медленное переписывание от руки быстрой печати и называет следствия: книги подешевели, а идеи распространились шире.`,
+  rw36: `Меньше каланов — больше морских ежей, а больше ежей съедает больше ламинарии. Значит, каланы сдерживают ежей и тем самым защищают ламинариевые леса.`,
+  rw37: `«By the time» вместе с прошедшим событием («arrived») требует Past Perfect: туристы had found укрытие ещё до прибытия спасателей.`,
+  rw38: `«Orchestra» — собирательное существительное в единственном числе, поэтому местоимение «it». «Them» к тому же стоит не в том падеже для подлежащего.`,
+  rw39: `Двоеточие вводит перечень после законченного предложения. Точка с запятой должна соединять два независимых предложения, а «flour, water, and salt» таким не является.`,
+  rw40: `Два независимых предложения можно соединить запятой и сочинительным союзом («, and»). Одна запятая без союза — это comma splice.`,
+  rw41: `Подлежащее — «Each» (единственное число). «Of the paintings» его не меняет, поэтому глагол «shows».`,
+  rw42: `Вводный оборот описывает того, кто изучал рукописи, поэтому сразу после запятой должен стоять этот человек. Только в одном варианте там стоит «the linguist». В остальных оборот «повисает» (dangling modifier).`,
+  rw43: `Птицы принадлежат одному региону (region's), а привычки гнездования — многим птицам (birds'). Поэтому оба слова стоят в притяжательной форме: region's birds'.`,
+  rw44: `Придаточное с «which» добавляет дополнительную информацию, поэтому его нужно выделить запятыми с обеих сторон. Обе запятые есть только в одном варианте.`,
+  rw45: `Оборот между запятыми определяет «walls», и ему нужно причастие прошедшего времени: «built from local limestone». «Were built» и «they were built» добавляют второе сказуемое или целое предложение и ломают структуру.`,
+  rw46: `«Its» — притяжательное местоимение для существительного в единственном числе, такого как «company». «It's» означает «it is», а «its'» никогда не бывает правильным.`,
+  rw47: `Долгая выдержка заставляла людей не двигаться — это причина и следствие: «As a result» (в результате).`,
+  rw48: `Кофе нужны узкие условия, а чай переносит широкий диапазон климата. Это противопоставление: «by contrast».`,
+  rw49: `Небольшая выборка — причина, по которой выводы нужно подтвердить. Это вывод, поэтому подходит «Therefore» (поэтому).`,
+  rw50: `Второе предложение добавляет ещё один способ, которым мангры справляются с солью, поэтому связка должна выражать добавление: «Additionally».`,
+  rw51: `Рост торговли — дополнительная польза помимо безопасности. Это не противопоставление и не конкретный пример безопасности, поэтому «In addition».`,
+  rw52: `Представление должно сказать, кто она и чем знаменита. Только вариант, где она названа первой выдающейся прима-балериной Америки, делает и то и другое. Остальные не объясняют, кто она, или вообще не о ней.`,
+  rw53: `Только вариант с «whereas» описывает извержения обоих вулканов и противопоставляет их.`,
+  rw54: `Главный результат — сравнение уровня стресса у велосипедистов и водителей. Его называет только один вариант. Остальные описывают устройство исследования или город.`,
+  rw55: `Приписать всю заслугу одной семье — значит упростить историю, в которой участвовали десятки торговцев. Reductive — «упрощающий, сводящий сложное к одному фактору».`,
+  rw56: `Упрёк критиков связан с тем, что работы повторяют прежние мотивы. Derivative — «вторичный, заимствованный»; автор же считает, что критики не заметили, как эти мотивы переосмыслены.`,
+  rw57: `Одобрение с множеством условий — ограниченное, частичное, то есть qualified. Unequivocal (безоговорочный) — противоположность.`,
+  rw58: `Исследователи «don't dispute the warning function», то есть старое объяснение не отвергается. Они добавляют выбор партнёра как второй фактор, поэтому вариант «опровергает полностью» неверен.`,
+  rw59: `Текст 2 предполагает, что у Марлоу была причина (авансы) представлять себя автором, который всё тщательно планирует, поэтому письма могут быть не беспристрастным свидетельством. При этом текст не утверждает, что она вообще ничего не планировала.`,
+  rw60: `Второе предложение описывает эффект (новые полосы привлекают больше водителей). Третье просто даёт ему название: induced demand (индуцированный спрос).`,
+  rw61: `Те же приёмы — значит, те же местные гончары. Далёкая глина — значит, сырьё привозили издалека. Вместе это значит, что местные мастера работали с привозной глиной. Новые поселенцы или чужие мастерские, скорее всего, принесли бы другие приёмы.`,
+  rw62: `Чтобы предпочесть дороги насекомым, нужно исключить насекомых (их численность стабильна) и связать спад с дорогами (сильнее всего возле них). Первый вариант делает и то и другое. Второй, наоборот, указывает на насекомых.`,
+  rw63: `Если число записей выросло так же в городах без новой библиотеки, рост, скорее всего, вызван чем-то другим. Остальные факты согласуются с утверждением.`,
+  rw64: `Чтобы приписать эффект программе, а не общему фактору, нужно сравнить изменение в группе с программой и в группе без неё. Только первый вариант делает это сравнение (2,1 против 0,2 часа). Последний вариант, наоборот, намекает на общий фактор.`,
+  rw65: `У трассы различались две вещи (тепло и азот), и любая из них может объяснить раннее цветение. Поэтому исследователи не могут приписать его одной температуре. Сказать, что температура «no effect», — слишком сильно.`,
+  rw66: `Текст излагает неудачу модели, мнение критиков и затем защиту экономиста, за которой остаётся последнее слово. Второй вариант — только позиция критиков, а о согласии критиков насчёт периодов стабильного роста в тексте не говорится.`,
+  rw67: `Она вслух хвалит еду, но тайком её исправляет. Значит, вкус ей важен, но из вежливости она держит мнение при себе — она тактична.`,
+  rw68: `Когда элементы перечня сами содержат запятые (город, штат), элементы разделяют точкой с запятой. Остальные элементы уже разделены ею, поэтому «Texas;» сохраняет единообразие.`,
+  rw69: `Дополнительная информация открывается тире, значит, и закрываться должна тире. Запятая или точка с запятой не могут закрыть пару тире, а без закрывающего знака предложение неграмотно.`,
+  rw70: `Порядок слов обратный: подлежащее стоит после глагола. Подлежащее — «an instrument and several jars», это множественное число, поэтому «were». «Artifacts» входит в предложную группу и подлежащим не является.`,
+  rw71: `Придаточное указывает, о каком романе речь, то есть оно обязательное (essential) и запятыми не выделяется. Такое придаточное вводит «that». С «, which» понадобилась бы закрывающая запятая после 1998.`,
+  rw72: `Подлежащему «Chien-Shiung Wu» нужно сказуемое. Длинное придаточное с «whose» между запятыми лишь отвлекает. «Being», «having been» и «to be» сказуемым быть не могут.`,
+  rw73: `С «neither...nor» глагол согласуется с ближайшим подлежащим — «the actors» (множественное число). Предложение в прошедшем времени («would be cut»), поэтому «were».`,
+  rw74: `«However» здесь связывает два независимых предложения, поэтому перед ним нужна точка с запятой, а после — запятая. Запятая перед ним даёт comma splice.`,
+  rw75: `Крах в одних городах противопоставлен процветанию в других. Это контраст: «By contrast».`,
+  rw76: `За похвалой масштабу следует критика точности («another matter»), поэтому связка должна выражать противопоставление: «however».`,
+  rw77: `Первое предложение называет недостаток, второе — достоинство вопреки ему. «Still» (и всё же) выражает эту уступку.`,
+  rw78: `Фактический результат заменил ожидаемый — это выражает «Instead» (вместо этого). «Accordingly» означало бы, что результат вытекал из ожиданий.`,
+  rw79: `Только первый вариант называет общее свойство обоих волокон. Два варианта описывают различия, а последний говорит только о паутине.`,
+  rw80: `У цели две части: назвать задачу исследования и объяснить обесцвечивание кораллов тем, кто о нём не знает. Только первый вариант делает и то и другое. Второй сообщает результат, а не цель.`,
+  rw81: `Для контраста нужны обе формы — ранняя и поздняя — в противопоставлении. Это делает только вариант с «Whereas».`,
+
+  m1: `Прибавьте 7 к обеим частям: 3<i>x</i> = 18. Разделите на 3: <i>x</i> = 6.`,
+  m2: `Ежемесячная плата умножается на <i>m</i> (25<i>m</i>), а вступительный взнос прибавляется один раз (+40).`,
+  m3: `Сложите уравнения: 2<i>x</i> = 14, значит, <i>x</i> = 7. (Тогда <i>y</i> = 3.)`,
+  m4: `Угловой коэффициент = (13 − 5) ÷ (6 − 2) = 8 ÷ 4 = 2.`,
+  m5: `Разложите на множители: (<i>x</i> − 2)(<i>x</i> − 3) = 0, значит, <i>x</i> = 2 или 3. Сумма равна 5. (Короче: для <i>x</i><sup>2</sup> + <i>bx</i> + <i>c</i> сумма корней равна −<i>b</i>.)`,
+  m6: `(−2)<sup>2</sup> = 4, поэтому <i>f</i>(−2) = 2(4) − 3 = 5. Частая ошибка — возвести в квадрат после умножения, тогда получится −11.`,
+  m7: `За <i>t</i> часов происходит <i>t</i>/3 удвоений, поэтому численность равна 500 × 2<sup><i>t</i>/3</sup>. Проверка: при <i>t</i> = 3 получается 1 000.`,
+  m8: `(<i>x</i> + 3)(<i>x</i> + 3) = <i>x</i><sup>2</sup> + 3<i>x</i> + 3<i>x</i> + 9 = <i>x</i><sup>2</sup> + 6<i>x</i> + 9. Не забудьте средний член.`,
+  m9: `32 = 2<sup>5</sup>, значит, <i>x</i> + 1 = 5 и <i>x</i> = 4.`,
+  m10: `Пять чисел со средним 9 в сумме дают 45. 4 + 8 + 10 + 14 = 36, значит, <i>x</i> = 45 − 36 = 9.`,
+  m11: `Цена со скидкой: 80 × 0,75 = 60. С налогом: 60 × 1,08 = 64,80.`,
+  m12: `Всего 6 + 4 + 10 = 20 шариков, из них 4 синих: 4/20 = 1/5.`,
+  m13: `6<sup>2</sup> + 8<sup>2</sup> = 36 + 64 = 100, а √100 = 10. (Это треугольник 3-4-5, увеличенный в 2 раза.)`,
+  m14: `Уравнение имеет вид (<i>x</i> − <i>h</i>)<sup>2</sup> + (<i>y</i> − <i>k</i>)<sup>2</sup> = <i>r</i><sup>2</sup>, центр — (<i>h</i>, <i>k</i>). Здесь <i>h</i> = 3, а <i>y</i> + 2 = <i>y</i> − (−2), поэтому <i>k</i> = −2. Радиус равен 7.`,
+  m15: `sin <i>A</i> = противолежащий катет / гипотенуза = 3/5, значит, прилежащий катет равен 4 (треугольник 3-4-5). cos <i>A</i> = прилежащий катет / гипотенуза = 4/5.`,
+  m16: `Длина окружности = 2π<i>r</i> = 10π, значит, <i>r</i> = 5. Площадь = π<i>r</i><sup>2</sup> = 25π.`,
+  m17: `Раскройте скобки: 5<i>x</i> − 10 = 3<i>x</i> + 4. Вычтите 3<i>x</i> и прибавьте 10: 2<i>x</i> = 14, значит, <i>x</i> = 7.`,
+  m18: `Пересечение с осью <i>y</i> — там, где <i>x</i> = 0: <i>y</i> = −3(0) + 6 = 6, то есть (0, 6). Точка (2, 0) — пересечение с осью <i>x</i>.`,
+  m19: `У параллельных прямых одинаковые угловые коэффициенты. Коэффициент 4 есть только у <i>y</i> = 4<i>x</i> + 7. У <i>y</i> = −¼<i>x</i> + 2 коэффициент противоположный и обратный, поэтому эта прямая перпендикулярна.`,
+  m20: `Общий вес — 600 + 35<i>b</i>, а «at most» (не более) означает ≤ 2 000.`,
+  m21: `600 + 35<i>b</i> ≤ 2 000 → 35<i>b</i> ≤ 1 400 → <i>b</i> ≤ 40.`,
+  m22: `Подставьте: 2<i>x</i> + 3(<i>x</i> − 1) = 12 → 5<i>x</i> − 3 = 12 → <i>x</i> = 3. Тогда <i>y</i> = 3 − 1 = 2.`,
+  m23: `Нет решений — значит, прямые параллельны и не совпадают. Коэффициенты пропорциональны: 3/6 = <i>k</i>/4, значит, <i>k</i> = 2. Проверьте, что свободные члены не в том же отношении: 8/5 ≠ 1/2, прямые различны.`,
+  m24: `<i>a</i> + <i>c</i> = 50 и 12<i>a</i> + 8<i>c</i> = 520. Подставьте <i>c</i> = 50 − <i>a</i>: 12<i>a</i> + 400 − 8<i>a</i> = 520 → 4<i>a</i> = 120 → <i>a</i> = 30.`,
+  m25: `Угловой коэффициент = (16 − 7) ÷ (4 − 1) = 3. При переходе от <i>x</i> = 1 к <i>x</i> = 0 вычитаем 3: <i>f</i>(0) = 7 − 3 = 4.`,
+  m26: `15 умножается на <i>h</i>, поэтому стоимость растёт на $15 за каждый дополнительный час. 50 — фиксированная плата, а часовой визит стоит $65.`,
+  m27: `<i>x</i> − 4 = 9 или <i>x</i> − 4 = −9, значит, <i>x</i> = 13 или <i>x</i> = −5. Среди вариантов есть только −5.`,
+  m28: `Разность квадратов: <i>a</i><sup>2</sup> − <i>b</i><sup>2</sup> = (<i>a</i> − <i>b</i>)(<i>a</i> + <i>b</i>). При <i>b</i> = 3 получаем (<i>x</i> − 3)(<i>x</i> + 3).`,
+  m29: `У параболы <i>y</i> = (<i>x</i> − <i>h</i>)<sup>2</sup> + <i>k</i> вершина — точка (<i>h</i>, <i>k</i>) = (2, 5).`,
+  m30: `Перенесите всё в одну часть: <i>x</i><sup>2</sup> − 4<i>x</i> − 12 = 0 → (<i>x</i> − 6)(<i>x</i> + 2) = 0. Корни 6 и −2, положительный — 6.`,
+  m31: `3<sup>4</sup> = 3 × 3 × 3 × 3 = 81.`,
+  m32: `Изнутри наружу: <i>h</i>(2) = 2(2) − 3 = 1. Затем <i>g</i>(1) = 1<sup>2</sup> + 1 = 2.`,
+  m33: `Потеря 15% в год оставляет 85% стоимости, поэтому каждый год умножаем на 0,85: 24 000(0,85)<sup><i>t</i></sup>. При 0,15 оставалось бы только 15%.`,
+  m34: `Минус перед скобкой меняет знак каждого члена: 2<i>x</i><sup>2</sup> + 3<i>x</i> − <i>x</i><sup>2</sup> + 5<i>x</i> − 4 = <i>x</i><sup>2</sup> + 8<i>x</i> − 4.`,
+  m35: `Разделите каждый член на <i>x</i>: <i>x</i><sup>2</sup>/<i>x</i> + 6<i>x</i>/<i>x</i> = <i>x</i> + 6.`,
+  m36: `Ровно одно решение — значит, дискриминант равен нулю: 6<sup>2</sup> − 4(1)(<i>c</i>) = 0 → 36 = 4<i>c</i> → <i>c</i> = 9. Тогда уравнение имеет вид (<i>x</i> + 3)<sup>2</sup> = 0.`,
+  m37: `Возведите обе части в квадрат: <i>x</i> + 3 = 25, значит, <i>x</i> = 22. Проверка: √25 = 5.`,
+  m38: `18 ÷ 45 = 0,4 страницы в секунду. 5 минут = 300 секунд, а 0,4 × 300 = 120.`,
+  m39: `При шести значениях медиана — среднее двух центральных: (7 + 9) ÷ 2 = 8.`,
+  m40: `Вопрос ограничивает выбор учениками 12-го класса (их 80). Из них 50 предпочитают искусство: 50/80 = 5/8. Ответ 5/14 считает всех 140 учеников — это частая ловушка.`,
+  m41: `12 стаканов муки — это 3 × 4, значит, сахара нужно 2 × 4 = 8 стаканов.`,
+  m42: `Углы, дополняющие друг друга до 180° (supplementary), в сумме дают 180°: <i>x</i> + 4<i>x</i> = 180 → 5<i>x</i> = 180 → <i>x</i> = 36.`,
+  m43: `V = π<i>r</i><sup>2</sup><i>h</i> = π(9)(10) = 90π.`,
+  m44: `Коэффициент подобия 10/4 = 2,5. <i>EF</i> = 6 × 2,5 = 15.`,
+  m45: `Раскройте скобки: 4<i>x</i> − 4<i>a</i> + 2 = 4<i>x</i> − 10. Члены с <i>x</i> совпадают, поэтому решений бесконечно много при −4<i>a</i> + 2 = −10, то есть <i>a</i> = 3.`,
+  m46: `10 = −2<i>k</i> + 4 → <i>k</i> = −3. Положите <i>y</i> = 0: 0 = −3<i>x</i> + 4 → <i>x</i> = 4/3. (Принимается и 1.333.)`,
+  m47: `<i>n</i> + <i>b</i> = 10 и 3<i>n</i> + 7<i>b</i> = 50. Подставьте <i>n</i> = 10 − <i>b</i>: 30 + 4<i>b</i> = 50 → <i>b</i> = 5.`,
+  m48: `Решений бесконечно много, когда одно уравнение кратно другому. Переход от −5<i>y</i> к 15<i>y</i> — умножение на −3, и 7 × (−3) = −21 сходится. Значит, <i>a</i> = 2 × (−3) = −6.`,
+  m49: `Проверьте (1, 4): 4 &gt; 2(1) − 3 = −1 ✓ и 4 &lt; −1 + 6 = 5 ✓. (4, 4) не проходит первое неравенство (4 &gt; 5 неверно), (3, 2) — тоже (2 &gt; 3), а (−1, 8) не проходит второе (8 &lt; 7).`,
+  m50: `За 8 минут уходит 160 литров, то есть 20 литров в минуту. 500 ÷ 20 = 25 минут.`,
+  m51: `Сложите уравнения: члены с <i>y</i> сокращаются, и 4<i>x</i> = 12. Находить <i>x</i> отдельно не нужно.`,
+  m52: `У данной прямой угловой коэффициент −2/3, значит, у ℓ он равен 3/2. <i>y</i> − 1 = (3/2)(<i>x</i> − 4) → <i>y</i> = 1,5<i>x</i> − 5. Пересечение с осью <i>y</i> — −5.`,
+  m53: `$300 000 — это 300 тысяч. 12<i>t</i> + 150 &gt; 300 → <i>t</i> &gt; 12,5. Первое целое значение после этого — <i>t</i> = 13, то есть 2015 + 13 = 2028.`,
+  m54: `Для <i>x</i><sup>2</sup> + <i>bx</i> + <i>c</i> произведение корней равно <i>c</i> = 16. Значит, 2 × <i>r</i> = 16 и <i>r</i> = 8. (Тогда <i>b</i> = −10.)`,
+  m55: `Вершина параболы лежит посередине между нулями функции. Нули — 3 и −5, а (3 + (−5)) ÷ 2 = −1.`,
+  m56: `−5 = <i>a</i>(4 − 2)<sup>2</sup> + 7 → −5 = 4<i>a</i> + 7 → 4<i>a</i> = −12 → <i>a</i> = −3.`,
+  m57: `Запишите обе части как степени тройки: 3<sup>2<i>x</i></sup> = 3<sup>3</sup>, значит, 2<i>x</i> = 3 и <i>x</i> = 3/2 (или 1,5).`,
+  m58: `Разложите на множители: (<i>x</i> − 2)(<i>x</i> + 2) ÷ (<i>x</i> + 2)<sup>2</sup>. Сократите один множитель (<i>x</i> + 2): получится (<i>x</i> − 2) ÷ (<i>x</i> + 2). Сокращать члены с <i>x</i><sup>2</sup> напрямую нельзя.`,
+  m59: `Дискриминант <i>b</i><sup>2</sup> − 4<i>ac</i> = 16 − 40 = −24. При отрицательном дискриминанте действительных решений нет.`,
+  m60: `Множитель 1,05 означает, что каждый год численность составляет 105% от прошлогодней, то есть растёт на 5%. «60 человек в год» описывает линейный рост, а при <i>t</i> = 0 численность равна 1 200.`,
+  m61: `Приравняйте: <i>x</i><sup>2</sup> − 4<i>x</i> + 7 = 2<i>x</i> − 2 → <i>x</i><sup>2</sup> − 6<i>x</i> + 9 = 0 → (<i>x</i> − 3)<sup>2</sup> = 0, значит, <i>x</i> = 3. Прямая касается параболы.`,
+  m62: `(<i>x</i> − <i>r</i>) — множитель тогда и только тогда, когда <i>p</i>(<i>r</i>) = 0. <i>p</i>(2) = 8 − 8 − 18 + 18 = 0. Группировка подтверждает: <i>x</i><sup>2</sup>(<i>x</i> − 2) − 9(<i>x</i> − 2) = (<i>x</i> − 2)(<i>x</i> − 3)(<i>x</i> + 3).`,
+  m63: `1,20 × 0,80 = 0,96, значит, итоговая цена — 96% от исходной. Изменения не компенсируют друг друга, потому что скидка 20% берётся от большей суммы.`,
+  m64: `Исходная сумма 10 × 12 = 120. Без 30 остаётся 90 на 9 значений: 90 ÷ 9 = 10.`,
+  m65: `Выделите полные квадраты: (<i>x</i><sup>2</sup> − 6<i>x</i> + 9) + (<i>y</i><sup>2</sup> + 8<i>y</i> + 16) = 25, то есть (<i>x</i> − 3)<sup>2</sup> + (<i>y</i> + 4)<sup>2</sup> = 25, и радиус равен 5.`,
+  m66: `120° — это 1/3 от 360°. Длина окружности 2π(6) = 12π, а 1/3 от неё — 4π.`
+};
+
+// ---------- language ----------
+// LANG: 'en' = English page, 'ru' = Russian page + explanations, 'mix' = English page + Russian explanations.
+// Questions and passages stay in English in every mode: the SAT itself is in English.
+const LKEY = 'scorebound-lang';
+let LANG = 'en';
+try { const v = localStorage.getItem(LKEY); if (['en', 'ru', 'mix'].includes(v)) LANG = v; } catch (e) {}
+const uiL = () => LANG === 'ru' ? 'ru' : 'en';
+const EXKEY = 'scorebound-exlang';
+let exPref = null;   // 'en' | 'ru' chosen inside an explanation; null = follow the language menu
+try { const v = localStorage.getItem(EXKEY); if (v === 'en' || v === 'ru') exPref = v; } catch (e) {}
+const exL = () => exPref || (LANG === 'en' ? 'en' : 'ru');
+const ruPl = (n, f) => { const a = n % 10, b = n % 100; return f[(a === 1 && b !== 11) ? 0 : (a >= 2 && a <= 4 && (b < 12 || b > 14)) ? 1 : 2]; };
+
+const STR = {
+  en: {
+    tagline: 'Original practice questions in the digital SAT format',
+    heroH: 'Practice one module, <em>see the score</em>, fix the gaps.',
+    heroP: 'Pick a section, answer at test pace, and get an estimated score with a breakdown by skill domain. Every question comes with a worked explanation.',
+    fmt: 'Test format', pace: n => `${n} sec per question at test pace`, totalScore: 'Total score', sumBoth: 'Sum of both sections',
+    setupH: 'Set up a practice session', bankSub: n => `${n} questions across 8 skill domains.`, section: 'Section',
+    moduleSub: (n, b) => `${n}-question module · ${b} in bank`, mixed: 'Mixed drill', mixedSub: '10 random questions',
+    full: 'Full-length test', fullSub: '98 questions · adaptive Module 2', structure: 'Test structure', brk: 'Break',
+    min: 'min', qShort: 'q', adaptive: ' (adaptive)', module: 'Module',
+    fullNote: "Each module has its own timer, and you can't go back to a module after you submit it. Module 2 adapts like the real test: get at least 60% of Module 1 right and you get a harder Module 2 that can score up to 800. Below that, you get an easier one that tops out at 650. The real cutoff isn't public, so 60% is an approximation.",
+    focus: 'Focus on skill domains', optional: '(optional)', timer: 'Timer', testPace: 'Test pace', untimed: 'Untimed',
+    showAns: 'Show answers', atEnd: 'At the end', afterEach: 'After each question', difficulty: 'Difficulty', anyDiff: 'Mixed',
+    diff: { E: 'Easy', M: 'Medium', H: 'Hard' },
+    nQuestions: n => `${n} questions`, timeLimit: t => ` · ${t} time limit`, fullTime: t => ` · ${t} of testing plus a 10-minute break`, noLimit: ' · no time limit',
+    start: 'Start practice →', logH: 'Score log', logSub: 'Your last sessions on this device.', correctWord: 'correct',
+    emptyLog: 'No sessions yet. Finish a practice set and your estimated scores will be listed here, newest first.',
+    tips: ['Press <kbd>A</kbd>–<kbd>D</kbd> to pick an answer, <kbd>←</kbd> <kbd>→</kbd> to move between questions.',
+           'Use the <span style="text-decoration:line-through">ABC</span> button to cross out choices you\'ve ruled out.',
+           'In practice sessions, hover over or tap <b>Explanation</b> to see how to solve the question. The <b>На русском</b> button inside any explanation switches it to Russian.',
+           'Math grid-in answers accept whole numbers, decimals, or fractions like 7/2.'],
+    fullLabel: 'Full-length practice test', missedLabel: 'Missed questions', domainsN: n => ` · ${n} domain${n > 1 ? 's' : ''}`,
+    langLabel: 'Language',
+    yourAnswer: 'Your answer', placeholder: 'e.g. 12 or 3/4', gridHint: 'Grid-in: enter a number, decimal, or fraction.',
+    choicesL: 'Answer choices', cross: l => `Cross out choice ${l}`, restore: l => `Restore choice ${l}`, undo: 'Undo',
+    correct: 'Correct', notQuite: c => `Not quite. The answer is ${c}.`, moduleOf: (a, b) => `Module ${a} of ${b}`,
+    leaveQ: 'Leave without saving?', leave: 'Leave', stay: 'Stay', exit: 'Exit', passage: 'Passage', questionN: n => `Question ${n}`,
+    marked: 'Marked for review', mark: 'Mark for review', explain: 'Explanation', explainHint: 'How to solve it',
+    answerIs: c => `Answer: ${c}`, navL: 'Question navigator', answered: 'Answered', unanswered: 'Unanswered', markedL: 'Marked',
+    nUnanswered: n => `<span class="num">${n}</span> unanswered`, allAnswered: 'All questions answered',
+    submitModule: 'Submit module', submitScore: 'Submit and see score', back: 'Back',
+    questionOf: (a, b) => `Question <span class="num">${a}</span> of <span class="num">${b}</span>`, check: 'Check', review: 'Review', next: 'Next',
+    modSubmitted: (a, b) => `Module ${a} of ${b} submitted`, complete: n => `${n} complete`,
+    answeredOf: (a, b) => `You answered <b class="num">${a}</b> of <b class="num">${b}</b> questions. This module is now locked. Your scores appear after the last module.`,
+    nextChosen: ' Your next module was chosen based on how you did on this one.',
+    breakText: "Stand up, stretch, and get some water. The Math section starts when you're ready.", breakOver: 'Break over',
+    submitted: 'Submitted', upNext: 'Up next · ', startMod: n => `Start ${n}`, endTest: 'End test and see results',
+    endNote: "If you end the test now, questions in modules you haven't started count as unanswered.",
+    backSetup: 'Back to setup', resultsSuffix: ' · results',
+    headline: p => p >= 85 ? 'Strong set.' : p >= 60 ? 'Solid base, a few gaps.' : 'Good starting point.',
+    youAnswered: (c, n, p) => `You answered <b class="num">${c}</b> of <b class="num">${n}</b> correctly (${p}%).`,
+    fullScoreNote: "Section scores are rough estimates from your accuracy and which Module 2 you got. The harder Module 2 can reach 800, and the easier one tops out at 650. They aren't an official conversion.",
+    scoreNote: 'Scores are a rough estimate from the share correct on this set, not an official conversion.',
+    estTotal: 'Estimated total score', estSec: n => `Estimated ${n} score`, harder: ' (harder)', easier: ' (easier)',
+    byDomain: 'By skill domain', correctS: 'Correct', incorrect: 'Incorrect', skipped: 'Skipped',
+    ofUsed: t => `of ${t} used`, timeSpent: 'Time spent', retry: n => `Retry ${n} missed`, newSession: 'New session',
+    answerReview: 'Answer review', youKey: (a, k) => `You ${a} · Key ${k}`, totalShort: 'Total'
+  },
+  ru: {
+    tagline: 'Оригинальные тренировочные задания в формате цифрового SAT',
+    heroH: 'Решите модуль, <em>узнайте балл</em>, закройте пробелы.',
+    heroP: 'Выберите раздел, отвечайте в темпе экзамена и получите примерный балл с разбивкой по областям навыков. К каждому заданию есть подробное объяснение.',
+    fmt: 'Формат теста', pace: n => `${n} сек. на задание в темпе экзамена`, totalScore: 'Общий балл', sumBoth: 'Сумма двух разделов',
+    setupH: 'Настройте тренировку', bankSub: n => `${n} ${ruPl(n, ['задание', 'задания', 'заданий'])} по 8 областям навыков.`, section: 'Раздел',
+    moduleSub: (n, b) => `Модуль из ${n} заданий · ${b} в банке`, mixed: 'Смешанная тренировка', mixedSub: '10 случайных заданий',
+    full: 'Полный тест', fullSub: '98 заданий · адаптивный модуль 2', structure: 'Структура теста', brk: 'Перерыв',
+    min: 'мин', qShort: 'зад.', adaptive: ' (адаптивный)', module: 'модуль',
+    fullNote: 'У каждого модуля свой таймер, и вернуться к сданному модулю нельзя. Модуль 2 адаптируется, как на настоящем тесте: если вы верно ответили хотя бы на 60% заданий модуля 1, вы получите более сложный модуль 2, в котором можно набрать до 800 баллов. Если меньше, вы получите более простой модуль с максимумом 650. Настоящий порог не публикуется, поэтому 60% — приблизительное значение.',
+    focus: 'Области навыков', optional: '(необязательно)', timer: 'Таймер', testPace: 'Темп экзамена', untimed: 'Без таймера',
+    showAns: 'Показывать ответы', atEnd: 'В конце', afterEach: 'После каждого задания', difficulty: 'Сложность', anyDiff: 'Любая',
+    diff: { E: 'Лёгкое', M: 'Среднее', H: 'Сложное' },
+    nQuestions: n => `${n} ${ruPl(n, ['задание', 'задания', 'заданий'])}`, timeLimit: t => ` · лимит ${t}`, fullTime: t => ` · ${t} тестирования плюс 10 минут перерыва`, noLimit: ' · без ограничения времени',
+    start: 'Начать →', logH: 'Журнал результатов', logSub: 'Ваши последние тренировки на этом устройстве.', correctWord: 'верно',
+    emptyLog: 'Пока нет тренировок. Завершите набор заданий, и здесь появятся примерные баллы, начиная с последних.',
+    tips: ['Нажимайте <kbd>A</kbd>–<kbd>D</kbd>, чтобы выбрать ответ, и <kbd>←</kbd> <kbd>→</kbd>, чтобы переходить между заданиями.',
+           'Кнопкой <span style="text-decoration:line-through">ABC</span> можно вычеркнуть варианты, которые вы отбросили.',
+           'В тренировках наведите курсор на кнопку <b>Объяснение</b> или нажмите на неё, чтобы увидеть разбор задания. Кнопка <b>In English</b> внутри объяснения переключает его на английский.',
+           'В математических заданиях с вводом ответа можно писать целые числа, десятичные дроби (1,5 или 1.5) или дроби вида 7/2.',
+           'Задания по математике переведены на русский. Тексты и вопросы раздела «Чтение и письмо» остаются на английском: этот раздел проверяет именно английский язык.'],
+    fullLabel: 'Полный тренировочный тест', missedLabel: 'Работа над ошибками', domainsN: n => ` · областей: ${n}`,
+    langLabel: 'Язык',
+    yourAnswer: 'Ваш ответ', placeholder: 'напр. 12 или 3/4', gridHint: 'Введите целое число, десятичную дробь (через точку или запятую) или дробь.',
+    choicesL: 'Варианты ответа', cross: l => `Вычеркнуть вариант ${l}`, restore: l => `Вернуть вариант ${l}`, undo: 'Вернуть',
+    correct: 'Верно', notQuite: c => `Неверно. Правильный ответ: ${c}.`, moduleOf: (a, b) => `Модуль ${a} из ${b}`,
+    leaveQ: 'Выйти без сохранения?', leave: 'Выйти', stay: 'Остаться', exit: 'Выход', passage: 'Текст', questionN: n => `Задание ${n}`,
+    marked: 'Отмечено для проверки', mark: 'Отметить для проверки', explain: 'Объяснение', explainHint: 'Как решать',
+    answerIs: c => `Ответ: ${c}`, navL: 'Навигация по заданиям', answered: 'Отвечено', unanswered: 'Без ответа', markedL: 'Отмечено',
+    nUnanswered: n => `без ответа: <span class="num">${n}</span>`, allAnswered: 'Все задания отвечены',
+    submitModule: 'Сдать модуль', submitScore: 'Сдать и узнать балл', back: 'Назад',
+    questionOf: (a, b) => `Задание <span class="num">${a}</span> из <span class="num">${b}</span>`, check: 'Проверить', review: 'Обзор', next: 'Далее',
+    modSubmitted: (a, b) => `Модуль ${a} из ${b} сдан`, complete: n => `${n}: готово`,
+    answeredOf: (a, b) => `Вы ответили на <b class="num">${a}</b> из <b class="num">${b}</b> заданий. Этот модуль закрыт. Баллы появятся после последнего модуля.`,
+    nextChosen: ' Следующий модуль подобран по вашим результатам в этом.',
+    breakText: 'Встаньте, разомнитесь и выпейте воды. Раздел «Математика» начнётся, когда вы будете готовы.', breakOver: 'Перерыв окончен',
+    submitted: 'Сдан', upNext: 'Далее · ', startMod: n => `Начать: ${n}`, endTest: 'Завершить тест и посмотреть результаты',
+    endNote: 'Если завершить тест сейчас, задания из неначатых модулей будут засчитаны как пропущенные.',
+    backSetup: 'К настройкам', resultsSuffix: ' · результаты',
+    headline: p => p >= 85 ? 'Отличный результат.' : p >= 60 ? 'Хорошая база, есть пробелы.' : 'Хорошая отправная точка.',
+    youAnswered: (c, n, p) => `Верных ответов: <b class="num">${c}</b> из <b class="num">${n}</b> (${p}%).`,
+    fullScoreNote: 'Баллы за разделы — приблизительная оценка по доле верных ответов и по тому, какой модуль 2 вам достался. В сложном модуле 2 можно набрать до 800, в простом — не больше 650. Это не официальный пересчёт.',
+    scoreNote: 'Баллы — приблизительная оценка по доле верных ответов в этом наборе, а не официальный пересчёт.',
+    estTotal: 'Примерный общий балл', estSec: n => `Примерный балл: ${n}`, harder: ' (сложнее)', easier: ' (проще)',
+    byDomain: 'По областям навыков', correctS: 'Верно', incorrect: 'Неверно', skipped: 'Пропущено',
+    ofUsed: t => `из ${t}`, timeSpent: 'Затрачено', retry: n => `Повторить ошибки (${n})`, newSession: 'Новая тренировка',
+    answerReview: 'Разбор ответов', youKey: (a, k) => `Ваш: ${a} · Ответ: ${k}`, totalShort: 'Всего'
+  }
+};
+const T = k => STR[uiL()][k];
+
+const SEC_RU = { rw: 'Чтение и письмо', math: 'Математика' };
+const SEC_SHORT_RU = { rw: 'Чт. и п.', math: 'Мат.' };
+const DOM_RU = {
+  'Craft and Structure': 'Приёмы и структура текста', 'Information and Ideas': 'Информация и идеи',
+  'Standard English Conventions': 'Нормы английского языка', 'Expression of Ideas': 'Выражение мысли',
+  'Algebra': 'Алгебра', 'Advanced Math': 'Продвинутая математика',
+  'Problem-Solving and Data Analysis': 'Задачи и анализ данных', 'Geometry and Trigonometry': 'Геометрия и тригонометрия'
+};
+const SKILL_RU = {
+  'Words in Context': 'Слова в контексте', 'Text Structure and Purpose': 'Структура и цель текста',
+  'Cross-Text Connections': 'Связи между текстами', 'Central Ideas and Details': 'Главная мысль и детали',
+  'Command of Evidence (Quantitative)': 'Работа с данными (числа)', 'Command of Evidence (Textual)': 'Работа с доказательствами (текст)',
+  'Inferences': 'Выводы', 'Boundaries': 'Границы предложений', 'Form, Structure, and Sense': 'Форма, структура и смысл',
+  'Transitions': 'Связующие слова', 'Rhetorical Synthesis': 'Риторический синтез',
+  'Linear equations in one variable': 'Линейные уравнения с одной переменной', 'Linear functions': 'Линейные функции',
+  'Systems of linear equations': 'Системы линейных уравнений', 'Linear equations in two variables': 'Линейные уравнения с двумя переменными',
+  'Linear inequalities': 'Линейные неравенства', 'Nonlinear equations': 'Нелинейные уравнения', 'Nonlinear functions': 'Нелинейные функции',
+  'Equivalent expressions': 'Равносильные выражения', 'Systems of nonlinear equations': 'Системы нелинейных уравнений',
+  'One-variable data': 'Данные с одной переменной', 'Percentages': 'Проценты', 'Probability': 'Вероятность',
+  'Rates and units': 'Скорость и единицы измерения', 'Ratios and proportions': 'Отношения и пропорции',
+  'Right triangles': 'Прямоугольные треугольники', 'Circles': 'Окружности', 'Right triangle trigonometry': 'Тригонометрия прямоугольного треугольника',
+  'Area and volume': 'Площадь и объём', 'Lines and angles': 'Прямые и углы', 'Similar triangles': 'Подобные треугольники'
+};
+const secName = k => uiL() === 'ru' ? SEC_RU[k] : SECTIONS[k].name;
+const secShort = k => uiL() === 'ru' ? SEC_SHORT_RU[k] : SECTIONS[k].short;
+const domName = d => uiL() === 'ru' ? (DOM_RU[d] || d) : d;
+const skillName = s => uiL() === 'ru' ? (SKILL_RU[s] || s) : s;
+const diffName = d => T('diff')[d];
+const exText = q => exL() === 'ru' && EX_RU[q.id] ? EX_RU[q.id] : q.ex;
+const exToggle = () => `<button type="button" class="exlang" data-exlang lang="${exL() === 'ru' ? 'en' : 'ru'}">${exL() === 'ru' ? 'In English' : 'На русском'}</button>`;
+const exBody = (q, tag = 'p') => `<${tag} class="exl" data-q="${q.id}" lang="${exL()}">${exText(q)}</${tag}>`;
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('[data-exlang]');
+  if (!b) return;
+  e.preventDefault();
+  exPref = exL() === 'ru' ? 'en' : 'ru';
+  try { localStorage.setItem(EXKEY, exPref); } catch (err) {}
+  document.querySelectorAll('.exl').forEach(el => { el.innerHTML = exText(byId[el.dataset.q]); el.lang = exL(); });
+  document.querySelectorAll('.exhint').forEach(el => { el.textContent = STR[exL()].explainHint; });
+  document.querySelectorAll('[data-exlang]').forEach(el => { el.textContent = exL() === 'ru' ? 'In English' : 'На русском'; el.lang = exL() === 'ru' ? 'en' : 'ru'; });
+  const w = b.closest('.exp-wrap');
+  if (w) { w.classList.add('open'); const eb = document.getElementById('expBtn'); if (eb) eb.setAttribute('aria-expanded', 'true'); }
+  b.focus();
+});
+// ---------- Russian Math questions (shown only when the page is in Russian) ----------
+const Q_RU = {
+  m1: `Если 3<i>x</i> − 7 = 11, чему равно <i>x</i>?`,
+  m2: `Спортзал берёт единоразовый вступительный взнос $40 и $25 в месяц. Какая функция задаёт общую стоимость <i>C</i> (в долларах) абонемента на <i>m</i> месяцев?`,
+  m3: `<i>x</i> + <i>y</i> = 10<br><i>x</i> − <i>y</i> = 4<br><br>Если (<i>x</i>, <i>y</i>) — решение системы уравнений выше, чему равно <i>x</i>?`,
+  m4: `Прямая на плоскости <i>xy</i> проходит через точки (2, 5) и (6, 13). Чему равен угловой коэффициент прямой?`,
+  m5: `Чему равна сумма решений уравнения <i>x</i><sup>2</sup> − 5<i>x</i> + 6 = 0?`,
+  m6: `Функция <i>f</i> задана формулой <i>f</i>(<i>x</i>) = 2<i>x</i><sup>2</sup> − 3. Чему равно <i>f</i>(−2)?`,
+  m7: `Колония из 500 бактерий удваивается каждые 3 часа. Какое выражение задаёт число бактерий через <i>t</i> часов?`,
+  m8: `Какое выражение равносильно (<i>x</i> + 3)<sup>2</sup>?`,
+  m9: `Если 2<sup><i>x</i> + 1</sup> = 32, чему равно <i>x</i>?`,
+  m10: `Среднее арифметическое пяти чисел 4, 8, 10, 14 и <i>x</i> равно 9. Чему равно <i>x</i>?`,
+  m11: `Куртка обычной стоимостью $80 продаётся со скидкой 25%. К цене со скидкой добавляется налог с продаж 8%. Сколько всего стоит куртка?`,
+  m12: `В мешке 6 красных, 4 синих и 10 зелёных шариков. Какова вероятность, что случайно вытянутый шарик окажется синим?`,
+  m13: `Катеты прямоугольного треугольника равны 6 и 8. Чему равна гипотенуза?`,
+  m14: `На плоскости <i>xy</i> окружность задана уравнением (<i>x</i> − 3)<sup>2</sup> + (<i>y</i> + 2)<sup>2</sup> = 49. Каковы координаты её центра?`,
+  m15: `В прямоугольном треугольнике <i>ABC</i> угол <i>C</i> прямой и sin <i>A</i> = 3/5. Чему равен cos <i>A</i>?`,
+  m16: `Длина окружности равна 10π. Чему равна площадь круга?`,
+  m17: `Если 5(<i>x</i> − 2) = 3<i>x</i> + 4, чему равно <i>x</i>?`,
+  m18: `В какой точке график <i>y</i> = −3<i>x</i> + 6 пересекает ось <i>y</i>?`,
+  m19: `Какое уравнение задаёт прямую, параллельную прямой <i>y</i> = 4<i>x</i> − 1?`,
+  m20: `Грузовик может перевезти не более 2 000 фунтов. В нём уже 600 фунтов оборудования, а каждая коробка весит 35 фунтов. Какое неравенство описывает число коробок <i>b</i>, которые может взять грузовик?`,
+  m21: `Грузовик может перевезти не более 2 000 фунтов. В нём уже 600 фунтов оборудования, а каждая коробка весит 35 фунтов. Какое наибольшее число коробок может взять грузовик?`,
+  m22: `2<i>x</i> + 3<i>y</i> = 12<br><i>y</i> = <i>x</i> − 1<br><br>Если (<i>x</i>, <i>y</i>) — решение системы выше, чему равно <i>y</i>?`,
+  m23: `3<i>x</i> + <i>ky</i> = 8<br>6<i>x</i> + 4<i>y</i> = 5<br><br>В системе выше <i>k</i> — константа. Если у системы нет решений, чему равно <i>k</i>?`,
+  m24: `Театр продаёт взрослые билеты по $12 и детские по $8. За один вечер продано 50 билетов на общую сумму $520. Сколько продано взрослых билетов?`,
+  m25: `Для линейной функции <i>f</i> известно, что <i>f</i>(1) = 7 и <i>f</i>(4) = 16. Чему равно <i>f</i>(0)?`,
+  m26: `Уравнение <i>C</i> = 15<i>h</i> + 50 задаёт стоимость <i>C</i> (в долларах) вызова сантехника продолжительностью <i>h</i> часов. Как лучше всего понимать число 15 в этом контексте?`,
+  m27: `Какое из чисел является решением уравнения |<i>x</i> − 4| = 9?`,
+  m28: `Какое выражение равносильно <i>x</i><sup>2</sup> − 9?`,
+  m29: `Какова вершина графика <i>y</i> = (<i>x</i> − 2)<sup>2</sup> + 5 на плоскости <i>xy</i>?`,
+  m30: `Чему равно положительное решение уравнения <i>x</i><sup>2</sup> = 4<i>x</i> + 12?`,
+  m31: `Функция <i>f</i> задана формулой <i>f</i>(<i>x</i>) = 3<sup><i>x</i></sup>. Чему равно <i>f</i>(4)?`,
+  m32: `Функции <i>g</i> и <i>h</i> заданы формулами <i>g</i>(<i>x</i>) = <i>x</i><sup>2</sup> + 1 и <i>h</i>(<i>x</i>) = 2<i>x</i> − 3. Чему равно <i>g</i>(<i>h</i>(2))?`,
+  m33: `Автомобиль стоимостью $24 000 каждый год теряет 15% стоимости. Какая функция задаёт стоимость автомобиля <i>V</i> (в долларах) через <i>t</i> лет?`,
+  m34: `Какое выражение равносильно (2<i>x</i><sup>2</sup> + 3<i>x</i>) − (<i>x</i><sup>2</sup> − 5<i>x</i> + 4)?`,
+  m35: `Какое выражение при <i>x</i> ≠ 0 равносильно (<i>x</i><sup>2</sup> + 6<i>x</i>) ÷ <i>x</i>?`,
+  m36: `При каком значении константы <i>c</i> уравнение <i>x</i><sup>2</sup> + 6<i>x</i> + <i>c</i> = 0 имеет ровно одно действительное решение?`,
+  m37: `Если √(<i>x</i> + 3) = 5, чему равно <i>x</i>?`,
+  m38: `Принтер печатает 18 страниц за 45 секунд. Сколько страниц он напечатает за 5 минут с той же скоростью?`,
+  m39: `Чему равна медиана набора данных 3, 7, 7, 9, 12, 15?`,
+  m40: `В опросе 140 учеников 11-х и 12-х классов спросили, что они предпочитают: спорт или искусство. Результаты приведены ниже.<div class="tablescroll"><table><thead><tr><th></th><th>Спорт</th><th>Искусство</th><th>Всего</th></tr></thead><tbody><tr><td>11 класс</td><td>40</td><td>20</td><td>60</td></tr><tr><td>12 класс</td><td>30</td><td>50</td><td>80</td></tr></tbody></table></div>Какова вероятность, что случайно выбранный из участников опроса ученик 12-го класса предпочитает искусство?`,
+  m41: `В рецепте на каждые 3 стакана муки приходится 2 стакана сахара. Сколько стаканов сахара нужно, если пекарь берёт 12 стаканов муки?`,
+  m42: `Два угла в сумме дают 180°. Один из них в 4 раза больше другого. Чему равна градусная мера меньшего угла?`,
+  m43: `Радиус прямого кругового цилиндра равен 3, высота — 10. Чему равен его объём?`,
+  m44: `Треугольник <i>ABC</i> подобен треугольнику <i>DEF</i>, причём вершины <i>A</i>, <i>B</i> и <i>C</i> соответствуют <i>D</i>, <i>E</i> и <i>F</i>. Если <i>AB</i> = 4, <i>DE</i> = 10 и <i>BC</i> = 6, чему равно <i>EF</i>?`,
+  m45: `В уравнении 4(<i>x</i> − <i>a</i>) + 2 = 4<i>x</i> − 10 число <i>a</i> — константа. Если у уравнения бесконечно много решений, чему равно <i>a</i>?`,
+  m46: `Прямая <i>y</i> = <i>kx</i> + 4, где <i>k</i> — константа, проходит через точку (−2, 10). Чему равна абсцисса точки пересечения этой прямой с осью <i>x</i>?`,
+  m47: `Тетрадь стоит $3, папка — $7. Мия купила 10 предметов и потратила ровно $50. Сколько папок она купила?`,
+  m48: `2<i>x</i> − 5<i>y</i> = 7<br><i>ax</i> + 15<i>y</i> = −21<br><br>В системе выше <i>a</i> — константа. Если у системы бесконечно много решений, чему равно <i>a</i>?`,
+  m49: `Какая точка (<i>x</i>, <i>y</i>) является решением системы неравенств <i>y</i> &gt; 2<i>x</i> − 3 и <i>y</i> &lt; −<i>x</i> + 6?`,
+  m50: `В баке 500 литров воды, и вода вытекает с постоянной скоростью. Через 8 минут в баке осталось 340 литров. Через сколько минут после начала бак опустеет?`,
+  m51: `3<i>x</i> + 2<i>y</i> = 11<br><i>x</i> − 2<i>y</i> = 1<br><br>Если (<i>x</i>, <i>y</i>) удовлетворяет системе выше, чему равно 4<i>x</i>?`,
+  m52: `Прямая ℓ перпендикулярна прямой 2<i>x</i> + 3<i>y</i> = 6 и проходит через точку (4, 1). Чему равна ордината точки пересечения прямой ℓ с осью <i>y</i>?`,
+  m53: `Годовая выручка компании <i>R</i> (в тысячах долларов) описывается моделью <i>R</i> = 12<i>t</i> + 150, где <i>t</i> — число лет после 2015 года. Согласно модели, в каком году выручка впервые превысит $300 000?`,
+  m54: `Уравнение <i>x</i><sup>2</sup> + <i>bx</i> + 16 = 0, где <i>b</i> — константа, имеет решение 2. Чему равно другое решение?`,
+  m55: `Функция <i>f</i> задана формулой <i>f</i>(<i>x</i>) = (<i>x</i> − 3)(<i>x</i> + 5). При каком значении <i>x</i> функция <i>f</i>(<i>x</i>) достигает минимума?`,
+  m56: `График функции <i>g</i>(<i>x</i>) = <i>a</i>(<i>x</i> − 2)<sup>2</sup> + 7, где <i>a</i> — константа, проходит через точку (4, −5). Чему равно <i>a</i>?`,
+  m57: `Если 9<sup><i>x</i></sup> = 27, чему равно <i>x</i>?`,
+  m58: `Какое выражение равносильно (<i>x</i><sup>2</sup> − 4) ÷ (<i>x</i><sup>2</sup> + 4<i>x</i> + 4) при <i>x</i> ≠ −2?`,
+  m59: `Сколько действительных решений у уравнения 2<i>x</i><sup>2</sup> − 4<i>x</i> + 5 = 0?`,
+  m60: `Функция <i>P</i>(<i>t</i>) = 1 200(1,05)<sup><i>t</i></sup> описывает население города через <i>t</i> лет после 2020 года. Какое утверждение верно согласно модели?`,
+  m61: `<i>y</i> = <i>x</i><sup>2</sup> − 4<i>x</i> + 7<br><i>y</i> = 2<i>x</i> − 2<br><br>Если (<i>x</i>, <i>y</i>) — решение системы выше, чему равно <i>x</i>?`,
+  m62: `Многочлен <i>p</i> задан формулой <i>p</i>(<i>x</i>) = <i>x</i><sup>3</sup> − 2<i>x</i><sup>2</sup> − 9<i>x</i> + 18. Какое из выражений является множителем <i>p</i>(<i>x</i>)?`,
+  m63: `Цену велосипеда повысили на 20%, а затем новую цену снизили на 20%. Сколько процентов от исходной цены составляет итоговая цена?`,
+  m64: `Среднее арифметическое набора из 10 значений равно 12. Из набора убрали значение 30. Чему равно среднее оставшихся значений?`,
+  m65: `На плоскости <i>xy</i> график уравнения <i>x</i><sup>2</sup> + <i>y</i><sup>2</sup> − 6<i>x</i> + 8<i>y</i> = 0 — окружность. Чему равен её радиус?`,
+  m66: `Радиус окружности равен 6. Чему равна длина дуги с центральным углом 120°?`
+};
+// Choices that contain words, in their ORIGINAL order (mapped through q.order after shuffling).
+const CH_RU = {
+  m26: ['Стоимость одного часа работы сантехника', 'Фиксированная плата за каждый вызов', 'Общая стоимость часового вызова', 'Продолжительность вызова в часах'],
+  m59: ['Ни одного', 'Ровно одно', 'Ровно два', 'Бесконечно много'],
+  m60: ['Население растёт на 5% в год.', 'Население растёт на 1,05 человека в год.', 'Население растёт на 60 человек в год.', 'В 2020 году население составляло 1 260 человек.']
+};
+const ruQ = q => uiL() === 'ru' && !!Q_RU[q.id];
+const qText = q => ruQ(q) ? Q_RU[q.id] : q.q;
+const qLang = q => ruQ(q) ? 'ru' : 'en';
+const chText = (q, k) => uiL() === 'ru' && CH_RU[q.id] ? CH_RU[q.id][q.order ? q.order[k] : k] : q.ch[k];
+const modName = m => `${secName(m.sec)}, ${T('module')} ${m.k}`;
+function labelText(spec) {
+  if (spec.type === 'full') return T('fullLabel');
+  if (spec.type === 'missed') return T('missedLabel');
+  return (spec.sec === 'mix' ? T('mixed') : secName(spec.sec)) + (spec.diff !== 'any' ? ' · ' + diffName(spec.diff) : '') + (spec.ndoms ? T('domainsN')(spec.ndoms) : '');
+}
+function langSelect(id) {
+  const opts = [['en', 'English'], ['ru', 'Русский'], ['mix', 'English + объяснения на русском']];
+  return `<label class="sr-only" for="${id}">${T('langLabel')}</label><select class="langsel" id="${id}" aria-label="${T('langLabel')}">${opts.map(([v, l]) => `<option value="${v}" ${LANG === v ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
+}
+function wireLang(id) {
+  const el = document.getElementById(id);
+  if (el) el.onchange = () => { LANG = el.value; exPref = null; try { localStorage.setItem(LKEY, LANG); localStorage.removeItem(EXKEY); } catch (e) {} document.documentElement.lang = uiL(); rerender(); };
+}
+let view = 'home';
+function rerender() {
+  if (view === 'home') renderHome();
+  else if (view === 'test') renderTest();
+  else if (view === 'between') renderBetween();
+  else if (view === 'results') renderResults();
+}
+
+// ---------- storage (per-viewer convenience only) ----------
+const HKEY = 'scorebound-history-v1';
+function loadHistory() { try { return JSON.parse(localStorage.getItem(HKEY)) || []; } catch (e) { return []; } }
+function saveHistory(h) { try { localStorage.setItem(HKEY, JSON.stringify(h.slice(0, 8))); } catch (e) {} }
+
+// ---------- state ----------
+const app = document.getElementById('app');
+const cfg = { sec: 'rw', timed: true, feedback: 'end', doms: new Set(), diff: 'any' };
+let S = null;
+let tick = null;
+let brkTick = null;
+
+const fmt = s => {
+  s = Math.max(0, Math.round(s));
+  const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), sec = String(s % 60).padStart(2, '0');
+  return h ? h + ':' + String(m).padStart(2, '0') + ':' + sec : m + ':' + sec;
+};
+const stripTags = h => h.replace(/<[^>]+>/g, '').replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/\s+/g, ' ').trim();
+const letter = i => 'ABCD'[i];
+const isAnswered = id => S.answers[id] !== undefined && S.answers[id] !== '';
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function parseNum(s) {
+  s = String(s || '').trim().replace(/\s/g, '').replace(',', '.');
+  if (!s) return NaN;
+  if (/^-?\d+\/\d+$/.test(s)) { const [n, d] = s.split('/').map(Number); return d ? n / d : NaN; }
+  if (/^-?(\d+\.?\d*|\.\d+)$/.test(s)) return Number(s);
+  return NaN;
+}
+function isCorrect(q, ans) {
+  if (ans === undefined || ans === null || ans === '') return false;
+  if (q.spr !== undefined) { const v = parseNum(ans); return !isNaN(v) && Math.abs(v - q.spr) < (Number.isInteger(q.spr) ? 1e-6 : 1e-3); }
+  return ans === q.a;
+}
+const keyText = q => q.spr !== undefined ? (q.key ?? q.spr) : letter(q.a);
+// Section score estimate. Adaptive routes shift the range the way the real test does:
+// an easier Module 2 tops out at 650, a harder one reaches 800.
+function sectionScore(correct, total, route) {
+  const p = total ? correct / total : 0;
+  const raw = route === 'hard' ? 350 + 450 * p : route === 'easy' ? 200 + 450 * p : 200 + 600 * p;
+  return Math.min(800, Math.max(200, Math.round(raw / 10) * 10));
+}
+
+function pool() {
+  let qs = BANK.filter(q => cfg.sec === 'mix' || q.sec === cfg.sec);
+  if (cfg.doms.size) qs = qs.filter(q => cfg.doms.has(q.dom));
+  if (cfg.diff !== 'any') qs = qs.filter(q => q.d === cfg.diff);
+  return qs;
+}
+const MODSIZE = { rw: 27, math: 22 };
+const MODTIME = { rw: 32 * 60, math: 35 * 60 };
+const domOrder = q => SECTIONS[q.sec].doms.indexOf(q.dom);
+function planIds() {
+  const qs = pool();
+  if (cfg.sec === 'mix') return shuffle(qs).slice(0, 10).map(q => q.id);
+  const pick = shuffle(qs).slice(0, MODSIZE[cfg.sec]);
+  if (cfg.sec === 'rw') pick.sort((a, b) => domOrder(a) - domOrder(b));
+  return pick.map(q => q.id);
+}
+// Full test, adaptive. Module 1 mixes difficulties; Module 2 is built after Module 1
+// is submitted: 60%+ correct gets the harder Module 2, otherwise the easier one.
+const QUOTA = { rw: [7, 7, 7, 6], math: [8, 8, 3, 3] };   // per-domain questions in each module
+const TIERS = { mix: ['E', 'M', 'H'], hard: ['H', 'M', 'E'], easy: ['E', 'M', 'H'] };
+const ROUTE_CUTOFF = 0.6;
+function pickModule(sec, route, used) {
+  const ids = [];
+  SECTIONS[sec].doms.forEach((d, di) => {
+    const avail = { E: [], M: [], H: [] };
+    shuffle(BANK.filter(q => q.sec === sec && q.dom === d && !used.has(q.id))).forEach(q => avail[q.d].push(q));
+    let need = QUOTA[sec][di], t = 0;
+    while (need > 0) {
+      let tier;
+      if (route === 'mix') {
+        if (!TIERS.mix.some(x => avail[x].length)) break;
+        tier = TIERS.mix[t++ % 3];
+        if (!avail[tier].length) continue;
+      } else {
+        tier = TIERS[route].find(x => avail[x].length);
+        if (!tier) break;
+      }
+      const q = avail[tier].pop();
+      ids.push(q.id); used.add(q.id); need--;
+    }
+  });
+  return sec === 'rw' ? ids : shuffle(ids);
+}
+function fullPlan() {
+  const used = new Set();
+  const mods = [];
+  ['rw', 'math'].forEach(sec => {
+    mods.push({ sec, k: 1, ids: pickModule(sec, 'mix', used), limit: MODTIME[sec] });
+    mods.push({ sec, k: 2, ids: null, limit: MODTIME[sec], adaptive: true });
+  });
+  return mods;
+}
+function buildAdaptive(k) {
+  const m = S.mods[k], first = S.mods[k - 1];
+  const c = first.ids.filter(id => isCorrect(byId[id], S.answers[id])).length;
+  m.route = c / first.ids.length >= ROUTE_CUTOFF ? 'hard' : 'easy';
+  m.ids = pickModule(m.sec, m.route, S.usedIds);
+}
+function limitFor(ids) { return ids.reduce((t, id) => t + SECTIONS[byId[id].sec].perQ, 0); }
+const brand = `<div class="brand"><span class="brand-mark" aria-hidden="true"></span>Scorebound</div>`;
+
+// ---------- home ----------
+function renderHome() {
+  view = 'home';
+  stopTimer();
+  if (brkTick) { clearInterval(brkTick); brkTick = null; }
+  S = null;
+  const full = cfg.sec === 'full';
+  const mods = full ? fullPlan() : null;
+  const ids = full ? [] : planIds();
+  const qCount = full ? 2 * (MODSIZE.rw + MODSIZE.math) : ids.length;
+  const totalLimit = full ? mods.reduce((t, m) => t + m.limit, 0) : limitFor(ids);
+  const hist = loadHistory();
+  const domList = (cfg.sec === 'mix' || full) ? [...SECTIONS.rw.doms, ...SECTIONS.math.doms] : SECTIONS[cfg.sec].doms;
+  const count = d => BANK.filter(q => q.dom === d && (cfg.diff === 'any' || q.d === cfg.diff)).length;
+  const secCard = (key, title, sub) =>
+    `<button class="seccard" role="radio" aria-checked="${cfg.sec === key}" data-sec="${key}"><b>${title}</b><span>${sub}</span></button>`;
+  const rwN = BANK.filter(q => q.sec === 'rw').length, mN = BANK.filter(q => q.sec === 'math').length;
+  const seg = (label, items) => `<div><span class="eyebrow" style="display:block;margin-bottom:8px">${label}</span>
+    <div class="seg" role="group" aria-label="${label}">${items}</div></div>`;
+
+  app.innerHTML = `
+  <div class="wrap">
+    <header class="topbar">${brand}<div class="topbar-right"><small>${T('tagline')}</small>${langSelect('langHome')}</div></header>
+    <section class="hero">
+      <div>
+        <h1>${T('heroH')}</h1>
+        <p>${T('heroP')}</p>
+      </div>
+      <div class="scale" aria-label="${T('fmt')}">
+        <div class="scale-row"><div><div class="eyebrow">${secName('rw')}</div><span>${T('pace')(71)}</span></div><b class="num">200–800</b></div>
+        <div class="scale-row"><div><div class="eyebrow">${secName('math')}</div><span>${T('pace')(95)}</span></div><b class="num">200–800</b></div>
+        <div class="scale-row"><div><div class="eyebrow">${T('totalScore')}</div><span>${T('sumBoth')}</span></div><b class="num">400–1600</b></div>
+      </div>
+    </section>
+    <div class="home-grid">
+      <section class="panel" aria-labelledby="setup-h">
+        <h2 id="setup-h">${T('setupH')}</h2>
+        <p class="sub">${T('bankSub')(BANK.length)}</p>
+        <div class="field">
+          <span class="eyebrow">${T('section')}</span>
+          <div class="secpick" role="radiogroup" aria-label="${T('section')}">
+            ${secCard('rw', secName('rw'), T('moduleSub')(MODSIZE.rw, rwN))}
+            ${secCard('math', secName('math'), T('moduleSub')(MODSIZE.math, mN))}
+            ${secCard('mix', T('mixed'), T('mixedSub'))}
+            ${secCard('full', T('full'), T('fullSub'))}
+          </div>
+        </div>
+        ${full ? `<div class="field">
+          <span class="eyebrow">${T('structure')}</span>
+          <ol class="modout">
+            ${mods.map((m, k) => `${k === 2 ? `<li class="brk"><span>${T('brk')}</span><span class="num">10 ${T('min')}</span></li>` : ''}<li><span>${modName(m)}${m.adaptive ? T('adaptive') : ''}</span><span class="num">${MODSIZE[m.sec]} ${T('qShort')} · ${m.limit / 60} ${T('min')}</span></li>`).join('')}
+          </ol>
+          <p class="note">${T('fullNote')}</p>
+        </div>` : `<div class="field">
+          <span class="eyebrow">${T('focus')} <span style="text-transform:none;letter-spacing:0">${T('optional')}</span></span>
+          <div class="chips">
+            ${domList.map(d => `<button class="chip" data-dom="${d}" aria-pressed="${cfg.doms.has(d)}">${domName(d)}<span class="num">${count(d)}</span></button>`).join('')}
+          </div>
+        </div>`}
+        <div class="field opts">
+          ${seg(T('timer'), `<button data-timed="1" aria-pressed="${cfg.timed}">${T('testPace')}</button><button data-timed="0" aria-pressed="${!cfg.timed}">${T('untimed')}</button>`)}
+          ${seg(T('showAns'), `<button data-fb="end" aria-pressed="${cfg.feedback === 'end'}">${T('atEnd')}</button><button data-fb="each" aria-pressed="${cfg.feedback === 'each'}">${T('afterEach')}</button>`)}
+          ${full ? '' : seg(T('difficulty'), ['any', 'E', 'M', 'H'].map(v => `<button data-diff="${v}" aria-pressed="${cfg.diff === v}">${v === 'any' ? T('anyDiff') : diffName(v)}</button>`).join(''))}
+        </div>
+        <div class="startrow">
+          <div class="meta">${T('nQuestions')(qCount)}${cfg.timed ? (full ? T('fullTime') : T('timeLimit'))(`<span class="num">${fmt(totalLimit)}</span>`) : T('noLimit')}</div>
+          <button class="btn btn-pencil" id="startBtn" ${qCount ? '' : 'disabled'}>${T('start')}</button>
+        </div>
+      </section>
+      <aside class="panel" aria-labelledby="log-h">
+        <h2 id="log-h">${T('logH')}</h2>
+        <p class="sub">${T('logSub')}</p>
+        ${hist.length ? `<ul class="log">${hist.map(h => `
+          <li><div><b>${h.label}</b><div class="when">${h.when} · <span class="num">${h.correct}/${h.total}</span> ${T('correctWord')}</div></div>
+          <div class="sc">${h.scores.map(s => `${s.v}<small>${s.k}</small>`).join('')}</div></li>`).join('')}</ul>`
+        : `<div class="empty">${T('emptyLog')}</div>`}
+        <ul class="tips">${T('tips').map(t => `<li>${t}</li>`).join('')}</ul>
+      </aside>
+    </div>
+  </div>`;
+
+  wireLang('langHome');
+  app.querySelectorAll('[data-sec]').forEach(b => b.onclick = () => { cfg.sec = b.dataset.sec; cfg.doms.clear(); renderHome(); });
+  app.querySelectorAll('[data-dom]').forEach(b => b.onclick = () => { const d = b.dataset.dom; cfg.doms.has(d) ? cfg.doms.delete(d) : cfg.doms.add(d); renderHome(); });
+  app.querySelectorAll('[data-timed]').forEach(b => b.onclick = () => { cfg.timed = b.dataset.timed === '1'; renderHome(); });
+  app.querySelectorAll('[data-fb]').forEach(b => b.onclick = () => { cfg.feedback = b.dataset.fb; renderHome(); });
+  app.querySelectorAll('[data-diff]').forEach(b => b.onclick = () => { cfg.diff = b.dataset.diff; renderHome(); });
+  document.getElementById('startBtn').onclick = () => full
+    ? startSession(mods, { type: 'full' }, true)
+    : startSession([{ sec: cfg.sec, k: 0, ids, limit: limitFor(ids) }], { type: 'practice', sec: cfg.sec, diff: cfg.diff, ndoms: cfg.doms.size });
+  window.scrollTo(0, 0);
+}
+
+// ---------- session ----------
+function startSession(mods, spec, full) {
+  S = { mods, m: 0, full: !!full, ids: mods[0].ids, limit: mods[0].limit, spec,
+        i: 0, answers: {}, marked: new Set(), struck: {}, checked: new Set(),
+        timed: cfg.timed, feedback: cfg.feedback, elapsed: 0, used: 0, nav: false, exitAsk: false,
+        usedIds: new Set(mods.flatMap(m => m.ids || [])) };
+  startTimer();
+  renderTest();
+  window.scrollTo(0, 0);
+}
+function startTimer() {
+  stopTimer();
+  let last = Date.now();
+  tick = setInterval(() => {
+    const now = Date.now(); S.elapsed += (now - last) / 1000; last = now;
+    if (!S.timed) return;
+    const t = document.getElementById('timer');
+    const rem = S.limit - S.elapsed;
+    if (t) { t.textContent = fmt(rem); t.classList.toggle('low', rem <= 60); }
+    if (rem <= 0) finish();
+  }, 250);
+}
+function stopTimer() { if (tick) clearInterval(tick); tick = null; }
+const sessionTitle = () => S.full ? modName(S.mods[S.m]) : labelText(S.spec);
+
+function renderTest() {
+  view = 'test';
+  const q = byId[S.ids[S.i]];
+  const n = S.ids.length;
+  const ans = S.answers[q.id];
+  const checked = S.checked.has(q.id);
+  const struck = S.struck[q.id] || new Set();
+  const isMath = q.sec === 'math';
+  const last = S.i === n - 1;
+
+  let answerHtml;
+  if (q.spr !== undefined) {
+    const cls = checked ? (isCorrect(q, ans) ? 'is-correct' : 'is-wrong') : '';
+    answerHtml = `<div class="gridin ${cls}"><label class="eyebrow" for="spr-${q.id}">${T('yourAnswer')}</label>
+      <input id="spr-${q.id}" inputmode="decimal" autocomplete="off" maxlength="7" value="${ans ?? ''}" ${checked ? 'disabled' : ''} placeholder="${T('placeholder')}">
+      <small>${T('gridHint')}</small></div>`;
+  } else {
+    answerHtml = `<div class="choices" role="radiogroup" aria-label="${T('choicesL')}">${q.ch.map((c, k) => {
+      let st = '';
+      if (checked) { if (k === q.a) st = 'is-correct'; else if (k === ans) st = 'is-wrong'; }
+      return `<div class="crow ${struck.has(k) ? 'struck' : ''}">
+        <button class="choice ${isMath ? 'mathc' : ''} ${st}" role="radio" aria-checked="${ans === k}" data-k="${k}" ${checked ? 'disabled' : ''}>
+          <span class="bub">${letter(k)}</span><span class="ctext">${chText(q, k)}</span></button>
+        <button class="strike" data-strike="${k}" aria-pressed="${struck.has(k)}" aria-label="${(struck.has(k) ? T('restore') : T('cross'))(letter(k))}" ${checked ? 'disabled' : ''}>${struck.has(k) ? T('undo') : letter(k)}</button>
+      </div>`; }).join('')}</div>`;
+  }
+
+  let fbHtml = '';
+  if (checked) {
+    const ok = isCorrect(q, ans);
+    fbHtml = `<div class="feedback ${ok ? 'ok' : 'no'}" role="status"><div class="exhead"><b>${ok ? T('correct') : T('notQuite')(keyText(q))}</b>${exToggle()}</div>${exBody(q)}</div>`;
+  }
+  // Hover / tap explanation: practice sessions only (the full test keeps real test conditions).
+  const expHtml = S.full ? '' : `<span class="exp-wrap" id="expWrap">
+      <button class="expbtn" id="expBtn" aria-expanded="false" aria-controls="expPop"><span class="qm" aria-hidden="true">?</span>${T('explain')}</button>
+      <div class="exp-pop" id="expPop" role="tooltip">
+        <div class="exhead"><span class="lbl exhint">${STR[exL()].explainHint}</span>${exToggle()}</div>
+        ${exBody(q)}
+      </div></span>`;
+
+  const unanswered = n - S.ids.filter(isAnswered).length;
+  const canCheck = S.feedback === 'each' && !checked && ans !== undefined && ans !== '';
+  const sec = S.full ? T('moduleOf')(S.m + 1, S.mods.length) : secName(q.sec);
+
+  app.innerHTML = `
+  <div class="testbar">
+    <div class="secname">${sessionTitle()}<small>${sec} · ${domName(q.dom)}</small></div>
+    <div class="timer-wrap">${S.timed ? `<span class="timer num" id="timer">${fmt(S.limit - S.elapsed)}</span>` : `<span class="eyebrow">${T('untimed')}</span>`}</div>
+    <div class="right">
+      ${langSelect('langTest')}
+      ${S.exitAsk
+        ? `<span class="exitbox">${T('leaveQ')} <button class="btn" id="exitYes">${T('leave')}</button><button class="linkbtn" id="exitNo">${T('stay')}</button></span>`
+        : `<button class="linkbtn" id="exitBtn">${T('exit')}</button>`}
+    </div>
+  </div>
+  <div class="qwrap ${q.passage ? 'split' : 'solo'}">
+    ${q.passage ? `<article class="passage" aria-label="${T('passage')}" lang="en">${q.passage}</article>` : ''}
+    <section class="qpane" aria-label="${T('questionN')(S.i + 1)}">
+      <div class="qhead">
+        <span class="qbadge">${S.i + 1}</span>
+        <button class="markbtn" id="markBtn" aria-pressed="${S.marked.has(q.id)}">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5h10v13l-5-3.5-5 3.5z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          ${S.marked.has(q.id) ? T('marked') : T('mark')}</button>
+        ${expHtml}
+        <span class="skilltag">${skillName(q.skill)}${S.full ? '' : ' · ' + diffName(q.d)}</span>
+      </div>
+      <div class="stem ${isMath ? 'math' : ''}" lang="${qLang(q)}">${qText(q)}</div>
+      <div lang="${qLang(q)}">${answerHtml}</div>
+      ${fbHtml}
+    </section>
+  </div>
+  ${S.nav ? `<div class="navpanel" role="dialog" aria-label="${T('navL')}">
+      <h3>${sessionTitle()}</h3>
+      <div class="legend"><span><i class="a"></i>${T('answered')}</span><span><i></i>${T('unanswered')}</span><span><i class="m"></i>${T('markedL')}</span></div>
+      <div class="navgrid">${S.ids.map((id, k) => {
+        const a = isAnswered(id);
+        return `<button data-go="${k}" class="${a ? 'ans' : ''} ${k === S.i ? 'cur' : ''} ${S.marked.has(id) ? 'mk' : ''}" aria-label="${T('questionN')(k + 1)}${a ? ', ' + T('answered') : ''}${S.marked.has(id) ? ', ' + T('markedL') : ''}">${k + 1}</button>`; }).join('')}</div>
+      <div class="submitrow"><span class="warn">${unanswered ? T('nUnanswered')(unanswered) : T('allAnswered')}</span>
+        <button class="btn btn-primary" id="submitBtn">${S.m < S.mods.length - 1 ? T('submitModule') : T('submitScore')}</button></div>
+    </div>` : ''}
+  <footer class="testfoot"><div class="inner">
+    <div><button class="btn" id="backBtn" ${S.i === 0 ? 'disabled' : ''}>${T('back')}</button></div>
+    <button class="navtoggle" id="navBtn" aria-expanded="${S.nav}">${T('questionOf')(S.i + 1, n)} <span aria-hidden="true">${S.nav ? '▾' : '▴'}</span></button>
+    <div>${canCheck ? `<button class="btn btn-pencil" id="checkBtn">${T('check')}</button>` : ''}
+      <button class="btn btn-primary" id="nextBtn">${last ? T('review') : T('next')}</button></div>
+  </div></footer>`;
+
+  // wiring
+  wireLang('langTest');
+  app.querySelectorAll('.choice').forEach(b => b.onclick = () => choose(+b.dataset.k));
+  app.querySelectorAll('[data-strike]').forEach(b => b.onclick = () => {
+    const k = +b.dataset.strike; const set = S.struck[q.id] || (S.struck[q.id] = new Set());
+    set.has(k) ? set.delete(k) : set.add(k);
+    if (set.has(k) && S.answers[q.id] === k) delete S.answers[q.id];
+    renderTest();
+  });
+  const expBtn = document.getElementById('expBtn');
+  if (expBtn) {
+    const wrap = document.getElementById('expWrap');
+    expBtn.onclick = () => { const open = !wrap.classList.contains('open'); wrap.classList.toggle('open', open); expBtn.setAttribute('aria-expanded', open); };
+    wrap.onmouseenter = () => expBtn.setAttribute('aria-expanded', 'true');
+    wrap.onmouseleave = () => { if (!wrap.classList.contains('open')) expBtn.setAttribute('aria-expanded', 'false'); };
+  }
+  const inp = app.querySelector('.gridin input');
+  if (inp) {
+    inp.oninput = () => {
+      inp.value = inp.value.replace(/[^0-9.,\/\-]/g, '');
+      S.answers[q.id] = inp.value;
+      const had = !!document.getElementById('checkBtn');
+      if (S.feedback === 'each' && had !== (inp.value !== '')) { renderTest(); const i2 = app.querySelector('.gridin input'); if (i2) { i2.focus(); i2.setSelectionRange(i2.value.length, i2.value.length); } }
+    };
+    inp.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); canCheckNow() ? check() : go(1); } };
+  }
+  document.getElementById('markBtn').onclick = () => { S.marked.has(q.id) ? S.marked.delete(q.id) : S.marked.add(q.id); renderTest(); };
+  document.getElementById('backBtn').onclick = () => go(-1);
+  document.getElementById('nextBtn').onclick = () => last ? (S.nav = true, renderTest()) : go(1);
+  document.getElementById('navBtn').onclick = () => { S.nav = !S.nav; renderTest(); };
+  const cb = document.getElementById('checkBtn'); if (cb) cb.onclick = check;
+  app.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { S.i = +b.dataset.go; S.nav = false; renderTest(); });
+  const sb = document.getElementById('submitBtn'); if (sb) sb.onclick = finish;
+  const eb = document.getElementById('exitBtn'); if (eb) eb.onclick = () => { S.exitAsk = true; renderTest(); };
+  const ey = document.getElementById('exitYes'); if (ey) ey.onclick = renderHome;
+  const en = document.getElementById('exitNo'); if (en) en.onclick = () => { S.exitAsk = false; renderTest(); };
+}
+function canCheckNow() { const id = S.ids[S.i]; const a = S.answers[id]; return S.feedback === 'each' && !S.checked.has(id) && a !== undefined && a !== ''; }
+function choose(k) {
+  const q = byId[S.ids[S.i]];
+  if (S.checked.has(q.id) || q.spr !== undefined) return;
+  S.answers[q.id] = k;
+  if (S.struck[q.id]) S.struck[q.id].delete(k);
+  renderTest();
+}
+function check() { S.checked.add(S.ids[S.i]); renderTest(); }
+function go(d) {
+  const ni = S.i + d;
+  if (ni < 0 || ni >= S.ids.length) return;
+  S.i = ni; S.nav = false; S.exitAsk = false; renderTest(); window.scrollTo(0, 0);
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { const w = document.getElementById('expWrap'); if (w && w.classList.contains('open')) { w.classList.remove('open'); return; } }
+  if (!S || view !== 'test') return;
+  if (['INPUT', 'SELECT'].includes(e.target.tagName) || e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = e.key.toLowerCase();
+  if (['a', 'b', 'c', 'd'].includes(k)) { choose('abcd'.indexOf(k)); }
+  else if (e.key === 'ArrowRight') go(1);
+  else if (e.key === 'ArrowLeft') go(-1);
+  else if (e.key === 'Escape' && S.nav) { S.nav = false; renderTest(); }
+});
+
+// ---------- between modules ----------
+function finish() {
+  if (!S || S.done || S.between) return;
+  stopTimer();
+  S.used += S.timed ? Math.min(S.elapsed, S.limit) : S.elapsed;
+  if (S.m < S.mods.length - 1) return betweenModules();
+  S.done = true;
+  finalizeResults();
+}
+function betweenModules() {
+  S.between = true;
+  const cur = S.mods[S.m], next = S.mods[S.m + 1];
+  if (next.adaptive && !next.ids) buildAdaptive(S.m + 1);
+  S.breakEnds = cur.sec !== next.sec ? Date.now() + 600000 : null;
+  if (S.breakEnds) {
+    brkTick = setInterval(() => {
+      const el = document.getElementById('brk');
+      const left = (S.breakEnds - Date.now()) / 1000;
+      if (el) el.textContent = left > 0 ? fmt(left) : T('breakOver');
+      if (left <= 0) { clearInterval(brkTick); brkTick = null; }
+    }, 500);
+  }
+  renderBetween();
+  window.scrollTo(0, 0);
+}
+function renderBetween() {
+  view = 'between';
+  const cur = S.mods[S.m], next = S.mods[S.m + 1];
+  const answered = cur.ids.filter(isAnswered).length;
+  const left = S.breakEnds ? (S.breakEnds - Date.now()) / 1000 : 0;
+  app.innerHTML = `
+  <div class="wrap">
+    <header class="topbar">${brand}<div class="topbar-right"><small>${labelText(S.spec)}</small>${langSelect('langBetween')}</div></header>
+    <section class="between">
+      <div class="eyebrow">${T('modSubmitted')(S.m + 1, S.mods.length)}</div>
+      <h1>${T('complete')(modName(cur))}</h1>
+      <p>${T('answeredOf')(answered, cur.ids.length)}${next.adaptive ? T('nextChosen') : ''}</p>
+      ${S.breakEnds ? `<div class="breakbox"><div><span class="eyebrow">${T('brk')}</span><p>${T('breakText')}</p></div><span class="timer num" id="brk">${left > 0 ? fmt(left) : T('breakOver')}</span></div>` : ''}
+      <ol class="modout">${S.mods.map((m, k) => `<li class="${k <= S.m ? 'done' : k === S.m + 1 ? 'next' : ''}"><span>${modName(m)}</span><span class="num">${k <= S.m ? T('submitted') : (k === S.m + 1 ? T('upNext') : '') + m.limit / 60 + ' ' + T('min')}</span></li>`).join('')}</ol>
+      <div class="actions"><button class="btn btn-pencil" id="nextMod">${T('startMod')(modName(next))}</button><button class="linkbtn" id="endFull">${T('endTest')}</button></div>
+      <p class="note">${T('endNote')}</p>
+    </section>
+  </div>`;
+  wireLang('langBetween');
+  const clearBrk = () => { if (brkTick) { clearInterval(brkTick); brkTick = null; } };
+  document.getElementById('nextMod').onclick = () => {
+    clearBrk(); S.between = false; S.breakEnds = null; S.m++;
+    const n = S.mods[S.m];
+    Object.assign(S, { ids: n.ids, limit: n.limit, elapsed: 0, i: 0, nav: false, exitAsk: false });
+    startTimer(); renderTest(); window.scrollTo(0, 0);
+  };
+  document.getElementById('endFull').onclick = () => {
+    clearBrk(); S.between = false; S.done = true;
+    S.mods.forEach((m, k) => { if (m.adaptive && !m.ids) buildAdaptive(k); });
+    finalizeResults();
+  };
+}
+
+// ---------- results ----------
+function computeResults() {
+  const allIds = S.mods.flatMap(m => m.ids);
+  const rows = allIds.map(id => { const q = byId[id]; const a = S.answers[id]; const skipped = a === undefined || a === ''; return { q, a, skipped, ok: isCorrect(q, a) }; });
+  const correct = rows.filter(r => r.ok).length;
+  const bySec = {};
+  rows.forEach(r => { const s = bySec[r.q.sec] || (bySec[r.q.sec] = { c: 0, t: 0 }); s.t++; if (r.ok) s.c++; });
+  const routeOf = k => S.full ? (S.mods.find(m => m.sec === k && m.adaptive) || {}).route : null;
+  const scores = Object.keys(bySec).map(k => ({ key: k, v: sectionScore(bySec[k].c, bySec[k].t, routeOf(k)), c: bySec[k].c, t: bySec[k].t }));
+  const total = S.full && scores.length === 2 ? scores[0].v + scores[1].v : 0;
+  return { rows, correct, scores, total };
+}
+function finalizeResults() {
+  const R = computeResults();
+  const hist = loadHistory();
+  const now = new Date();
+  hist.unshift({ label: labelText(S.spec), when: now.toLocaleDateString(uiL(), { month: 'short', day: 'numeric' }) + ', ' + now.toLocaleTimeString(uiL(), { hour: 'numeric', minute: '2-digit' }),
+                 correct: R.correct, total: R.rows.length,
+                 scores: (R.total ? [{ k: T('totalShort'), v: R.total }] : []).concat(R.scores.map(s => ({ k: secShort(s.key), v: s.v }))) });
+  saveHistory(hist);
+  renderResults();
+  window.scrollTo(0, 0);
+}
+function renderResults() {
+  view = 'results';
+  const { rows, correct, scores, total } = computeResults();
+  const totalLimit = S.mods.reduce((t, m) => t + m.limit, 0);
+  const byDom = {};
+  rows.forEach(r => { const d = byDom[r.q.dom] || (byDom[r.q.dom] = { c: 0, t: 0 }); d.t++; if (r.ok) d.c++; });
+  const missed = rows.filter(r => !r.ok).map(r => r.q.id);
+  const modLine = k => S.full ? S.mods.filter(m => m.sec === k).map(m =>
+      `${uiL() === 'ru' ? 'Модуль' : 'Module'} ${m.k}${m.route ? T(m.route === 'hard' ? 'harder' : 'easier') : ''}: ${m.ids.filter(id => isCorrect(byId[id], S.answers[id])).length}/${m.ids.length}`).join(' · ') : '';
+  const pct = Math.round(100 * correct / rows.length);
+  const ansText = (q, a) => (a === undefined || a === '') ? '—' : q.spr !== undefined ? a : letter(a);
+  const card = (label, v, frac, pctPos, ticks, line) => `
+          <div class="scorecard">
+            <div class="top"><span class="eyebrow">${label}</span><span class="num" style="color:var(--muted);font-size:13px">${frac}</span></div>
+            <div class="big">${v}</div>
+            <div class="track" aria-hidden="true"><div class="fill" style="width:${pctPos}%"></div><div class="pin" style="left:${pctPos}%"></div></div>
+            <div class="ticks">${ticks.map(t => `<span>${t}</span>`).join('')}</div>
+            ${line ? `<p class="note num" style="font-size:12px">${line}</p>` : ''}
+          </div>`;
+
+  app.innerHTML = `
+  <div class="wrap">
+    <header class="topbar">${brand}<div class="topbar-right">${langSelect('langRes')}<button class="linkbtn" id="homeBtn">${T('backSetup')}</button></div></header>
+    <section class="res-head">
+      <div>
+        <div class="eyebrow">${labelText(S.spec)}${T('resultsSuffix')}</div>
+        <h1 style="margin-top:8px">${T('headline')(pct)}</h1>
+        <p>${T('youAnswered')(correct, rows.length, pct)} ${S.full ? T('fullScoreNote') : T('scoreNote')}</p>
+      </div>
+      <div class="scorecards">
+        ${total ? card(T('estTotal'), total, `${correct}/${rows.length}`, (total - 400) / 12, [400, 800, 1200, 1600], '') : ''}
+        ${scores.map(s => card(T('estSec')(secName(s.key)), s.v, `${s.c}/${s.t}`, (s.v - 200) / 6, [200, 400, 600, 800], modLine(s.key))).join('')}
+      </div>
+    </section>
+    <div class="res-grid">
+      <section class="panel">
+        <h2>${T('byDomain')}</h2>
+        <div class="statline" style="margin-top:14px">
+          <div class="stat"><b>${correct}</b><span>${T('correctS')}</span></div>
+          <div class="stat"><b>${rows.filter(r => !r.ok && !r.skipped).length}</b><span>${T('incorrect')}</span></div>
+          <div class="stat"><b>${fmt(S.used)}</b><span>${S.timed ? T('ofUsed')(fmt(totalLimit)) : T('timeSpent')}</span></div>
+        </div>
+        ${Object.entries(byDom).map(([d, v]) => { const p = Math.round(100 * v.c / v.t); return `
+          <div class="dom"><div class="row"><span>${domName(d)}</span><span>${v.c}/${v.t}</span></div>
+          <div class="bar"><i class="${p < 60 ? 'weak' : ''}" style="width:${Math.max(p, 2)}%"></i></div></div>`; }).join('')}
+        <div class="actions">
+          ${missed.length ? `<button class="btn btn-pencil" id="retryBtn">${T('retry')(missed.length)}</button>` : ''}
+          <button class="btn" id="newBtn">${T('newSession')}</button>
+        </div>
+      </section>
+      <section>
+        <h2 style="font-size:20px;margin-bottom:12px">${T('answerReview')}</h2>
+        <div class="review">
+          ${rows.map((r, k) => `
+            <details class="ritem">
+              <summary>
+                <span class="mark ${r.ok ? 'ok' : r.skipped ? 'skip' : 'no'}" aria-label="${r.ok ? T('correctS') : r.skipped ? T('skipped') : T('incorrect')}">${r.ok ? '✓' : r.skipped ? '–' : '✕'}</span>
+                <span class="num qn" style="color:var(--muted)">Q${k + 1}</span>
+                <span class="t">${skillName(r.q.skill)} (${diffName(r.q.d)}): <span lang="${qLang(r.q)}">${stripTags(qText(r.q)).slice(0, 90)}</span></span>
+                <span class="pair">${T('youKey')(ansText(r.q, r.a), keyText(r.q))}</span>
+              </summary>
+              <div class="body">
+                <div style="margin-bottom:8px" lang="${qLang(r.q)}">${qText(r.q)}</div>
+                ${r.q.ch ? `<p lang="${qLang(r.q)}">${r.q.ch.map((c, i) => `<b>${letter(i)}.</b> ${chText(r.q, i)}`).join('<br>')}</p>` : ''}
+                <div class="ex"><div class="exhead"><span class="lbl exhint">${STR[exL()].explainHint}</span>${exToggle()}</div>${exBody(r.q, 'div')}</div>
+              </div>
+            </details>`).join('')}
+        </div>
+      </section>
+    </div>
+  </div>`;
+  wireLang('langRes');
+  document.getElementById('homeBtn').onclick = renderHome;
+  document.getElementById('newBtn').onclick = renderHome;
+  const rb = document.getElementById('retryBtn');
+  if (rb) rb.onclick = () => startSession([{ sec: null, k: 0, ids: missed, limit: limitFor(missed) }], { type: 'missed' });
+}
+
+document.documentElement.lang = uiL();
+renderHome();
+</script>
+</body>
+</html>
